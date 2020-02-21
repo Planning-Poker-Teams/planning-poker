@@ -8,7 +8,7 @@ export class InfrastructureStack extends cdk.Stack {
     const webApp = new CfnApp(this, "WebApp", {
       name: `${props?.stackName}-web-app`,
       repository: "https://github.com/c-st/planning-poker-web",
-      accessToken: "SOME_TOKEN"
+      accessToken: "CHANGE ME HERE"
     });
 
     new CfnBranch(this, "WebAppRepoBranch", {
