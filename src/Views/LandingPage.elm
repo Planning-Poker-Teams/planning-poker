@@ -60,7 +60,7 @@ landingPageContent model =
                 , onCheck SetShowCats
                 ]
                 []
-            , text "Show me cats!"
+            , text "Consensus cats"
             ]
         , button
             [ class "h4 btn btn-primary right bg-black"
