@@ -5,7 +5,7 @@ import { InfrastructureStack } from '../lib/infrastructure-stack';
 
 const app = new cdk.App();
 new InfrastructureStack(app, 'ProductionStack', {
-    stackName: 'planning-poker-production',
+    stackName: 'planning-poker-web',
     env: {
         region: 'eu-central-1'
     }

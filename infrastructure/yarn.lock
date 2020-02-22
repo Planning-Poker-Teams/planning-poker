@@ -11,7 +11,7 @@
     "@aws-cdk/core" "1.24.0"
     "@aws-cdk/cx-api" "1.24.0"
 
-"@aws-cdk/aws-amplify@^1.25.0":
+"@aws-cdk/aws-amplify@1.25.0":
   version "1.25.0"
   resolved "https://registry.yarnpkg.com/@aws-cdk/aws-amplify/-/aws-amplify-1.25.0.tgz#67b36bdb09763a802e97db11f3fa39fe19d9fa3d"
   integrity sha512-QOTGHtG/wwqUyemPdlhTljPRAODhki8MYseyH0ycvf0mv4i8TOh9OB0/KKoVx3aag1JWp+dMgnqcPHyNW/MqRQ==
