@@ -10,7 +10,8 @@
     "test": "jest",
     "cdk": "cdk",
     "synth": "cdk synth --profile planning-poker",
-    "deploy": "cdk deploy --profile planning-poker RepositoryStack CodePipelineStack ECSStack"
+    "bootstrap": "cdk bootstrap --profile planning-poker",
+    "deploy": "cdk deploy --profile planning-poker ApiStack"
   },
   "devDependencies": {
     "@aws-cdk/assert": "1.25.0",
@@ -28,13 +29,15 @@
     "@aws-cdk/aws-codepipeline": "^1.25.0",
     "@aws-cdk/aws-codepipeline-actions": "^1.25.0",
     "@aws-cdk/aws-ec2": "^1.25.0",
-    "@aws-cdk/aws-ecs": "^1.25.0",
+    "@aws-cdk/aws-ecs": "^1.26.0",
     "@aws-cdk/aws-ecs-patterns": "^1.25.0",
     "@aws-cdk/aws-elasticloadbalancingv2": "^1.25.0",
     "@aws-cdk/aws-iam": "^1.25.0",
+    "@aws-cdk/aws-lambda-nodejs": "^1.26.0",
     "@aws-cdk/aws-s3": "^1.25.0",
     "@aws-cdk/aws-secretsmanager": "^1.25.0",
-    "@aws-cdk/core": "1.25.0",
+    "@aws-cdk/core": "^1.26.0",
+    "parcel-bundler": "^1",
     "source-map-support": "^0.5.16"
   }
 }

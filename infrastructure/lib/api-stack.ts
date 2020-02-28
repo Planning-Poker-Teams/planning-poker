@@ -9,9 +9,6 @@ export class ApiStack extends cdk.Stack {
     // https://docs.aws.amazon.com/apigateway/latest/developerguide/apigateway-websocket-api.html
     // https://docs.aws.amazon.com/apigateway/latest/developerguide/how-to-custom-domains.html
 
-    new NodejsFunction(this, "HelloWorldFunction", {
-      entry: "./handlers/helloWorld.ts",
-      handler: "handler"
-    });
+    new NodejsFunction(this, "HelloWorld");
   }
 }
