@@ -28,6 +28,7 @@
     "@aws-cdk/aws-iam": "^1.26.0",
     "@aws-cdk/aws-lambda-nodejs": "^1.26.0",
     "@aws-cdk/core": "^1.26.0",
+    "aws-sdk": "^2.630.0",
     "parcel-bundler": "^1",
     "source-map-support": "^0.5.16"
   }
