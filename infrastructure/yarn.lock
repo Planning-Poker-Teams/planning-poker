@@ -32,6 +32,13 @@
     "@aws-cdk/aws-lambda" "1.26.0"
     "@aws-cdk/core" "1.26.0"
 
+"@aws-cdk/aws-apigatewayv2@^1.26.0":
+  version "1.26.0"
+  resolved "https://registry.yarnpkg.com/@aws-cdk/aws-apigatewayv2/-/aws-apigatewayv2-1.26.0.tgz#cbcacab2496ffc61abfcd40015e4ec5f90e166c4"
+  integrity sha512-q0iZrX+C66sqN7NsQYMMdCOYybLZYhV08fsTg3U9aC5dSjM7RMNlXgv9kZ0JcxHLLJIkUuOak8XR5ZQ+pjQFZQ==
+  dependencies:
+    "@aws-cdk/core" "1.26.0"
+
 "@aws-cdk/aws-applicationautoscaling@1.26.0":
   version "1.26.0"
   resolved "https://registry.yarnpkg.com/@aws-cdk/aws-applicationautoscaling/-/aws-applicationautoscaling-1.26.0.tgz#a8f783c08c4a209a6ae56e1c87171afcdf6940a9"

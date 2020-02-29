@@ -11,4 +11,7 @@ const defaultProps = {
   }
 };
 
-new ApiStack(app, "ApiStack", { ...defaultProps });
+new ApiStack(app, "ApiStack", {
+  ...defaultProps,
+  stackName: "planning-poker-backend"
+});
