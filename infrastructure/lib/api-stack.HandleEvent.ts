@@ -1,4 +1,4 @@
-import * as AWS from "aws-sdk";
+import { buildClient } from "../src/apiGatewayClient";
 
 interface APIGatewayLambdaInvocation {
   requestContext: {
@@ -49,7 +49,7 @@ export const handler = async (
   switch (event.requestContext.eventType) {
     case "CONNECT":
       const { room, name, isSpectator } = event.queryStringParameters ?? {};
-      // 
+      //
       log(`User ${name} joined ${room}`);
       break;
 
@@ -65,17 +65,8 @@ export const handler = async (
   // If we received a message we echo it back 🦜
   if (event.body && event.requestContext.eventType == "MESSAGE") {
     const { connectionId, domainName, stage } = event.requestContext;
-    const managementApi = new AWS.ApiGatewayManagementApi({
-      apiVersion: "2018-11-29",
-      endpoint: `${domainName}/${stage}`
-    });
-
-    await managementApi
-      .postToConnection({
-        ConnectionId: connectionId,
-        Data: event.body
-      })
-      .promise();
+    const sendWebsocketMessage = buildClient(domainName, stage);
+    await sendWebsocketMessage(connectionId, event.body);
   }
 
   return {
