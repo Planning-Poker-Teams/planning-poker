@@ -1,4 +1,5 @@
-import { buildClient } from "../src/apiGatewayClient";
+import { buildClient } from "../src/clients/apiGatewayClient";
+import { PokerRepository } from "../src/PokerRepository";
 
 interface APIGatewayLambdaInvocation {
   requestContext: {
@@ -11,7 +12,9 @@ interface APIGatewayLambdaInvocation {
     domainName: string;
     stage: string;
   };
-  queryStringParameters?: any;
+  queryStringParameters?: {
+    [key: string]: string;
+  };
   multiValueQueryStringParameters?: any;
   body?: any;
   isBase64Encoded: boolean;
@@ -38,35 +41,50 @@ export const buildLogger = (connectionId: string, requestId: string) => (
   );
 };
 
+const { PARTICIPANTS_TABLE, ROOMS_TABLE } = process.env;
+const pokerRepository = new PokerRepository(
+  PARTICIPANTS_TABLE ?? "unknown",
+  ROOMS_TABLE ?? "unknown"
+);
+
 export const handler = async (
   event: APIGatewayLambdaInvocation
 ): Promise<ProxiedLambdaResponse> => {
-  // console.log(JSON.stringify(event));
-
   const { connectionId, requestId } = event.requestContext;
   const log = buildLogger(connectionId, requestId);
+
+  // if not MESSAGE: create userJoined/userLeft event
+  // convert incoming message to PokerEvent
+  // handle event with PokerRoom
+  // trigger side-effects (broadcast messages)
 
   switch (event.requestContext.eventType) {
     case "CONNECT":
       const { room, name, isSpectator } = event.queryStringParameters ?? {};
-      //
+      if (!room || !name) {
+        return {
+          isBase64Encoded: false,
+          headers: {},
+          statusCode: 400,
+          body: "Missing mandatory query parameters: room, name"
+        };
+      }
       log(`User ${name} joined ${room}`);
       break;
 
     case "MESSAGE":
       log(`Incoming event`, { requestBody: event.body });
+      if (event.body) {
+        // echo
+        const { connectionId, domainName, stage } = event.requestContext;
+        const sendWebsocketMessage = buildClient(domainName, stage);
+        await sendWebsocketMessage(connectionId, event.body);
+      }
       break;
 
     case "DISCONNECT":
       log(`User left`);
       break;
-  }
-
-  // If we received a message we echo it back 🦜
-  if (event.body && event.requestContext.eventType == "MESSAGE") {
-    const { connectionId, domainName, stage } = event.requestContext;
-    const sendWebsocketMessage = buildClient(domainName, stage);
-    await sendWebsocketMessage(connectionId, event.body);
   }
 
   return {

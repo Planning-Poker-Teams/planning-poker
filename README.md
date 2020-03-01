@@ -75,24 +75,13 @@ _Fetch user information by connectionId._
 
 ### Rooms
 
-_Fetch room details (list of all connectionIds, current task)._
+_Fetch room details (list of all connectionIds, current task, current estimation)._
 
 | Attribute       | Type                   | Description                              |
 | :-------------- | :--------------------- | :--------------------------------------- |
 | roomName        | Partition Key (String) | Room name                                |
 | participants    | List (String)          | `connectionId`s of all members in a room |
-| currentTaskName | Attribute (String)     | Current task                             |
+| currentTaskName | Attribute (String)     | Current task (can also be empty)         |
+| estimates       | List (String)          | All estimates (`connectionId_estimate`)  |
 
 Modify list by appending/removing items using a [SET operation](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Expressions.UpdateExpressions.html#Expressions.UpdateExpressions.SET.UpdatingListElements)
-
-### Estimations
-
-_Retrieve all estimations by room and task._
-
-| Attribute | Type                   | Description                             |
-| :-------- | :--------------------- | :-------------------------------------- |
-| roomName  | Partition Key (String) | Room name                               |
-| taskName  | Sort Key (String)      | Task name                               |
-| estimates | List (String)          | All estimates (`connectionId_estimate`) |
-
-Update using SET operation.

@@ -1,4 +1,4 @@
-import * as ApiGatewayManagementApi from "aws-sdk/clients/apigatewaymanagementapi";
+const ApiGatewayManagementApi = require("aws-sdk/clients/apigatewaymanagementapi");
 
 export const buildClient = (domainName: string, stage: string) => async (
   connectionId: string,

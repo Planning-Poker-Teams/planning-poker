@@ -33,21 +33,6 @@ export class ApiStack extends cdk.Stack {
       routeSelectionExpression: "$request.body.eventType"
     });
 
-    const lambda = new NodejsFunction(this, "HandleEvent", {
-      runtime: Runtime.NODEJS_12_X,
-      reservedConcurrentExecutions: 20
-    });
-
-    lambda.grantInvoke(new ServicePrincipal("apigateway.amazonaws.com"));
-    lambda.addToRolePolicy(
-      new PolicyStatement({
-        actions: ["execute-api:ManageConnections"],
-        resources: [
-          `arn:aws:execute-api:${this.region}:${this.account}:${api.ref}/*`
-        ]
-      })
-    );
-
     const defaultTableProps = {
       billingMode: BillingMode.PAY_PER_REQUEST,
       serverSideEncryption: true
@@ -58,22 +43,33 @@ export class ApiStack extends cdk.Stack {
       partitionKey: { name: "connectionId", type: AttributeType.STRING },
       ...defaultTableProps
     });
-    participantsTable.grantReadWriteData(lambda);
 
     const roomsTable = new Table(this, "RoomsTable", {
       tableName: "rooms",
       partitionKey: { name: "roomName", type: AttributeType.STRING },
       ...defaultTableProps
     });
-    roomsTable.grantReadWriteData(lambda);
 
-    const estimationsTable = new Table(this, "EstimationsTable", {
-      tableName: "estimations",
-      partitionKey: { name: "roomName", type: AttributeType.STRING },
-      sortKey: { name: "taskName", type: AttributeType.STRING },
-      ...defaultTableProps
+    const lambda = new NodejsFunction(this, "HandleEvent", {
+      runtime: Runtime.NODEJS_12_X,
+      reservedConcurrentExecutions: 20,
+      environment: {
+        PARTICIPANTS_TABLENAME: participantsTable.tableName,
+        ROOMS_TABLENAME: roomsTable.tableName
+      }
     });
-    estimationsTable.grantReadWriteData(lambda);
+
+    participantsTable.grantReadWriteData(lambda);
+    roomsTable.grantReadWriteData(lambda);
+    lambda.grantInvoke(new ServicePrincipal("apigateway.amazonaws.com"));
+    lambda.addToRolePolicy(
+      new PolicyStatement({
+        actions: ["execute-api:ManageConnections"],
+        resources: [
+          `arn:aws:execute-api:${this.region}:${this.account}:${api.ref}/*`
+        ]
+      })
+    );
 
     const routesToCreate: { prefix: string; routeKey: string }[] = [
       { prefix: "Connect", routeKey: "$connect" },
