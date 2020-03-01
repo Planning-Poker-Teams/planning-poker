@@ -9,7 +9,12 @@ import {
   CfnStage
 } from "@aws-cdk/aws-apigatewayv2";
 import { CfnOutput } from "@aws-cdk/core";
-import { ServicePrincipal, PolicyStatement } from "@aws-cdk/aws-iam";
+import {
+  ServicePrincipal,
+  PolicyStatement,
+  Role,
+  ManagedPolicy
+} from "@aws-cdk/aws-iam";
 import { Table, AttributeType, BillingMode } from "@aws-cdk/aws-dynamodb";
 
 // TODO: add custom domain (api.planningpoker.cc)
@@ -19,13 +24,16 @@ export class ApiStack extends cdk.Stack {
   constructor(scope: cdk.Construct, id: string, props: cdk.StackProps) {
     super(scope, id, props);
 
+    // Required for debugging API Gateway. Can be removed eventually:
+    this.createCloudWatchLogRole();
+
     const api = new CfnApi(this, "Api", {
       name: "PlanningPoker-WebsocketApi",
-      protocolType: "WEBSOCKET"
-      // routeSelectionExpression: "$request.body.eventType"
+      protocolType: "WEBSOCKET",
+      routeSelectionExpression: "$request.body.eventType"
     });
 
-    const lambda = new NodejsFunction(this, "HelloWorld", {
+    const lambda = new NodejsFunction(this, "HandleEvent", {
       runtime: Runtime.NODEJS_12_X,
       reservedConcurrentExecutions: 20
     });
@@ -102,9 +110,27 @@ export class ApiStack extends cdk.Stack {
       value: `wss://${api.ref}.execute-api.${this.region}.amazonaws.com/${devStage.stageName}`
     });
 
-    // wss://g5ktyisvyf.execute-api.eu-central-1.amazonaws.com/dev?name=Test&room=MyRoom&spectator=false
-
     // When making changes to an existing stage it needs to be redeployed manually (API GW/Routes/Actions/Deploy API)
     // https://stackoverflow.com/questions/41423439/cloudformation-doesnt-deploy-to-api-gateway-stages-on-update
+  }
+
+  private createCloudWatchLogRole() {
+    // The following role is required for allowing API Gateway to log to CloudWatch.
+    // It has to be configured at the API GW Account. However `CfnAccount` seems
+    // to be missing so for now I have set it manually in the Console.
+    // https://github.com/awsdocs/aws-cloudformation-user-guide/blob/master/doc_source/aws-resource-apigateway-account.md
+
+    const cloudWatchRole = new Role(this, "CloudWatchRole", {
+      assumedBy: new ServicePrincipal("apigateway.amazonaws.com"),
+      managedPolicies: [
+        ManagedPolicy.fromAwsManagedPolicyName(
+          "service-role/AmazonAPIGatewayPushToCloudWatchLogs"
+        )
+      ]
+    });
+
+    new CfnOutput(this, "CloudWatchRoleArn", {
+      value: cloudWatchRole.roleArn
+    });
   }
 }
