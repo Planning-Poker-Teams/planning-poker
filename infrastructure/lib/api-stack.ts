@@ -1,4 +1,5 @@
 import * as cdk from "@aws-cdk/core";
+import { Runtime } from "@aws-cdk/aws-lambda";
 import { NodejsFunction } from "@aws-cdk/aws-lambda-nodejs";
 import {
   CfnApi,
@@ -8,12 +9,8 @@ import {
   CfnStage
 } from "@aws-cdk/aws-apigatewayv2";
 import { CfnOutput } from "@aws-cdk/core";
-import {
-  ServicePrincipal,
-  PolicyStatement,
-  Role,
-  ManagedPolicy
-} from "@aws-cdk/aws-iam";
+import { ServicePrincipal, PolicyStatement } from "@aws-cdk/aws-iam";
+import { Table, AttributeType, BillingMode } from "@aws-cdk/aws-dynamodb";
 
 // TODO: add custom domain (api.planningpoker.cc)
 // https://docs.aws.amazon.com/apigateway/latest/developerguide/how-to-custom-domains.html
@@ -24,11 +21,15 @@ export class ApiStack extends cdk.Stack {
 
     const api = new CfnApi(this, "Api", {
       name: "PlanningPoker-WebsocketApi",
-      protocolType: "WEBSOCKET",
-      routeSelectionExpression: "$request.body.eventType" // not used
+      protocolType: "WEBSOCKET"
+      // routeSelectionExpression: "$request.body.eventType"
     });
 
-    const lambda = new NodejsFunction(this, "HelloWorld");
+    const lambda = new NodejsFunction(this, "HelloWorld", {
+      runtime: Runtime.NODEJS_12_X,
+      reservedConcurrentExecutions: 20
+    });
+
     lambda.grantInvoke(new ServicePrincipal("apigateway.amazonaws.com"));
     lambda.addToRolePolicy(
       new PolicyStatement({
@@ -38,6 +39,33 @@ export class ApiStack extends cdk.Stack {
         ]
       })
     );
+
+    const defaultTableProps = {
+      billingMode: BillingMode.PAY_PER_REQUEST,
+      serverSideEncryption: true
+    };
+
+    const participantsTable = new Table(this, "ParticipantsTable", {
+      tableName: "participants",
+      partitionKey: { name: "connectionId", type: AttributeType.STRING },
+      ...defaultTableProps
+    });
+    participantsTable.grantReadWriteData(lambda);
+
+    const roomsTable = new Table(this, "RoomsTable", {
+      tableName: "rooms",
+      partitionKey: { name: "roomName", type: AttributeType.STRING },
+      ...defaultTableProps
+    });
+    roomsTable.grantReadWriteData(lambda);
+
+    const estimationsTable = new Table(this, "EstimationsTable", {
+      tableName: "estimations",
+      partitionKey: { name: "roomName", type: AttributeType.STRING },
+      sortKey: { name: "taskName", type: AttributeType.STRING },
+      ...defaultTableProps
+    });
+    estimationsTable.grantReadWriteData(lambda);
 
     const routesToCreate: { prefix: string; routeKey: string }[] = [
       { prefix: "Connect", routeKey: "$connect" },

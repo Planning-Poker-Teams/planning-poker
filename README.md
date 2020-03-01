@@ -33,45 +33,55 @@ The new user receives a separate `userJoined` event for all other users in the c
 # Architecture
 
 ```
-
-                  API Gateway          Lambda                DynamoDB
-                  (Websocket)
-  ┌───────────┐
-  │  Client   │◀─┐   ┌────┐
-  └───────────┘  │   │    │                              ┌───────────────┐
-  ┌───────────┐  │   │    │        ┌───────────┐    ┌───▶│  Connections  │
-  │  Client   │◀─┤   │    │        │           │    │    └───────────────┘
-  └───────────┘  │   │    │ Message│           │    │    ┌───────────────┐
-  ┌───────────┐  ├──▶│    │◀──────▶│handleEvent│◀───┼───▶│     Rooms     │
-  │  Client   │◀─┤   │    │        │           │    │    └───────────────┘
-  └───────────┘  │   │    │        │           │    │    ┌───────────────┐
-  ┌───────────┐  │   │    │        └───────────┘    └───▶│  Estimations  │
-  │    ...    │◀─┘   └────┘                              └───────────────┘
-  └───────────┘
+                   API Gateway            Lambda               DynamoDB
+                   (Websocket)
+ ┌──────┐            ┌────┐            ┌───────────┐       ┌───────────────┐
+ │Client│◀────┐      │    │            │           │   ┌──▶│ Participants  │
+ └──────┘     │      │    │            │           │   │   └───────────────┘
+ ┌──────┐   Messages │    │ Invocation │           │   │   ┌───────────────┐
+ │Client│◀────┼─────▶│    │◀──────────▶│handleEvent│◀──┼──▶│     Rooms     │
+ └──────┘     │      │    │            │           │   │   └───────────────┘
+ ┌──────┐     │      │    │            │           │   │   ┌───────────────┐
+ │ ...  │◀────┘      │    │            │           │   └──▶│  Estimations  │
+ └──────┘            └────┘            └───────────┘       └───────────────┘
 ```
 
 ## Data model
 
-### Connections
+Query use cases:
+
+```typescript
+// read queries:
+fetchParticipant(connectionId: string): Promise<Participant?>
+fetchRoom(roomName: string): Promise<Room?>
+fetchEstimation(roomName: string, taskName: string): Promise<Estimation?>
+
+// mutations:
+enterRoom(participant: Participant) // creates new entry in Participants table
+startNewEstimation(participant: Participant, taskName: string)
+submitEstimation(participant: Participant, taskName: string, value: string)
+```
+
+### Participants
 
 _Fetch user information by connectionId._
 
-| Attribute    | Type                   | Description                         |
-| :----------- | :--------------------- | :---------------------------------- |
-| connectionId | Partition Key (String) | ID of the connected user            |
-| name         | Attribute (String)     | Name                                |
-| isSpectator  | Attribute (Boolean)    | Is user a spectator                 |
-| room         | Attribute (String)     | The name of the room the user is in |
+| Attribute    | Type                   | Description              |
+| :----------- | :--------------------- | :----------------------- |
+| connectionId | Partition Key (String) | ID of the connected user |
+| roomName     | Attribute (String)     | Room name                |
+| name         | Attribute (String)     | Name                     |
+| isSpectator  | Attribute (Boolean)    | Is user a spectator?     |
 
 ### Rooms
 
 _Fetch room details (list of all connectionIds, current task)._
 
-| Attribute    | Type                   | Description                               |
-| :----------- | :--------------------- | :---------------------------------------- |
-| room         | Partition Key (String) | Room name                                 |
-| participants | List (String)          | All members' `connectionId`s in this room |
-| currentTask  | Attribute (String)     | Current task                              |
+| Attribute       | Type                   | Description                              |
+| :-------------- | :--------------------- | :--------------------------------------- |
+| roomName        | Partition Key (String) | Room name                                |
+| participants    | List (String)          | `connectionId`s of all members in a room |
+| currentTaskName | Attribute (String)     | Current task                             |
 
 Modify list by appending/removing items using a [SET operation](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Expressions.UpdateExpressions.html#Expressions.UpdateExpressions.SET.UpdatingListElements)
 
@@ -79,9 +89,10 @@ Modify list by appending/removing items using a [SET operation](https://docs.aws
 
 _Retrieve all estimations by room and task._
 
-| Attribute    | Type                   | Description                            |
-| :----------- | :--------------------- | :------------------------------------- |
-| room         | Partition Key (String) | Room name                              |
-| task         | Sort Key (String)      | Task name                              |
-| estimate     | Attribute (String)     | A single estimate                      |
-| connectionId | Attribute (String)     | ConnectionID of the user who estimated |
+| Attribute | Type                   | Description                             |
+| :-------- | :--------------------- | :-------------------------------------- |
+| roomName  | Partition Key (String) | Room name                               |
+| taskName  | Sort Key (String)      | Task name                               |
+| estimates | List (String)          | All estimates (`connectionId_estimate`) |
+
+Update using SET operation.
