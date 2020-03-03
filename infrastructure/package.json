@@ -1,6 +1,12 @@
 {
   "name": "infrastructure",
   "version": "0.1.0",
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "https://github.com/caolan/async/raw/master/LICENSE"
+    }
+  ],
   "bin": {
     "infrastructure": "bin/infrastructure.js"
   },
@@ -8,19 +14,22 @@
     "build": "tsc",
     "watch": "tsc -w",
     "test": "jest",
+    "feature": "cucumber-js --require-module ts-node/register/transpile-only --require src/__features__/support/setup.ts --require 'src/__features__/support/*Steps.ts'",
+    "features": "yarn feature src/__features__/",
     "cdk": "cdk",
     "synth": "cdk synth --profile planning-poker",
     "bootstrap": "cdk bootstrap --profile planning-poker",
-    "deploy": "cdk deploy --profile planning-poker ApiStack"
+    "deploy": "cdk deploy --profile planning-poker"
   },
   "devDependencies": {
     "@aws-cdk/assert": "1.25.0",
     "@types/jest": "^24.0.22",
     "@types/node": "10.17.5",
     "aws-cdk": "1.25.0",
+    "cucumber": "^6.0.5",
     "jest": "^24.9.0",
     "ts-jest": "^24.1.0",
-    "ts-node": "^8.1.0",
+    "ts-node": "^8.6.2",
     "typescript": "~3.7.2"
   },
   "dependencies": {
@@ -29,6 +38,7 @@
     "@aws-cdk/aws-iam": "^1.26.0",
     "@aws-cdk/aws-lambda-nodejs": "^1.26.0",
     "@aws-cdk/core": "^1.26.0",
+    "@types/cucumber": "^6.0.1",
     "aws-sdk": "^2.630.0",
     "parcel-bundler": "^1",
     "source-map-support": "^0.5.16"

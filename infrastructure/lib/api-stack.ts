@@ -56,7 +56,7 @@ export class ApiStack extends cdk.Stack {
     });
 
     const lambda = new NodejsFunction(this, "HandleEvent", {
-      // functionName: `${props.stackName}-websocket-handler`,
+      functionName: `${props.stackName}-websocket-handler`,
       entry: path.join(__dirname, "../src/handlers/handleWebsocketEvents.ts"),
       runtime: Runtime.NODEJS_12_X,
       environment: {
