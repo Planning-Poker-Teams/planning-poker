@@ -1,6 +1,6 @@
-const ApiGatewayManagementApi = require("aws-sdk/clients/apigatewaymanagementapi");
+import ApiGatewayManagementApi from "aws-sdk/clients/apigatewaymanagementapi";
 
-export class WebsocketClient {
+export class ApiGatewayManagementClient {
   private managementApi: any;
 
   constructor(endpoint: string) {
@@ -13,12 +13,12 @@ export class WebsocketClient {
   async broadcast(connectionIds: string[], data: string) {
     await Promise.all(
       connectionIds.map(id => {
-        this.sendMessage(id, data);
+        this.post(id, data);
       })
     );
   }
 
-  async sendMessage(connectionId: string, data: string) {
+  async post(connectionId: string, data: string) {
     await this.managementApi
       .postToConnection({
         ConnectionId: connectionId,

@@ -1,7 +1,15 @@
-import { PokerRepository } from "../PokerRepository";
-import { WebsocketClient } from '../WebsocketClient';
+import { PokerRepository } from "../poker/PokerRepository";
+import { ApiGatewayManagementClient } from "../ApiGatewayManagementClient";
+import { buildLogger } from "../buildLogger";
+import { convertToPokerEvent } from "../poker/convertToPokerEvent";
 
-interface APIGatewayLambdaInvocation {
+/**
+ * Each incoming message sent through a websocket connection (MESSAGE). If a user
+ * connects or disconnects (CONNECT/DISCONNECT) body will be empty.
+ *
+ * `connectionId` is used to send message back to the connected user
+ */
+export interface APIGatewayWebsocketInvocationRequest {
   requestContext: {
     connectionId: string;
     eventType: "CONNECT" | "MESSAGE" | "DISCONNECT";
@@ -20,72 +28,55 @@ interface APIGatewayLambdaInvocation {
   isBase64Encoded: boolean;
 }
 
-interface ProxiedLambdaResponse {
+/**
+ * Expected Lambda response for API Gateway.
+ */
+interface LambdaResponse {
   isBase64Encoded: boolean;
   statusCode: number;
   headers: object;
   body: string; // stringified JSON
 }
 
-export const buildLogger = (connectionId: string, requestId: string) => (
-  message: string,
-  metadata?: object
-) => {
-  console.log(
-    JSON.stringify({
-      message,
-      metadata,
-      connectionId,
-      requestId
-    })
-  );
-};
-
 const { PARTICIPANTS_TABLE, ROOMS_TABLE } = process.env;
-
-const pokerRepository = new PokerRepository(
+const repository = new PokerRepository(
   PARTICIPANTS_TABLE ?? "unknown",
   ROOMS_TABLE ?? "unknown"
 );
 
 export const handler = async (
-  event: APIGatewayLambdaInvocation
-): Promise<ProxiedLambdaResponse> => {
+  event: APIGatewayWebsocketInvocationRequest
+): Promise<LambdaResponse> => {
   const { connectionId, requestId, domainName, stage } = event.requestContext;
+
   const log = buildLogger(connectionId, requestId);
-  const websocketClient = new WebsocketClient(`${domainName}/${stage}`);
+  const gatewayClient = new ApiGatewayManagementClient(
+    `${domainName}/${stage}`
+  );
 
-  // if not MESSAGE: create userJoined/userLeft event
-  // convert incoming message to PokerEvent
-  // handle event with PokerRoom
-  // trigger side-effects (broadcast messages)
+  // Verify that all request parameters have been set:
+  if (event.requestContext.eventType == "CONNECT") {
+    const { room, name, isSpectator } = event.queryStringParameters ?? {};
+    if (!room || !name) {
+      return {
+        isBase64Encoded: false,
+        headers: {},
+        statusCode: 400,
+        body: "Missing mandatory query parameters: room, name"
+      };
+    }
+  }
 
-  switch (event.requestContext.eventType) {
-    case "CONNECT":
-      const { room, name, isSpectator } = event.queryStringParameters ?? {};
-      if (!room || !name) {
-        return {
-          isBase64Encoded: false,
-          headers: {},
-          statusCode: 400,
-          body: "Missing mandatory query parameters: room, name"
-        };
-      }
-      log(`User ${name} joined ${room}`);
-      break;
-
-    case "MESSAGE":
-      log(`Incoming event`, { requestBody: event.body });
-      if (event.body) {
-        // echo
-        const { connectionId, domainName, stage } = event.requestContext;
-        await websocketClient.sendMessage(connectionId, event.body);
-      }
-      break;
-
-    case "DISCONNECT":
-      log(`User left`);
-      break;
+  try {
+    await convertToPokerEvent(event, gatewayClient, repository, log);
+  } catch (error) {
+    log("Unexpected error" + error);
+    return {
+      isBase64Encoded: false,
+      headers: {},
+      statusCode: 500,
+      body: "Unexpected error while handling event"
+    };
   }
 
   return {
