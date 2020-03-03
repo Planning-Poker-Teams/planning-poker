@@ -16,12 +16,17 @@ import {
   ManagedPolicy
 } from "@aws-cdk/aws-iam";
 import { Table, AttributeType, BillingMode } from "@aws-cdk/aws-dynamodb";
+import * as path from "path";
 
 // TODO: add custom domain (api.planningpoker.cc)
 // https://docs.aws.amazon.com/apigateway/latest/developerguide/how-to-custom-domains.html
 
+interface ApiStackProps extends cdk.StackProps {
+  stageName: string;
+}
+
 export class ApiStack extends cdk.Stack {
-  constructor(scope: cdk.Construct, id: string, props: cdk.StackProps) {
+  constructor(scope: cdk.Construct, id: string, props: ApiStackProps) {
     super(scope, id, props);
 
     // Required for debugging API Gateway. Can be removed eventually:
@@ -51,8 +56,9 @@ export class ApiStack extends cdk.Stack {
     });
 
     const lambda = new NodejsFunction(this, "HandleEvent", {
+      // functionName: `${props.stackName}-websocket-handler`,
+      entry: path.join(__dirname, "../src/handlers/handleWebsocketEvents.ts"),
       runtime: Runtime.NODEJS_12_X,
-      reservedConcurrentExecutions: 20,
       environment: {
         PARTICIPANTS_TABLENAME: participantsTable.tableName,
         ROOMS_TABLENAME: roomsTable.tableName
@@ -97,13 +103,13 @@ export class ApiStack extends cdk.Stack {
       apiId: api.ref
     });
 
-    const devStage = new CfnStage(this, "Stage", {
-      stageName: "dev",
+    const stage = new CfnStage(this, "Stage", {
+      stageName: props.stageName,
       apiId: api.ref
     });
 
     new CfnOutput(this, "WebSocketURI", {
-      value: `wss://${api.ref}.execute-api.${this.region}.amazonaws.com/${devStage.stageName}`
+      value: `wss://${api.ref}.execute-api.${this.region}.amazonaws.com/${stage.stageName}`
     });
 
     // When making changes to an existing stage it needs to be redeployed manually (API GW/Routes/Actions/Deploy API)

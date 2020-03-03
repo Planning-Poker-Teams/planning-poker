@@ -1,5 +1,5 @@
-import { buildClient } from "../src/clients/apiGatewayClient";
-import { PokerRepository } from "../src/PokerRepository";
+import { PokerRepository } from "../PokerRepository";
+import { WebsocketClient } from '../WebsocketClient';
 
 interface APIGatewayLambdaInvocation {
   requestContext: {
@@ -42,6 +42,7 @@ export const buildLogger = (connectionId: string, requestId: string) => (
 };
 
 const { PARTICIPANTS_TABLE, ROOMS_TABLE } = process.env;
+
 const pokerRepository = new PokerRepository(
   PARTICIPANTS_TABLE ?? "unknown",
   ROOMS_TABLE ?? "unknown"
@@ -50,8 +51,9 @@ const pokerRepository = new PokerRepository(
 export const handler = async (
   event: APIGatewayLambdaInvocation
 ): Promise<ProxiedLambdaResponse> => {
-  const { connectionId, requestId } = event.requestContext;
+  const { connectionId, requestId, domainName, stage } = event.requestContext;
   const log = buildLogger(connectionId, requestId);
+  const websocketClient = new WebsocketClient(`${domainName}/${stage}`);
 
   // if not MESSAGE: create userJoined/userLeft event
   // convert incoming message to PokerEvent
@@ -77,8 +79,7 @@ export const handler = async (
       if (event.body) {
         // echo
         const { connectionId, domainName, stage } = event.requestContext;
-        const sendWebsocketMessage = buildClient(domainName, stage);
-        await sendWebsocketMessage(connectionId, event.body);
+        await websocketClient.sendMessage(connectionId, event.body);
       }
       break;
 
