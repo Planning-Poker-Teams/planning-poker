@@ -12,27 +12,96 @@
 # Introduction
 
 Planning Poker is a real-time application to help perform estimation sessions in agile teams working together remotely.
+Users can join planning rooms where they meet with the other participants. Users can start estimations for tasks, give their estimates and reveal the results.
 
-Join a room:
-`npx wscat -c "wss://g5ktyisvyf.execute-api.eu-central-1.amazonaws.com/dev?name=Test&room=MyRoom&isSpectator=false"`
+At the moment there are 2 **frontends**:
 
-## Events
+- a web-based Single Page app built with Elm ([https://planningpoker.cc](https://planningpoker.cc))
+- an iOS App built with SwiftUI ([iOS App Store](https://apps.apple.com/app/planning-poker-for-teams/id1495956287))
 
-### `onConnect`, `onDisconnect`
+This **backend** provides the Websocket endpoint to be used by these frontends. It is built on AWS using a serverless, event-driven architecture utilizing the services API Gateway, Lambda and DynamoDB. It is configured with CDK.
 
-Insert or remove user from `connections` table.
+## Getting started
 
-The new user receives a separate `userJoined` event for all other users in the current room. Also if an estimation is already running, the user receives the task (`startEstimation`) and information which users have already voted (`userHasEstimated`).
+Install the dependencies:
 
-### `startEstimation`
+`yarn install`
 
-### `estimate`
+Run feature tests:
 
-### `showResult`
+`yarn features`
+
+Deploy infrastructure (adjust AWS profile in `package.json` before):
+
+`yarn cdk deploy`
+
+# How estimation works
+
+This section describes how an estimation takes place and how the server handles different events in its respective state.
+
+_Event types_:
+
+```code
+# Joining a room
+userJoined(userName: string, isSpectator: boolean)
+userLeft(userName: string)
+startEstimation(userName: string, taskName: string, startDate: string)
+
+# Estimating
+estimate(userName: string, taskName: string, estimate: string)
+userHasEstimated(userName: string, taskName: string)
+
+# Ending current estimation round
+showResult(userName: string)
+estimationResult(taskName: string, startDate: string, endDate: string, estimates: { userName: string, estimate: string }[])
+```
+
+These events are exchanged as JSON in the following format:
+
+```json
+{
+  "eventType": "estimate",
+  "userName": "some-user",
+  "taskName": "some-task",
+  "estimate": "7"
+}
+```
+
+In order to try out the API you can connect to the websocket endpoint with a tool like `wscat`:
+
+```sh
+# Query parameters `name` and `room` are mandatory
+npx wscat -c "wss://g5ktyisvyf.execute-api.eu-central-1.amazonaws.com/dev?name=Test&room=MyRoom&isSpectator=false"
+```
+
+## Stages
+
+### 1. Join a room
+
+All clients keep a list of other users in the current planning session. When users join or leave the room this is broadcasted to all connected clients with either `userJoined` or `userLeft` events.
+
+When a new user joins a room which already hosts participants, this user receives all other members as separate `userJoined` events. Users can join or leave at any time.
+
+Participants which do not take part in the estimation itself can join as "spectators". In this case they cannot give estimates but can start new estimations or request revealing the results. This can be useful for non-estimating participants (in development teams these would typically be the PO and Scrum master).
+
+### 2. Estimate
+
+Any user can initiate a new estimation round by sending a `startEstimation` event to the server. If no estimation is running at the moment, the event is broadcasted to all clients otherwise it is ignored.
+
+If a client receives a `startEstimation` event it will display a screen for entering the complexity for a task assumed by the participant. If a client connects after an estimation has been started, it will receive this event directly after having been sent the list of `userJoined` events.
+
+Clients can now send their estimation to the server with an event of type `estimate`. More than one `estimate` can be sent for the same task for the same user. The server collects incoming estimations and broadcasts them with an `userHasEstimated` event (which does not include the estimate).
+
+### 3. Finalize round (display result, start next estimation round)
+
+Only when all users (except spectators) have submitted their estimations, the result can be requested with `showResult`. As a response the server broadcasts the estimations of all users with `estimationResult`. In case not all estimations have been received it will be ignored by the server.
+
+After the estimation result is revealed, any user can send a new `startEstimation` in order to start another round.
 
 # Architecture
 
-```
+
+```code
                    API Gateway            Lambda               DynamoDB
                    (Websocket)
  ┌──────┐            ┌────┐            ┌───────────┐       ┌───────────────┐
@@ -48,16 +117,16 @@ The new user receives a separate `userJoined` event for all other users in the c
 
 ## Data model
 
-Query use cases:
+DynamoDB repository:
 
 ```typescript
 // read queries:
-fetchParticipant(connectionId: string): Promise<Participant?>
-fetchRoom(roomName: string): Promise<Room?>
-fetchEstimation(roomName: string, taskName: string): Promise<Estimation?>
+fetchParticipant(connectionId: string): Promise<Participant>
+fetchRoom(roomName: string): Promise<Room>
+fetchEstimation(roomName: string, taskName: string): Promise<Estimation>
 
 // mutations:
-enterRoom(participant: Participant) // creates new entry in Participants table
+enterRoom(participant: Participant)
 startNewEstimation(participant: Participant, taskName: string)
 submitEstimation(participant: Participant, taskName: string, value: string)
 ```
@@ -75,13 +144,13 @@ _Fetch user information by connectionId._
 
 ### Rooms
 
-_Fetch room details (list of all connectionIds, current task, current estimation)._
+_Fetch room details (list of all connectionIds, current task, current estimations)._
 
-| Attribute       | Type                   | Description                              |
-| :-------------- | :--------------------- | :--------------------------------------- |
-| roomName        | Partition Key (String) | Room name                                |
-| participants    | List (String)          | `connectionId`s of all members in a room |
-| currentTaskName | Attribute (String)     | Current task (can also be empty)         |
-| estimates       | List (String)          | All estimates (`connectionId_estimate`)  |
+| Attribute       | Type                   | Description                                      |
+| :-------------- | :--------------------- | :----------------------------------------------- |
+| roomName        | Partition Key (String) | Room name                                        |
+| participants    | List (String)          | `connectionId`s of all members in a room         |
+| currentTaskName | Attribute (String)     | Current task (can also be empty)                 |
+| estimates       | List (String)          | All estimates (`{"connectionId:":"value":"10"}`) |
 
 Modify list by appending/removing items using a [SET operation](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Expressions.UpdateExpressions.html#Expressions.UpdateExpressions.SET.UpdatingListElements)
