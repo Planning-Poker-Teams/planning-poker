@@ -1,3 +1,5 @@
+import AWSXRay from "aws-xray-sdk-core";
+import DynamoDB = require("aws-sdk/clients/dynamodb");
 import { DocumentClient } from "aws-sdk/clients/dynamodb";
 
 export interface Participant {
@@ -15,13 +17,17 @@ export interface Room {
 }
 
 export class PokerRepository {
-  private docClient: DocumentClient;
+  private client: DocumentClient;
 
   constructor(
     private participantsTableName: string,
     private roomsTableName: string
   ) {
-    this.docClient = new DocumentClient({ apiVersion: "2012-08-10" });
+    // Workaround for https://github.com/aws/aws-xray-sdk-node/issues/23
+    this.client = new DynamoDB.DocumentClient({
+      service: new DynamoDB({ apiVersion: "2012-10-08" })
+    });
+    AWSXRay.captureAWSClient((this.client as any).service);
   }
 
   fetchParticipant(connectionId: string): Promise<Participant> {

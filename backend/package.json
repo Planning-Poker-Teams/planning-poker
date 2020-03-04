@@ -40,6 +40,7 @@
     "@aws-cdk/core": "^1.26.0",
     "@types/cucumber": "^6.0.1",
     "aws-sdk": "^2.630.0",
+    "aws-xray-sdk": "^2.5.0",
     "parcel-bundler": "^1",
     "source-map-support": "^0.5.16"
   }

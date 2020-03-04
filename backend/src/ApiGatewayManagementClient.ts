@@ -1,13 +1,16 @@
+import AWSXRay from "aws-xray-sdk-core";
 import ApiGatewayManagementApi from "aws-sdk/clients/apigatewaymanagementapi";
 
 export class ApiGatewayManagementClient {
   private managementApi: any;
 
   constructor(endpoint: string) {
-    this.managementApi = new ApiGatewayManagementApi({
-      apiVersion: "2018-11-29",
-      endpoint
-    });
+    this.managementApi = AWSXRay.captureAWSClient(
+      new ApiGatewayManagementApi({
+        apiVersion: "2018-11-29",
+        endpoint
+      })
+    );
   }
 
   async broadcast(connectionIds: string[], data: string) {

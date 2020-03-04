@@ -1,5 +1,5 @@
 import * as cdk from "@aws-cdk/core";
-import { Runtime } from "@aws-cdk/aws-lambda";
+import { Runtime, Tracing } from "@aws-cdk/aws-lambda";
 import { NodejsFunction } from "@aws-cdk/aws-lambda-nodejs";
 import {
   CfnApi,
@@ -59,6 +59,7 @@ export class ApiStack extends cdk.Stack {
       functionName: `${props.stackName}-websocket-handler`,
       entry: path.join(__dirname, "../src/handlers/handleWebsocketEvents.ts"),
       runtime: Runtime.NODEJS_12_X,
+      tracing: Tracing.ACTIVE,
       environment: {
         PARTICIPANTS_TABLENAME: participantsTable.tableName,
         ROOMS_TABLENAME: roomsTable.tableName
@@ -107,6 +108,9 @@ export class ApiStack extends cdk.Stack {
       stageName: props.stageName,
       apiId: api.ref
     });
+
+    // https://stackoverflow.com/questions/47009336/aws-x-ray-is-it-possible-to-add-the-api-gateway-call-to-the-service-map
+    // stage.addPropertyOverride("/tracingEnabled", true);
 
     new CfnOutput(this, "WebSocketURI", {
       value: `wss://${api.ref}.execute-api.${this.region}.amazonaws.com/${stage.stageName}`
