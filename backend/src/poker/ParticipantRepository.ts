@@ -9,6 +9,7 @@ export interface Participant {
 
 export class ParticipantRepository {
   private client: DynamoDbClient;
+  private cache = new Map<string, Participant>();
 
   constructor(
     private participantsTableName: string,
@@ -19,11 +20,16 @@ export class ParticipantRepository {
 
   async putParticipant(participant: Participant): Promise<void> {
     await this.client.put(this.participantsTableName, participant);
+    this.cache.set(participant.connectionId, participant);
   }
 
   async fetchParticipant(
     connectionId: string
   ): Promise<Participant | undefined> {
+    if (this.cache.has(connectionId)) {
+      return this.cache.get(connectionId);
+    }
+
     const result = await this.client.get(this.participantsTableName, {
       connectionId
     });
@@ -35,17 +41,25 @@ export class ParticipantRepository {
   }
 
   async fetchParticipants(connectionIds: string[]): Promise<Participant[]> {
-    const result = await this.client.batchGet(
-      this.participantsTableName,
-      "connectionId",
-      connectionIds
-    );
+    const idsForFetching = connectionIds.filter(id => !this.cache.has(id));
+    const idsFromCache = connectionIds.filter(id => this.cache.has(id));
+
+    const result =
+      idsForFetching.length > 0
+        ? await this.client.batchGet(
+            this.participantsTableName,
+            "connectionId",
+            idsForFetching
+          )
+        : undefined;
 
     const participants =
       result?.Responses?.participants.map(result => result as Participant) ??
       [];
 
-    return participants;
+    const participantsFromCache = idsFromCache.map(id => this.cache.get(id)!);
+
+    return [...participants, ...participantsFromCache];
   }
 
   async removeParticipant(connectionId: string): Promise<void> {
@@ -53,5 +67,6 @@ export class ParticipantRepository {
       tableName: this.participantsTableName,
       partitionKey: { connectionId }
     });
+    this.cache.delete(connectionId);
   }
 }
