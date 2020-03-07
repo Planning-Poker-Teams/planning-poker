@@ -1,13 +1,13 @@
-import { Repository } from "../poker/Repository";
-import { ApiGatewayManagementClient } from "../ApiGatewayManagementClient";
-import { buildLogger, Severity } from "../buildLogger";
+import { ParticipantRepository } from "../poker/ParticipantRepository";
+import { ApiGatewayManagementClient } from "../lib/ApiGatewayManagementClient";
+import { buildLogger, Severity } from "../lib/buildLogger";
 import { convertToPokerEvent } from "../poker/convertToPokerEvent";
 import { PokerRoom } from "../poker/PokerRoom";
+import { RoomRepository } from "../poker/RoomRepository";
 
 /**
  * Each incoming message sent through a websocket connection (MESSAGE).
  * If a user connects or disconnects (CONNECT/DISCONNECT) body will be empty.
- *
  * `connectionId` is used to send message back to the connected user
  */
 export interface APIGatewayWebsocketInvocationRequest {
@@ -39,10 +39,17 @@ interface LambdaResponse {
   body: string; // stringified JSON
 }
 
-const repository = new Repository(
-  process.env.PARTICIPANTS_TABLENAME!,
-  process.env.ROOMS_TABLENAME!
+const baseResponse = {
+  isBase64Encoded: false,
+  headers: {},
+  statusCode: 200,
+  body: ""
+};
+
+const participantRepository = new ParticipantRepository(
+  process.env.PARTICIPANTS_TABLENAME!
 );
+const roomRepository = new RoomRepository(process.env.ROOMS_TABLENAME!);
 
 export const handler = async (
   event: APIGatewayWebsocketInvocationRequest
@@ -59,34 +66,29 @@ export const handler = async (
     const { room, name, isSpectator } = event.queryStringParameters ?? {};
     if (!room || !name) {
       return {
-        isBase64Encoded: false,
-        headers: {},
+        ...baseResponse,
         statusCode: 400,
-        body: "Missing mandatory query parameters: room, name"
+        body: "Missing mandatory query parameters: room, name."
       };
     }
   }
 
-  try {
-    const pokerRoom = new PokerRoom(repository, gatewayClient, log);
-    const pokerEvent = convertToPokerEvent(event, log);
-    if (pokerEvent) {
-      await pokerRoom.processEvent(pokerEvent);
-    }
-  } catch (error) {
-    log(Severity.ERROR, "Unexpected error ", error);
+  const pokerRoom = new PokerRoom(roomRepository, gatewayClient, log);
+  const pokerEvent = await convertToPokerEvent(
+    event,
+    participantRepository,
+    log
+  );
+  if (!pokerEvent) {
+    log(Severity.ERROR, "Event could not be handled", { event });
     return {
-      isBase64Encoded: false,
-      headers: {},
+      ...baseResponse,
       statusCode: 500,
-      body: "Unexpected error while handling event"
+      body: "Event could not be handled"
     };
   }
 
-  return {
-    isBase64Encoded: false,
-    statusCode: 200,
-    headers: {},
-    body: ""
-  };
+  await pokerRoom.processEvent(pokerEvent);
+
+  return baseResponse;
 };

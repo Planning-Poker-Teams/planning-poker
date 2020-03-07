@@ -1,6 +1,7 @@
-import { Repository, Room } from "./Repository";
-import { ApiGatewayManagementClient } from "../ApiGatewayManagementClient";
-import { Severity, Logger } from '../buildLogger';
+import { ParticipantRepository } from "./ParticipantRepository";
+import { ApiGatewayManagementClient } from "../lib/ApiGatewayManagementClient";
+import { Severity, Logger } from '../lib/buildLogger';
+import { RoomRepository } from './RoomRepository';
 
 interface State {
   roomName: string;
@@ -12,32 +13,14 @@ interface State {
 
 export class PokerRoom {
   constructor(
-    private pokerRepository: Repository,
+    private roomRepository: RoomRepository,
     private gatewayClient: ApiGatewayManagementClient,
     private log: Logger
   ) {}
 
-  async processEvent(event: PokerEvent | ConnectionRelatedEvent) {
-    this.log(Severity.INFO, "")
-    if (event.eventType == "userJoined") {
-      const connectionEvent = event as ParticipantConnected;
-      const userJoinedEvent = event as UserJoined;
-      await this.pokerRepository.putParticipant({
-        connectionId: connectionEvent.connectionId,
-        roomName: connectionEvent.roomName,
-        name: userJoinedEvent.userName,
-        isSpectator: userJoinedEvent.isSpectator
-      });
-    } else if (event.eventType == "userLeft") {
-      const disconnectionEvent = event as ParticipantDisconnected;
-      await this.pokerRepository.removeParticipant(
-        disconnectionEvent.connectionId
-      );
-    }
-
+  async processEvent(event: PokerEvent) {
     // fetch latest state using repository
     // update state based on event (handlePokerEvent)
-
     // const room = await this.pokerRepository.fetchRoom(this.state.roomName);
 
   }

@@ -1,8 +1,8 @@
-import { Repository } from "./Repository";
+import { ParticipantRepository } from "./ParticipantRepository";
 
 // ⚠️ DynamoDB integration test (underlying AWS client is not mocked!)
 describe("Repository", () => {
-  const repository = new Repository("participants", "rooms", false);
+  const repository = new ParticipantRepository("participants", "rooms", false);
 
   describe("participant handling", () => {
     const exampleParticipant = {

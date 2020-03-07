@@ -63,7 +63,7 @@ export class ApiStack extends cdk.Stack {
 
     const lambda = new NodejsFunction(this, "HandleEvent", {
       functionName: `${props.stackName}-websocket-handler`,
-      entry: path.join(__dirname, "../src/handlers/handleWebsocketEvents.ts"),
+      entry: path.join(__dirname, "../src/handlers/websocketHandler.ts"),
       runtime: Runtime.NODEJS_12_X,
       tracing: Tracing.ACTIVE,
       environment: {
@@ -123,7 +123,7 @@ export class ApiStack extends cdk.Stack {
       value: `wss://${api.ref}.execute-api.${this.region}.amazonaws.com/${stage.stageName}`
     });
 
-    // Note: When making changes to an existing stage it needs to be redeployed 
+    // Note: When making changes to an existing stage it needs to be redeployed
     // manually: (API GW/Routes/Actions/Deploy API)
     // https://stackoverflow.com/questions/41423439/cloudformation-doesnt-deploy-to-api-gateway-stages-on-update
   }

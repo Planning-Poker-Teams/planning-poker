@@ -1,4 +1,4 @@
-import { DynamoDbClient } from "../DynamoDbClient";
+import { DynamoDbClient } from "../lib/DynamoDbClient";
 
 export interface Participant {
   connectionId: string;
@@ -7,19 +7,11 @@ export interface Participant {
   isSpectator: boolean;
 }
 
-export interface Room {
-  roomName: string;
-  participants: string[];
-  currentTaskName?: string;
-  estimates: { connectionId: string; value: string }[];
-}
-
-export class Repository {
+export class ParticipantRepository {
   private client: DynamoDbClient;
 
   constructor(
     private participantsTableName: string,
-    private roomsTableName: string,
     enableXRay: boolean = true
   ) {
     this.client = new DynamoDbClient(enableXRay);
@@ -62,31 +54,4 @@ export class Repository {
       partitionKey: { connectionId }
     });
   }
-
-  // fetchRoom(roomName: string): Promise<Room> {
-  //   return {} as any;
-  // }
-
-  // joinRoom(connectionId: string, roomName: string): Promise<void> {
-  //   return {} as any;
-  // }
-
-  // leaveRoom(connectionId: string, roomName: string): Promise<void> {
-  //   return {} as any;
-  // }
-  // startNewEstimation(
-  //   participant: Participant,
-  //   taskName: string
-  // ): Promise<void> {
-  //   return {} as any;
-  // }
-  // submitEstimation(
-  //   participant: Participant,
-  //   taskName: string,
-  //   value: string
-  // ): Promise<void> {
-  //   return {} as any;
-  // }
-  // endEstimationRound()
-  // leaveRoom()
 }
