@@ -1,4 +1,3 @@
-import AWSXRay from "aws-xray-sdk-core";
 import { DynamoDbClient } from "../DynamoDbClient";
 
 export interface Participant {

@@ -1,12 +1,12 @@
 import { Repository } from "../poker/Repository";
 import { ApiGatewayManagementClient } from "../ApiGatewayManagementClient";
-import { buildLogger } from "../buildLogger";
+import { buildLogger, Severity } from "../buildLogger";
 import { convertToPokerEvent } from "../poker/convertToPokerEvent";
 import { PokerRoom } from "../poker/PokerRoom";
 
 /**
- * Each incoming message sent through a websocket connection (MESSAGE). If a user
- * connects or disconnects (CONNECT/DISCONNECT) body will be empty.
+ * Each incoming message sent through a websocket connection (MESSAGE).
+ * If a user connects or disconnects (CONNECT/DISCONNECT) body will be empty.
  *
  * `connectionId` is used to send message back to the connected user
  */
@@ -75,7 +75,7 @@ export const handler = async (
       pokerRoom.processEvent(pokerEvent);
     }
   } catch (error) {
-    log("Unexpected error" + error);
+    log(Severity.ERROR, "Unexpected error", error);
     return {
       isBase64Encoded: false,
       headers: {},
