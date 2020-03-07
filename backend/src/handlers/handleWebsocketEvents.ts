@@ -1,7 +1,8 @@
-import { PokerRepository } from "../poker/PokerRepository";
+import { Repository } from "../poker/Repository";
 import { ApiGatewayManagementClient } from "../ApiGatewayManagementClient";
 import { buildLogger } from "../buildLogger";
 import { convertToPokerEvent } from "../poker/convertToPokerEvent";
+import { PokerRoom } from "../poker/PokerRoom";
 
 /**
  * Each incoming message sent through a websocket connection (MESSAGE). If a user
@@ -39,7 +40,7 @@ interface LambdaResponse {
 }
 
 const { PARTICIPANTS_TABLE, ROOMS_TABLE } = process.env;
-const repository = new PokerRepository(
+const repository = new Repository(
   PARTICIPANTS_TABLE ?? "unknown",
   ROOMS_TABLE ?? "unknown"
 );
@@ -68,7 +69,11 @@ export const handler = async (
   }
 
   try {
-    await convertToPokerEvent(event, gatewayClient, repository, log);
+    const pokerRoom = new PokerRoom(repository, gatewayClient);
+    const pokerEvent = convertToPokerEvent(event, log);
+    if (pokerEvent) {
+      pokerRoom.processEvent(pokerEvent);
+    }
   } catch (error) {
     log("Unexpected error" + error);
     return {

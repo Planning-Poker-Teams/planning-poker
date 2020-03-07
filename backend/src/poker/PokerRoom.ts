@@ -1,4 +1,5 @@
-import { PokerRepository, Room } from "./PokerRepository";
+import { Repository, Room } from "./Repository";
+import { ApiGatewayManagementClient } from "../ApiGatewayManagementClient";
 
 interface State {
   // room: Room;
@@ -7,29 +8,25 @@ interface State {
   spectators: string[];
 }
 
-class PokerRoom {
-  private state: State;
+export class PokerRoom {
+  // private state: State;
 
-  constructor(roomName: string, private pokerRepository: PokerRepository) {
-    this.state = this.buildInitialState(roomName);
-  }
+  constructor(
+    private pokerRepository: Repository,
+    private gatewayClient: ApiGatewayManagementClient
+  ) {}
 
-  /**
-   * Entry point for events.
-   * @param event
-   */
   async processEvent(event: PokerEvent) {
     // fetch latest state using repository
     // update state based on event (handleEvent)
-
-    const room = await this.pokerRepository.fetchRoom(this.state.roomName);
+    // const room = await this.pokerRepository.fetchRoom(this.state.roomName);
     // const state = {
     //     roomName: room.roomName,
     //     participants: room.
     // }
   }
 
-  handleEvent(state: State, event: PokerEvent): State {
+  private handleEvent(state: State, event: PokerEvent): State {
     switch (event.eventType) {
       case "userJoined":
         // perform side-effects here? (broadcast messages, use repo, ...)
@@ -49,7 +46,7 @@ class PokerRoom {
         return state;
 
       default:
-        return this.state;
+        return state;
     }
   }
 

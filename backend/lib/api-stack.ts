@@ -1,3 +1,4 @@
+import * as path from "path";
 import * as cdk from "@aws-cdk/core";
 import { Runtime, Tracing } from "@aws-cdk/aws-lambda";
 import { NodejsFunction } from "@aws-cdk/aws-lambda-nodejs";
@@ -16,7 +17,6 @@ import {
   ManagedPolicy
 } from "@aws-cdk/aws-iam";
 import { Table, AttributeType, BillingMode } from "@aws-cdk/aws-dynamodb";
-import * as path from "path";
 
 // TODO: add custom domain (api.planningpoker.cc)
 // https://docs.aws.amazon.com/apigateway/latest/developerguide/how-to-custom-domains.html
@@ -32,11 +32,15 @@ export class ApiStack extends cdk.Stack {
     // Required for debugging API Gateway. Can be removed eventually:
     this.createCloudWatchLogRole();
 
+    // API Gateway
+
     const api = new CfnApi(this, "Api", {
       name: "PlanningPoker-WebsocketApi",
       protocolType: "WEBSOCKET",
       routeSelectionExpression: "$request.body.eventType"
     });
+
+    // DynamoDB
 
     const defaultTableProps = {
       billingMode: BillingMode.PAY_PER_REQUEST,
@@ -54,6 +58,8 @@ export class ApiStack extends cdk.Stack {
       partitionKey: { name: "roomName", type: AttributeType.STRING },
       ...defaultTableProps
     });
+
+    // Lambda
 
     const lambda = new NodejsFunction(this, "HandleEvent", {
       functionName: `${props.stackName}-websocket-handler`,
@@ -77,6 +83,8 @@ export class ApiStack extends cdk.Stack {
         ]
       })
     );
+
+    // API Gateway (continued)
 
     const routesToCreate: { prefix: string; routeKey: string }[] = [
       { prefix: "Connect", routeKey: "$connect" },
@@ -109,14 +117,14 @@ export class ApiStack extends cdk.Stack {
       apiId: api.ref
     });
 
-    // https://stackoverflow.com/questions/47009336/aws-x-ray-is-it-possible-to-add-the-api-gateway-call-to-the-service-map
-    // stage.addPropertyOverride("/tracingEnabled", true);
+    // Outputs
 
     new CfnOutput(this, "WebSocketURI", {
       value: `wss://${api.ref}.execute-api.${this.region}.amazonaws.com/${stage.stageName}`
     });
 
-    // When making changes to an existing stage it needs to be redeployed manually (API GW/Routes/Actions/Deploy API)
+    // Note: When making changes to an existing stage it needs to be redeployed 
+    // manually: (API GW/Routes/Actions/Deploy API)
     // https://stackoverflow.com/questions/41423439/cloudformation-doesnt-deploy-to-api-gateway-stages-on-update
   }
 
