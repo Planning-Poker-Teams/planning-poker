@@ -1,3 +1,18 @@
+type ConnectionRelatedEvent =
+  | (ParticipantConnected & UserJoined)
+  | (ParticipantDisconnected & UserLeft);
+
+interface ParticipantConnected {
+  connectionId: string;
+  roomName: string;
+}
+
+interface ParticipantDisconnected {
+  connectionId: string;
+}
+
+// API-related events:
+
 type PokerEvent =
   | UserJoined
   | UserLeft

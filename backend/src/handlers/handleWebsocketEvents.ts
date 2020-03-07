@@ -39,10 +39,9 @@ interface LambdaResponse {
   body: string; // stringified JSON
 }
 
-const { PARTICIPANTS_TABLE, ROOMS_TABLE } = process.env;
 const repository = new Repository(
-  PARTICIPANTS_TABLE ?? "unknown",
-  ROOMS_TABLE ?? "unknown"
+  process.env.PARTICIPANTS_TABLENAME!,
+  process.env.ROOMS_TABLENAME!
 );
 
 export const handler = async (
@@ -69,13 +68,13 @@ export const handler = async (
   }
 
   try {
-    const pokerRoom = new PokerRoom(repository, gatewayClient);
+    const pokerRoom = new PokerRoom(repository, gatewayClient, log);
     const pokerEvent = convertToPokerEvent(event, log);
     if (pokerEvent) {
-      pokerRoom.processEvent(pokerEvent);
+      await pokerRoom.processEvent(pokerEvent);
     }
   } catch (error) {
-    log(Severity.ERROR, "Unexpected error", error);
+    log(Severity.ERROR, "Unexpected error ", error);
     return {
       isBase64Encoded: false,
       headers: {},

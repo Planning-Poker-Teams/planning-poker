@@ -1,32 +1,48 @@
 import { Repository, Room } from "./Repository";
 import { ApiGatewayManagementClient } from "../ApiGatewayManagementClient";
+import { Severity, Logger } from '../buildLogger';
 
 interface State {
-  // room: Room;
   roomName: string;
   participants: string[];
   spectators: string[];
+  currentTask?: string;
+  estimations: Map<string, string>;
 }
 
 export class PokerRoom {
-  // private state: State;
-
   constructor(
     private pokerRepository: Repository,
-    private gatewayClient: ApiGatewayManagementClient
+    private gatewayClient: ApiGatewayManagementClient,
+    private log: Logger
   ) {}
 
-  async processEvent(event: PokerEvent) {
+  async processEvent(event: PokerEvent | ConnectionRelatedEvent) {
+    this.log(Severity.INFO, "")
+    if (event.eventType == "userJoined") {
+      const connectionEvent = event as ParticipantConnected;
+      const userJoinedEvent = event as UserJoined;
+      await this.pokerRepository.putParticipant({
+        connectionId: connectionEvent.connectionId,
+        roomName: connectionEvent.roomName,
+        name: userJoinedEvent.userName,
+        isSpectator: userJoinedEvent.isSpectator
+      });
+    } else if (event.eventType == "userLeft") {
+      const disconnectionEvent = event as ParticipantDisconnected;
+      await this.pokerRepository.removeParticipant(
+        disconnectionEvent.connectionId
+      );
+    }
+
     // fetch latest state using repository
-    // update state based on event (handleEvent)
+    // update state based on event (handlePokerEvent)
+
     // const room = await this.pokerRepository.fetchRoom(this.state.roomName);
-    // const state = {
-    //     roomName: room.roomName,
-    //     participants: room.
-    // }
+
   }
 
-  private handleEvent(state: State, event: PokerEvent): State {
+  private handlePokerEvent(state: State, event: PokerEvent): State {
     switch (event.eventType) {
       case "userJoined":
         // perform side-effects here? (broadcast messages, use repo, ...)
@@ -48,13 +64,5 @@ export class PokerRoom {
       default:
         return state;
     }
-  }
-
-  private buildInitialState(roomName: string): State {
-    return {
-      roomName,
-      participants: [],
-      spectators: []
-    };
   }
 }

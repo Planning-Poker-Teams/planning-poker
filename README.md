@@ -65,7 +65,7 @@ In order to try out the API you can connect to the websocket endpoint with a too
 
 ```sh
 # Query parameters `name` and `room` are mandatory
-npx wscat -c "wss://g5ktyisvyf.execute-api.eu-central-1.amazonaws.com/dev?name=Test&room=MyRoom&isSpectator=false"
+npx wscat -c "wss://api.planningpoker.cc/dev?name=Test&room=MyRoom&isSpectator=false"
 ```
 
 ## Stages
@@ -117,12 +117,13 @@ DynamoDB repository:
 // read queries:
 fetchParticipant(connectionId: string): Promise<Participant>
 fetchRoom(roomName: string): Promise<Room>
-fetchEstimation(roomName: string, taskName: string): Promise<Estimation>
 
 // mutations:
 enterRoom(participant: Participant)
 startNewEstimation(participant: Participant, taskName: string)
 submitEstimation(participant: Participant, taskName: string, value: string)
+endEstimationRound()
+leaveRoom(participant: Participant)
 ```
 
 ### Participants

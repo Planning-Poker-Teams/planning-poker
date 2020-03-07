@@ -1,49 +1,46 @@
 import { APIGatewayWebsocketInvocationRequest } from "../handlers/handleWebsocketEvents";
-import { Repository } from "./Repository";
-import { Logger } from "../buildLogger";
-import { ApiGatewayManagementClient } from "../ApiGatewayManagementClient";
+import { Logger, Severity } from "../buildLogger";
 
 export const convertToPokerEvent = (
   event: APIGatewayWebsocketInvocationRequest,
   log: Logger
-): PokerEvent | undefined => {
-  // if not MESSAGE: create userJoined/userLeft event
-  // convert incoming message to PokerEvent
-  // handle event with PokerRoom
-  // trigger side-effects (broadcast messages)
+): PokerEvent | ConnectionRelatedEvent | undefined => {
+  const { connectionId } = event.requestContext;
+  const { room, name, isSpectator } = event.queryStringParameters ?? {};
 
   switch (event.requestContext.eventType) {
     case "CONNECT":
-      const { room, name, isSpectator } = event.queryStringParameters ?? {};
-      log(`User ${name} joined ${room}`);
-      // we need to pass on the room name!
-
-      const pokerEvent = { 
+      const userJoinedEvent = {
         eventType: "userJoined",
         userName: name,
         isSpectator: isSpectator
       };
-      break;
+      return {
+        ...userJoinedEvent,
+        connectionId,
+        roomName: room
+      } as ConnectionRelatedEvent;
 
     case "MESSAGE":
-      log(`Incoming event`, { requestBody: event.body });
-      // if (event.body) {
-      //   // echo
-      //   const { connectionId, domainName, stage } = event.requestContext;
-      //   await gatewayClient.post(connectionId, event.body);
-      // }
-      break;
+      log(Severity.INFO, `Incoming event`, { requestBody: event.body });
+      if (!event.body || !event.body.eventType) {
+        log(Severity.ERROR, "Could not handle event", event);
+        break;
+      }
+      // todo: add event validation
+      return event.body as PokerEvent;
 
     case "DISCONNECT":
-      log(`User left`);
-      break;
+      // name is not known on a disconnection (fetch from repo)
+      const userLeftEvent = {
+        eventType: "userLeft",
+        userName: name
+      };
+      return {
+        ...userLeftEvent,
+        connectionId
+      } as ConnectionRelatedEvent;
   }
 
-  const sampleEvent: UserJoined = {
-    eventType: "userJoined",
-    userName: "Foo",
-    isSpectator: false
-  };
-
-  return sampleEvent;
+  return undefined;
 };
