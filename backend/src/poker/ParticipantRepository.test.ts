@@ -1,7 +1,7 @@
 import { ParticipantRepository } from "./ParticipantRepository";
 
 // ⚠️ DynamoDB integration test (underlying AWS client is not mocked!)
-describe("Repository", () => {
+describe("ParticipantRepository", () => {
   const repository = new ParticipantRepository("participants", false);
 
   const exampleParticipant = {

@@ -65,6 +65,7 @@ export class ApiStack extends cdk.Stack {
       functionName: `${props.stackName}-websocket-handler`,
       entry: path.join(__dirname, "../src/handlers/websocketHandler.ts"),
       runtime: Runtime.NODEJS_12_X,
+      memorySize: 256,
       tracing: Tracing.ACTIVE,
       environment: {
         PARTICIPANTS_TABLENAME: participantsTable.tableName,

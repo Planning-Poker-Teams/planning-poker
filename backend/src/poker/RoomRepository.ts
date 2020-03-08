@@ -1,4 +1,6 @@
 import { DynamoDbClient } from "../lib/DynamoDbClient";
+import { AttributeMap } from "aws-sdk/clients/dynamodb";
+import DynamoDB = require("aws-sdk/clients/dynamodb");
 
 export interface Room {
   roomName: string;
@@ -14,30 +16,73 @@ export class RoomRepository {
     this.client = new DynamoDbClient(enableXRay);
   }
 
-  // fetchRoom(roomName: string): Promise<Room> {
-  //   return {} as any;
-  // }
+  async getOrCreateRoom(roomName: string): Promise<Room> {
+    const room = await this.client.get(this.roomsTableName, { roomName }, true);
 
-  // joinRoom(connectionId: string, roomName: string): Promise<void> {
-  //   return {} as any;
-  // }
+    if (!room.Item) {
+      await this.client.put(this.roomsTableName, {
+        roomName
+      });
+      const newRoom = await this.client.get(this.roomsTableName, { roomName }, true);
+      return this.prepareRoom(newRoom.Item);
+    }
 
-  // leaveRoom(connectionId: string, roomName: string): Promise<void> {
-  //   return {} as any;
-  // }
-  // startNewEstimation(
-  //   participant: Participant,
-  //   taskName: string
-  // ): Promise<void> {
-  //   return {} as any;
-  // }
-  // submitEstimation(
-  //   participant: Participant,
-  //   taskName: string,
-  //   value: string
-  // ): Promise<void> {
-  //   return {} as any;
-  // }
-  // endEstimationRound()
-  // leaveRoom()
+    return this.prepareRoom(room.Item);
+  }
+
+  async deleteRoom(roomName: string): Promise<void> {
+    await this.client.delete({
+      tableName: this.roomsTableName,
+      partitionKey: { roomName }
+    });
+  }
+
+  async addToParticipants(
+    roomName: string,
+    connectionId: string
+  ): Promise<void> {
+    await this.client.update({
+      tableName: this.roomsTableName,
+      partitionKey: { roomName },
+      updateExpression: "ADD participants :newParticipant",
+      expressionAttributeValues: {
+        ":newParticipant": this.client.createSetExpression([connectionId])
+      }
+    });
+  }
+
+  async removeFromParticipants(
+    roomName: string,
+    connectionId: string
+  ): Promise<void> {
+    await this.client.update({
+      tableName: this.roomsTableName,
+      partitionKey: { roomName },
+      updateExpression: "DELETE participants :participant",
+      expressionAttributeValues: {
+        ":participant": this.client.createSetExpression([connectionId])
+      }
+    });
+  }
+
+  async addToEstimations(
+    roomName: string,
+    taskName: string,
+    value: string
+  ): Promise<void> {
+    return {} as any;
+  }
+
+  async startNewEstimation(roomName: string, taskName: string): Promise<void> {
+    return {} as any;
+  }
+
+  private prepareRoom(roomItem: any): Room {
+    return {
+      roomName: roomItem.roomName,
+      participants: roomItem.participants?.values ?? [],
+      currentTaskName: roomItem.currentTaskName,
+      estimates: roomItem.estimates?.values ?? []
+    };
+  }
 }

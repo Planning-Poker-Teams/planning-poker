@@ -5,6 +5,7 @@ import BatchGetItemInput = DocumentClient.BatchGetItemInput;
 import GetItemInput = DocumentClient.GetItemInput;
 import DeleteItemInput = DocumentClient.DeleteItemInput;
 import ExpressionAttributeValueMap = DocumentClient.ExpressionAttributeValueMap;
+import ExpressionAttributeNameMap = DocumentClient.ExpressionAttributeNameMap;
 import UpdateItemInput = DocumentClient.UpdateItemInput;
 import UpdateItemOutput = DocumentClient.UpdateItemOutput;
 import DeleteItemOutput = DocumentClient.DeleteItemOutput;
@@ -28,12 +29,14 @@ interface BaseParameters {
   partitionKey: object; // { id: '123' }
   conditionExpression?: string;
   expressionAttributeValues?: ExpressionAttributeValueMap;
+  expressionAtributeNames?: ExpressionAttributeNameMap;
 }
 
 interface DeleteParameters extends BaseParameters {}
 
 interface UpdateParameters extends BaseParameters {
   updateExpression: string;
+  returnValues?: string;
 }
 
 type KeyInfo = { [key: string]: any };
@@ -62,10 +65,11 @@ export class DynamoDbClient {
     return this.client.put(payload).promise();
   }
 
-  get(tableName: string, keyInfo: KeyInfo): Promise<GetItemOutput> {
+  get(tableName: string, keyInfo: KeyInfo, consistentRead: boolean = false): Promise<GetItemOutput> {
     const payload: GetItemInput = {
       TableName: tableName,
-      Key: keyInfo
+      Key: keyInfo,
+      ConsistentRead: consistentRead
     };
 
     return this.client.get(payload).promise();
@@ -93,7 +97,8 @@ export class DynamoDbClient {
       Key: parameters.partitionKey,
       ConditionExpression: parameters.conditionExpression,
       ExpressionAttributeValues: parameters.expressionAttributeValues,
-      UpdateExpression: parameters.updateExpression
+      UpdateExpression: parameters.updateExpression,
+      ReturnValues: parameters.returnValues
     };
 
     return this.client.update(payload).promise();
@@ -125,5 +130,10 @@ export class DynamoDbClient {
     };
 
     return this.client.query(payload).promise();
+  }
+
+  createSetExpression(values: any) {
+    // see https://stackoverflow.com/questions/37194794/how-to-update-an-item-in-dynamodb-of-type-string-set-ss
+    return this.client.createSet(values);
   }
 }
