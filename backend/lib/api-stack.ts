@@ -1,6 +1,11 @@
 import * as path from "path";
 import * as cdk from "@aws-cdk/core";
-import { Runtime, Tracing } from "@aws-cdk/aws-lambda";
+import {
+  Runtime,
+  Tracing,
+  EventSourceMapping,
+  StartingPosition
+} from "@aws-cdk/aws-lambda";
 import { NodejsFunction } from "@aws-cdk/aws-lambda-nodejs";
 import {
   CfnApi,
@@ -16,7 +21,12 @@ import {
   Role,
   ManagedPolicy
 } from "@aws-cdk/aws-iam";
-import { Table, AttributeType, BillingMode } from "@aws-cdk/aws-dynamodb";
+import {
+  Table,
+  AttributeType,
+  BillingMode,
+  StreamViewType
+} from "@aws-cdk/aws-dynamodb";
 
 // TODO: add custom domain (api.planningpoker.cc)
 // https://docs.aws.amazon.com/apigateway/latest/developerguide/how-to-custom-domains.html
@@ -50,6 +60,7 @@ export class ApiStack extends cdk.Stack {
     const participantsTable = new Table(this, "ParticipantsTable", {
       tableName: "participants",
       partitionKey: { name: "connectionId", type: AttributeType.STRING },
+      stream: StreamViewType.NEW_AND_OLD_IMAGES,
       ...defaultTableProps
     });
 
@@ -73,8 +84,22 @@ export class ApiStack extends cdk.Stack {
       }
     });
 
+    const eventSourceMapping = new EventSourceMapping(
+      this,
+      "EventSourceMapping",
+      {
+        target: lambda, // define a different lambda
+        eventSourceArn: participantsTable.tableStreamArn!,
+        batchSize: 1,
+        startingPosition: StartingPosition.LATEST
+      }
+    );
+
+    participantsTable.grantStreamRead(lambda);
+
     participantsTable.grantReadWriteData(lambda);
     roomsTable.grantReadWriteData(lambda);
+
     lambda.grantInvoke(new ServicePrincipal("apigateway.amazonaws.com"));
     lambda.addToRolePolicy(
       new PolicyStatement({
