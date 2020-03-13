@@ -1,7 +1,7 @@
-import { RoomState, Participant, InternalEvent } from "./domainTypes";
+import { PokerRoom, Participant, InternalEvent } from "./domainTypes";
 
 export const handlePokerEvent = (
-  state: RoomState,
+  state: PokerRoom,
   inputEvent: PokerEvent,
   participant: Participant
 ): InternalEvent[] => {
