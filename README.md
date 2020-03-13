@@ -1,4 +1,6 @@
-```
+# Introduction
+
+```code
    _____  _                   _                _____      _
    |  __ \| |                 (_)              |  __ \    | |
    | |__) | | __ _ _ __  _ __  _ _ __   __ _   | |__) |__ | | _____ _ __
@@ -8,8 +10,6 @@
                                         __/ |
                                        |___/
 ```
-
-# Introduction
 
 Planning Poker is a real-time application to help perform estimation sessions in agile teams working together remotely.
 Users can join planning rooms where they meet with the other participants. Users can start estimations for tasks, give their estimates and reveal the results.
@@ -29,7 +29,7 @@ This **backend** provides the Websocket endpoint to be used by these frontends. 
 
 For details see `package.json`.
 
-# How estimation works
+## How estimation works
 
 This section describes how an estimation takes place and how the server handles different events in its respective state.
 
@@ -92,8 +92,7 @@ Only when all users (except spectators) have submitted their estimations, the re
 
 After the estimation result is revealed, any user can send a new `startEstimation` in order to start another round.
 
-# Architecture
-
+## Architecture
 
 ```code
                    API Gateway            Lambda               DynamoDB
