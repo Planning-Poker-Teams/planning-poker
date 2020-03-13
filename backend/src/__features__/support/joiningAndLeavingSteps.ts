@@ -1,4 +1,4 @@
-import { Given, When, Then, setWorldConstructor } from "cucumber";
+import { Given, When, Then } from "cucumber";
 import {
   PokerRoom,
   InternalEvent,
@@ -57,6 +57,7 @@ Then("he should be recorded as a new participant", function() {
 
   expect(this.lastInternalEvents).toContainEqual({
     type: InternalEventType.ADD_PARTICIPANT,
-    roomName: "Awesome Room"
+    roomName: "Awesome Room",
+    participant: newParticipant
   });
 });
