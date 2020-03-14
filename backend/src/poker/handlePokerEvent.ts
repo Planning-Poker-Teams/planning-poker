@@ -1,13 +1,23 @@
-import { PokerRoom, Participant, InternalEvent, InternalEventType } from "./domainTypes";
+import {
+  PokerRoom,
+  Participant,
+  CommandType,
+  InternalCommand
+} from "./domainTypes";
 
-const { BROADCAST_MESSAGE, SEND_MESSAGE, ADD_PARTICIPANT } = InternalEventType
+const {
+  BROADCAST_MESSAGE,
+  SEND_MESSAGE,
+  ADD_PARTICIPANT,
+  REMOVE_PARTICIPANT
+} = CommandType;
 
 export const handlePokerEvent = (
   room: PokerRoom,
   inputEvent: PokerEvent,
   participant: Participant
-): InternalEvent[] => {
-  switch(inputEvent.eventType) {
+): InternalCommand[] => {
+  switch (inputEvent.eventType) {
     case "userJoined":
       return [
         {
@@ -24,8 +34,21 @@ export const handlePokerEvent = (
           roomName: room.name,
           participant
         }
-      ]
+      ];
+
+    case "userLeft":
+      return [
+        {
+          type: REMOVE_PARTICIPANT,
+          roomName: room.name,
+          participant
+        },
+        {
+          type: BROADCAST_MESSAGE,
+          payload: inputEvent
+        }
+      ];
     default:
-      return []
+      return [];
   }
 };

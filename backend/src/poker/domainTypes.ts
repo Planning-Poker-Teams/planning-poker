@@ -11,27 +11,38 @@ export interface Participant {
   currentEstimation?: string;
 }
 
-export enum InternalEventType {
+export type InternalCommand =
+  | BroadcastMessage
+  | SendMessage
+  | AddParticipant
+  | RemoveParticipant;
+
+export enum CommandType {
   BROADCAST_MESSAGE = "BROADCAST_MESSAGE",
   SEND_MESSAGE = "SEND_MESSAGE",
-  ADD_PARTICIPANT = "ADD_PARTICIPANT"
+  ADD_PARTICIPANT = "ADD_PARTICIPANT",
+  REMOVE_PARTICIPANT = "REMOVE_PARTICIPANT"
 }
 
 export interface BroadcastMessage {
-  type: InternalEventType.BROADCAST_MESSAGE;
+  type: CommandType.BROADCAST_MESSAGE;
   payload: PokerEvent;
 }
 
 export interface SendMessage {
-  type: InternalEventType.SEND_MESSAGE;
+  type: CommandType.SEND_MESSAGE;
   recipient: Participant;
   payload: PokerEvent[];
 }
 
 export interface AddParticipant {
-  type: InternalEventType.ADD_PARTICIPANT;
+  type: CommandType.ADD_PARTICIPANT;
   roomName: string;
   participant: Participant;
 }
 
-export type InternalEvent = BroadcastMessage | SendMessage | AddParticipant;
+export interface RemoveParticipant {
+  type: CommandType.REMOVE_PARTICIPANT;
+  roomName: string;
+  participant: Participant;
+}
