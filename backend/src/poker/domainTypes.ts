@@ -2,6 +2,7 @@ export interface PokerRoom {
   name: string;
   participants: Participant[];
   currentTask?: string;
+  startDate?: Date;
 }
 
 export interface Participant {
@@ -11,17 +12,21 @@ export interface Participant {
   currentEstimation?: string;
 }
 
-export type InternalCommand =
+export type Command =
   | BroadcastMessage
   | SendMessage
   | AddParticipant
-  | RemoveParticipant;
+  | RemoveParticipant
+  | RecordEstimation
+  | FinishRound;
 
 export enum CommandType {
   BROADCAST_MESSAGE = "BROADCAST_MESSAGE",
   SEND_MESSAGE = "SEND_MESSAGE",
   ADD_PARTICIPANT = "ADD_PARTICIPANT",
-  REMOVE_PARTICIPANT = "REMOVE_PARTICIPANT"
+  REMOVE_PARTICIPANT = "REMOVE_PARTICIPANT",
+  RECORD_ESTIMATION = "RECORD_ESTIMATION",
+  FINISH_ROUND = "FINISH_ROUND"
 }
 
 export interface BroadcastMessage {
@@ -45,4 +50,16 @@ export interface RemoveParticipant {
   type: CommandType.REMOVE_PARTICIPANT;
   roomName: string;
   participant: Participant;
+}
+
+export interface RecordEstimation {
+  type: CommandType.RECORD_ESTIMATION;
+  roomName: string;
+  taskName: string;
+  estimate: string;
+}
+
+export interface FinishRound {
+  type: CommandType.FINISH_ROUND;
+  roomName: string;
 }
