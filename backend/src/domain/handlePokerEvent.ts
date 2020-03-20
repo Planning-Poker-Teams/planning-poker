@@ -1,11 +1,12 @@
 import { CommandType, Command } from "./commandTypes";
-import { PokerRoom, Participant } from './types';
+import { PokerRoom, Participant } from "./types";
 
 const {
   BROADCAST_MESSAGE,
   SEND_MESSAGE,
   ADD_PARTICIPANT,
   REMOVE_PARTICIPANT,
+  SET_TASK,
   RECORD_ESTIMATION,
   FINISH_ROUND
 } = CommandType;
@@ -55,7 +56,14 @@ export const handlePokerEvent = (
       if (isEstimationOngoing) {
         return [];
       } else {
-        return [{ type: BROADCAST_MESSAGE, payload: inputEvent }];
+        return [
+          { type: BROADCAST_MESSAGE, payload: inputEvent },
+          {
+            type: SET_TASK,
+            startDate: inputEvent.startDate,
+            taskName: inputEvent.taskName
+          }
+        ];
       }
 
     case "estimate":

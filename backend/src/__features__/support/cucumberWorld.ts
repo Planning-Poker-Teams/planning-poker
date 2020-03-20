@@ -10,7 +10,7 @@ declare module "cucumber" {
     outgoingCommands?: Command[];
     newParticipant?: Participant;
     leavingParticipant?: Participant;
-    estimationStartDate?: Date;
+    estimationStartDate?: string;
   }
 }
 

@@ -51,14 +51,13 @@ When("a participant initiates a new estimation for {string}", function(
   taskName: string
 ) {
   const participant = this.room!.participants[0];
-  const startDate = new Date();
-  this.estimationStartDate = startDate;
+  this.estimationStartDate = new Date().toISOString();
 
   this.inputEvent = {
     eventType: "startEstimation",
     userName: participant.name,
     taskName,
-    startDate: startDate.toISOString()
+    startDate: this.estimationStartDate
   };
 
   this.outgoingCommands = handlePokerEvent(
@@ -109,8 +108,7 @@ Then("the current task name should be set to {string}", function(
   taskName: string
 ) {
   expect(this.outgoingCommands).toContainEqual({
-    type: CommandType.SET_TASK_NAME,
-    roomName: this.room!.name,
+    type: CommandType.SET_TASK,
     taskName,
     startDate: this.estimationStartDate
   });
