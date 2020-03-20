@@ -1,8 +1,8 @@
-import { ParticipantRepository } from "../poker/ParticipantRepository";
+import { ParticipantRepository } from "../adapters/ParticipantRepository";
 import { ApiGatewayManagementClient } from "../lib/ApiGatewayManagementClient";
 import { buildLogger, Severity } from "../lib/buildLogger";
-import { PokerRoom } from "../poker/PokerRoom";
-import { RoomRepository } from "../poker/RoomRepository";
+import { PokerRoom } from "../domain/PokerRoom";
+import { RoomRepository } from "../adapters/RoomRepository";
 
 /**
  * Each incoming message sent through a websocket connection (MESSAGE).

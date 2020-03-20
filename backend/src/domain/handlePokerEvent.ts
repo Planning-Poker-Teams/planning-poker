@@ -1,4 +1,5 @@
-import { PokerRoom, Participant, CommandType, Command } from "./domainTypes";
+import { CommandType, Command } from "./commandTypes";
+import { PokerRoom, Participant } from './types';
 
 const {
   BROADCAST_MESSAGE,

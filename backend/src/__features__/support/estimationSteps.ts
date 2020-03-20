@@ -1,7 +1,7 @@
 import { Given, When, Then } from "cucumber";
 import { buildParticipant, ROOM_NAME } from "./cucumberWorld";
-import { handlePokerEvent } from "../../poker/handlePokerEvent";
-import { CommandType, BroadcastMessage } from "../../poker/domainTypes";
+import { handlePokerEvent } from "../../domain/handlePokerEvent";
+import { CommandType, BroadcastMessage } from "../../domain/commandTypes";
 
 const estimations = new Map<string, string>();
 const participants = [

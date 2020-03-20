@@ -1,6 +1,6 @@
 import { Given, When, Then } from "cucumber";
-import { CommandType } from "../../poker/domainTypes";
-import { handlePokerEvent } from "../../poker/handlePokerEvent";
+import { CommandType } from "../../domain/commandTypes";
+import { handlePokerEvent } from "../../domain/handlePokerEvent";
 import { buildParticipant, ROOM_NAME } from "./cucumberWorld";
 
 Given("there is an {word} room", function(roomStatus: "empty" | "occupied") {

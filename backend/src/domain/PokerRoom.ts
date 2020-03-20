@@ -1,7 +1,7 @@
-import { ParticipantRepository, Participant } from "./ParticipantRepository";
+import { ParticipantRepository, Participant } from "../adapters/ParticipantRepository";
 import { ApiGatewayManagementClient } from "../lib/ApiGatewayManagementClient";
 import { Severity, Logger } from "../lib/buildLogger";
-import { RoomRepository } from "./RoomRepository";
+import { RoomRepository } from "../adapters/RoomRepository";
 
 interface State {
   roomName: string;
