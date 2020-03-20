@@ -1,4 +1,4 @@
-import { Participant } from './types';
+import { Participant } from "./types";
 
 export type Command =
   | BroadcastMessage
@@ -13,6 +13,7 @@ export enum CommandType {
   SEND_MESSAGE = "SEND_MESSAGE",
   ADD_PARTICIPANT = "ADD_PARTICIPANT",
   REMOVE_PARTICIPANT = "REMOVE_PARTICIPANT",
+  SET_TASK_NAME = "SET_TASK_NAME",
   RECORD_ESTIMATION = "RECORD_ESTIMATION",
   FINISH_ROUND = "FINISH_ROUND"
 }
@@ -38,6 +39,13 @@ export interface RemoveParticipant {
   type: CommandType.REMOVE_PARTICIPANT;
   roomName: string;
   participant: Participant;
+}
+
+export interface SetTaskName {
+  type: CommandType.SET_TASK_NAME;
+  roomName: string;
+  taskName: string;
+  startDate: string;
 }
 
 export interface RecordEstimation {

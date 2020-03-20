@@ -2,12 +2,13 @@ Feature: Performing estimations
 
   Scenario: Starting a new estimation if there is none running
     Given there is a room with no ongoing estimation
-    When a participant initiates a new estimation
-    Then all participants should be informed to start estimating
+    When a participant initiates a new estimation for "Buy milk"
+    Then the current task name should be set to "Buy milk"
+    And all participants should be informed to start estimating
 
   Scenario: Attempting to start a estimation while another one is running
     Given there is a room with an ongoing estimation for "Clean bathroom"
-    When a participant initiates a new estimation
+    When a participant initiates a new estimation for "Clean kitchen"
     Then no action should be performed
 
   Scenario: Recording an estimation

@@ -8,6 +8,7 @@ interface State {
   participants: Participant[];
   spectators: Participant[];
   currentTask?: string;
+  // startEstimationDate?
   estimations: { connectionId: string; value: string }[];
 }
 

@@ -47,13 +47,18 @@ Given("{string} estimated {string}", function(
   });
 });
 
-When("a participant initiates a new estimation", function() {
+When("a participant initiates a new estimation for {string}", function(
+  taskName: string
+) {
   const participant = this.room!.participants[0];
+  const startDate = new Date();
+  this.estimationStartDate = startDate;
+
   this.inputEvent = {
     eventType: "startEstimation",
     userName: participant.name,
-    taskName: "Implement the things",
-    startDate: new Date().toISOString()
+    taskName,
+    startDate: startDate.toISOString()
   };
 
   this.outgoingCommands = handlePokerEvent(
@@ -98,6 +103,17 @@ When("showing the result is requested", function() {
     this.inputEvent,
     participant
   );
+});
+
+Then("the current task name should be set to {string}", function(
+  taskName: string
+) {
+  expect(this.outgoingCommands).toContainEqual({
+    type: CommandType.SET_TASK_NAME,
+    roomName: this.room!.name,
+    taskName,
+    startDate: this.estimationStartDate
+  });
 });
 
 Then("all participants should be informed to start estimating", function() {
