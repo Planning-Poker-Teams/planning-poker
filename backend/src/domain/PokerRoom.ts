@@ -7,9 +7,12 @@ interface State {
   roomName: string;
   participants: Participant[];
   spectators: Participant[];
-  currentTask?: string;
-  // startEstimationDate?
-  estimations: { connectionId: string; value: string }[];
+  currentEstimation?: {
+    taskName: string;
+    startDate: string;
+    initiator: Participant;
+    estimations: { connectionId: string; value: string }[];
+  }
 }
 
 export class PokerRoom {

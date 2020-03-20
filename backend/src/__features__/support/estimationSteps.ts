@@ -15,19 +15,23 @@ Given("there is a room with no ongoing estimation", function() {
   this.room = {
     name: ROOM_NAME,
     participants,
-    currentTask: undefined
+    currentEstimation: undefined
   };
 });
 
 Given("there is a room with an ongoing estimation for {string}", function(
-  task: string
+  taskName: string
 ) {
   estimations.clear();
   this.room = {
     name: ROOM_NAME,
     participants,
-    currentTask: task
-  };
+    currentEstimation: {
+      taskName,
+      startDate: new Date().toISOString(),
+      initiator: participants[0]
+    }
+  }
 });
 
 Given("{string} estimated {string}", function(
@@ -127,7 +131,7 @@ Then(
     const payload = {
       eventType: "userHasEstimated",
       userName,
-      taskName: this.room!.currentTask!
+      taskName: this.room?.currentEstimation?.taskName
     };
 
     expect(this.outgoingCommands).toContainEqual({
@@ -140,8 +144,8 @@ Then(
 Then("the estimation of {string} gets recorded", function(userName: string) {
   expect(this.outgoingCommands).toContainEqual({
     type: CommandType.RECORD_ESTIMATION,
-    roomName: this.room!.name,
-    taskName: this.room!.currentTask,
+    roomName: this.room?.name,
+    taskName: this.room?.currentEstimation?.taskName,
     estimate: estimations.get(userName)
   });
 });
@@ -150,12 +154,12 @@ Then("he should receive information about the task", function() {
   expect(this.outgoingCommands).toContainEqual({
     type: CommandType.SEND_MESSAGE,
     recipient: this.newParticipant,
-    payload: {
+    payload: [{
       eventType: "startEstimation",
-      userName: "", //
-      startDate: this.room!.startDate!,
-      taskName: this.room!.currentTask!
-    }
+      userName: this.room?.currentEstimation?.initiator.name,
+      startDate: this.room?.currentEstimation?.startDate,
+      taskName: this.room?.currentEstimation?.taskName
+    }]
   });
 });
 
@@ -167,7 +171,7 @@ Then(
       .map(userName => ({
         eventType: "userHasEstimated",
         userName,
-        taskName: this.room!.currentTask!
+        taskName: this.room?.currentEstimation?.taskName
       }));
 
     expect(this.outgoingCommands).toContainEqual({
@@ -187,7 +191,7 @@ Then("all participants get informed about the estimation result", function() {
   const payload = broadcastCommand.payload as EstimationResult;
 
   expect(payload).toMatchObject({
-    taskName: this.room!.currentTask!
+    taskName: this.room?.currentEstimation?.taskName
   });
 
   const allKeys = Array.from(estimations.keys());

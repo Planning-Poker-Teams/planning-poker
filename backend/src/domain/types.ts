@@ -1,8 +1,12 @@
 export interface PokerRoom {
   name: string;
   participants: Participant[];
-  currentTask?: string;
-  startDate?: string;
+  currentEstimation?: {
+    taskName: string;
+    startDate: string;
+    endDate?: string;
+    initiator: Participant;
+  }
 }
 
 export interface Participant {
