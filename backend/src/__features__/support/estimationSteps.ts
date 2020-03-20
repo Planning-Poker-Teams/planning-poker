@@ -146,6 +146,38 @@ Then("the estimation of {string} gets recorded", function(userName: string) {
   });
 });
 
+Then("he should receive information about the task", function() {
+  expect(this.outgoingCommands).toContainEqual({
+    type: CommandType.SEND_MESSAGE,
+    recipient: this.newParticipant,
+    payload: {
+      eventType: "startEstimation",
+      userName: "", //
+      startDate: this.room!.startDate!,
+      taskName: this.room!.currentTask!
+    }
+  });
+});
+
+Then(
+  "he should receive information about who has already estimated",
+  function() {
+    const currentEstimationEvents = Array.from(estimations.keys())
+      .sort(sortByName)
+      .map(userName => ({
+        eventType: "userHasEstimated",
+        userName,
+        taskName: this.room!.currentTask!
+      }));
+
+    expect(this.outgoingCommands).toContainEqual({
+      type: CommandType.SEND_MESSAGE,
+      recipient: this.newParticipant,
+      payload: currentEstimationEvents
+    });
+  }
+);
+
 Then("all participants get informed about the estimation result", function() {
   const broadcastCommand = this.outgoingCommands!.find(
     command =>
@@ -180,3 +212,9 @@ Then("the estimation round is ended", function() {
     roomName: this.room!.name
   });
 });
+
+const sortByName = (first: string, other: string): number => {
+  if (first < other) return -1;
+  if (first > other) return 1;
+  return 0;
+};

@@ -86,10 +86,16 @@ Then("he should be removed from the participants", function() {
 Then(
   "he should receive information about the existing participants",
   function() {
+    const payload = this.room?.participants.map(participant => ({
+      eventType: "userJoined",
+      userName: participant.name,
+      isSpectator: participant.isSpectator
+    }));
+
     expect(this.outgoingCommands).toContainEqual({
       type: CommandType.SEND_MESSAGE,
       recipient: this.newParticipant,
-      payload: [this.inputEvent]
+      payload
     });
   }
 );

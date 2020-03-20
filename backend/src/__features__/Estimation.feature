@@ -22,6 +22,14 @@ Feature: Performing estimations
     When "Fred" estimates "20" for "Do the laundry"
     Then no action should be performed
 
+  Scenario: Joining an active estimation session
+    Given there is a room with an ongoing estimation for "Buy milk"
+    And "John" estimated "1"
+    And "Jimmy" estimated "10"
+    When a participant named "Fred" joins the room
+    Then he should receive information about the task
+    And he should receive information about who has already estimated
+
   Scenario: Attempting to show results with missing estimations
     Given there is a room with an ongoing estimation for "Buy milk"
     And "John" estimated "1"
@@ -37,5 +45,3 @@ Feature: Performing estimations
     When showing the result is requested
     Then all participants get informed about the estimation result
     And the estimation round is ended
-
-# startDate / endDate

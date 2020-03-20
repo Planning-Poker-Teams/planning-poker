@@ -2,7 +2,7 @@ export interface PokerRoom {
   name: string;
   participants: Participant[];
   currentTask?: string;
-  startDate?: Date;
+  startDate?: string;
 }
 
 export interface Participant {

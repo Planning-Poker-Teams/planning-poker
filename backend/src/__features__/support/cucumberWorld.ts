@@ -1,7 +1,5 @@
-import {
-  Command
-} from "../../domain/commandTypes";
-import { PokerRoom, Participant } from '../../domain/types';
+import { Command } from "../../domain/commandTypes";
+import { PokerRoom, Participant } from "../../domain/types";
 
 declare module "cucumber" {
   interface World {

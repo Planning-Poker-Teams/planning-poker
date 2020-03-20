@@ -18,6 +18,30 @@ export const handlePokerEvent = (
 ): Command[] => {
   switch (inputEvent.eventType) {
     case "userJoined":
+      const userJoinedEvents: UserJoined[] = room.participants.map(
+        participant => ({
+          eventType: "userJoined",
+          userName: participant.name,
+          isSpectator: participant.isSpectator
+        })
+      );
+
+      const startEstimationEvent: RequestStartEstimation = {
+        eventType: "startEstimation",
+        userName: "", //
+        startDate: room.startDate!,
+        taskName: room.currentTask!
+      };
+
+      const userHasEstimatedEvents: UserHasEstimated[] = room.participants
+        .filter(p => p.currentEstimation !== undefined)
+        .sort(sortByName)
+        .map(p => ({
+          eventType: "userHasEstimated",
+          userName: p.name,
+          taskName: room.currentTask!
+        }));
+
       return [
         {
           type: BROADCAST_MESSAGE,
@@ -26,7 +50,17 @@ export const handlePokerEvent = (
         {
           type: SEND_MESSAGE,
           recipient: participant,
-          payload: [inputEvent]
+          payload: userJoinedEvents
+        },
+        {
+          type: SEND_MESSAGE,
+          recipient: participant,
+          payload: startEstimationEvent
+        },
+        {
+          type: SEND_MESSAGE,
+          recipient: participant,
+          payload: userHasEstimatedEvents
         },
         {
           type: ADD_PARTICIPANT,
@@ -116,4 +150,10 @@ export const handlePokerEvent = (
     default:
       return [];
   }
+};
+
+export const sortByName = (first: Participant, other: Participant): number => {
+  if (first.name < other.name) return -1;
+  if (first.name > other.name) return 1;
+  return 0;
 };
