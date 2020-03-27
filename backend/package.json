@@ -15,7 +15,7 @@
     "watch": "tsc -w",
     "test": "jest",
     "feature": "cucumber-js --require-module ts-node/register/transpile-only --require src/__features__/support/setup.ts --require 'src/__features__/support/*Steps.ts'",
-    "features": "yarn feature src/__features__/",
+    "features": "npm run feature src/__features__/",
     "cdk": "cdk",
     "synth": "cdk synth --profile planning-poker",
     "bootstrap": "cdk bootstrap --profile planning-poker",
@@ -27,7 +27,7 @@
     "@types/node": "^13.7.7",
     "aws-cdk": "1.25.0",
     "cucumber": "^6.0.5",
-    "jest": "^24.9.0",
+    "jest": "^25.2.3",
     "ts-jest": "^24.1.0",
     "ts-node": "^8.6.2",
     "typescript": "~3.7.2"

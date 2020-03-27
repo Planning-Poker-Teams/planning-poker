@@ -23,9 +23,9 @@ This **backend** provides the Websocket endpoint to be used by these frontends. 
 
 ## Getting started
 
-- Install the dependencies: `yarn install`
-- Run feature tests: `yarn features`
-- Deploy infrastructure: `yarn cdk deploy`
+- Install the dependencies: `npm install`
+- Run feature tests: `npm run features`
+- Deploy infrastructure: `npm run cdk deploy`
 
 For details see `package.json`.
 
