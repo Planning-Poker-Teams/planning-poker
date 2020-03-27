@@ -48,7 +48,7 @@ describe("RoomRepository", () => {
     expect(room.participants).toEqual([]);
   });
 
-  it("starts a new estimate", async () => {
+  it("starts a new estimation", async () => {
     await repository.getOrCreateRoom(ROOM_ID);
     await repository.addToParticipants(ROOM_ID, CONNECTION_ID);
 
@@ -63,9 +63,30 @@ describe("RoomRepository", () => {
     expect(room.currentEstimationTaskName).toEqual("A new task");
     expect(room.currentEstimationInitiator).toEqual(CONNECTION_ID);
     expect(room.currentEstimationStartDate).toEqual("2020-03-27T14:31:52.638Z");
-    expect(room.currentEstimates).toEqual([])
+    expect(room.currentEstimates).toEqual([]);
   });
 
-  // it("can handle estimations", async () => {});
+  it("can handle estimations", async () => {
+    const TASK_NAME = "A new task";
+    await repository.getOrCreateRoom(ROOM_ID);
+    await repository.addToParticipants(ROOM_ID, CONNECTION_ID);
+    await repository.addToParticipants(ROOM_ID, CONNECTION_ID_2);
+    await repository.startNewEstimation(
+      ROOM_ID,
+      TASK_NAME,
+      CONNECTION_ID,
+      "2020-03-27T14:31:52.638Z"
+    );
+
+    await repository.addToEstimations(ROOM_ID, TASK_NAME, CONNECTION_ID, "10");
+    await repository.addToEstimations(ROOM_ID, TASK_NAME, CONNECTION_ID_2, "2");
+
+    const room = await repository.getOrCreateRoom(ROOM_ID);
+    expect(room.currentEstimates).toEqual([
+      { connectionId: CONNECTION_ID, value: "10" },
+      { connectionId: CONNECTION_ID_2, value: "2" }
+    ]);
+  });
+  
   // it("starts a new estimation", async () => {});
 });

@@ -43,10 +43,7 @@ export class RoomRepository {
     });
   }
 
-  async addToParticipants(
-    name: string,
-    connectionId: string
-  ): Promise<void> {
+  async addToParticipants(name: string, connectionId: string): Promise<void> {
     await this.client.update({
       tableName: this.roomsTableName,
       partitionKey: { name },
@@ -71,15 +68,35 @@ export class RoomRepository {
     });
   }
 
+  async startNewEstimation(
+    name: string,
+    taskName: string,
+    initiator: string,
+    startDate: string
+  ): Promise<void> {
+    await this.client.update({
+      tableName: this.roomsTableName,
+      partitionKey: { name },
+      updateExpression: `
+        SET 
+          currentEstimationTaskName = :taskName, 
+          currentEstimationInitiator = :initiator, 
+          currentEstimationStartDate = :startDate 
+        REMOVE currentEstimates`,
+      expressionAttributeValues: {
+        ":taskName": taskName,
+        ":initiator": initiator,
+        ":startDate": startDate
+      }
+    });
+  }
+
   async addToEstimations(
     name: string,
     taskName: string,
+    participant: string,
     value: string
   ): Promise<void> {
-    return {} as any;
-  }
-
-  async startNewEstimation(name: string, taskName: string, initiator: string, startDate: string): Promise<void> {
     return {} as any;
   }
 
