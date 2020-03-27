@@ -5,9 +5,10 @@ describe("RoomRepository", () => {
   const repository = new RoomRepository("rooms", false);
   const ROOM_ID = "test-room";
   const CONNECTION_ID = "connection-id";
+  const CONNECTION_ID_2 = "connection-id-2";
 
   afterEach(async () => {
-    // await repository.deleteRoom(ROOM_ID);
+    await repository.deleteRoom(ROOM_ID);
   });
 
   it("creates a room with initial values if it does not exist", async () => {
@@ -21,35 +22,50 @@ describe("RoomRepository", () => {
     expect(room.currentEstimates).toEqual([]);
   });
 
-  // it("returns an existing room", async () => {
-  // });
+  it("adds participants", async () => {
+    await repository.getOrCreateRoom(ROOM_ID);
+    await repository.addToParticipants(ROOM_ID, CONNECTION_ID);
 
-  // it("adds participants", async () => {
-  //   await repository.getOrCreateRoom(ROOM_ID);
-  //   await repository.addToParticipants(ROOM_ID, CONNECTION_ID);
+    const room = await repository.getOrCreateRoom(ROOM_ID);
+    expect(room.participants).toEqual([CONNECTION_ID]);
+  });
 
-  //   const room = await repository.getOrCreateRoom(ROOM_ID);
-  //   expect(room.participants).toEqual([CONNECTION_ID]);
-  // });
+  it("only adds the same participant once", async () => {
+    await repository.addToParticipants(ROOM_ID, CONNECTION_ID);
+    await repository.addToParticipants(ROOM_ID, CONNECTION_ID);
 
-  // it("only adds the same participant once", async () => {
-  //   await repository.addToParticipants(ROOM_ID, CONNECTION_ID);
-  //   await repository.addToParticipants(ROOM_ID, CONNECTION_ID);
+    const room = await repository.getOrCreateRoom(ROOM_ID);
+    expect(room.participants).toEqual([CONNECTION_ID]);
+    expect(room.participants.length).toBe(1);
+  });
 
-  //   const room = await repository.getOrCreateRoom(ROOM_ID);
-  //   expect(room.participants).toEqual([CONNECTION_ID]);
-  //   expect(room.participants.length).toBe(1);
-  // });
+  it("removes participants", async () => {
+    await repository.getOrCreateRoom(ROOM_ID);
+    await repository.addToParticipants(ROOM_ID, CONNECTION_ID);
 
-  // it("removes participants", async () => {
-  //   await repository.getOrCreateRoom(ROOM_ID);
-  //   await repository.addToParticipants(ROOM_ID, CONNECTION_ID);
+    await repository.removeFromParticipants(ROOM_ID, CONNECTION_ID);
+    const room = await repository.getOrCreateRoom(ROOM_ID);
+    expect(room.participants).toEqual([]);
+  });
 
-  //   await repository.removeFromParticipants(ROOM_ID, CONNECTION_ID);
-  //   const room = await repository.getOrCreateRoom(ROOM_ID);
-  //   expect(room.participants).toEqual([]);
-  // });
+  it("starts a new estimate", async () => {
+    await repository.getOrCreateRoom(ROOM_ID);
+    await repository.addToParticipants(ROOM_ID, CONNECTION_ID);
 
-  // // it("can handle estimations", async () => {});
-  // // it("starts a new estimation", async () => {});
+    await repository.startNewEstimation(
+      ROOM_ID,
+      "A new task",
+      CONNECTION_ID,
+      "2020-03-27T14:31:52.638Z"
+    );
+
+    const room = await repository.getOrCreateRoom(ROOM_ID);
+    expect(room.currentEstimationTaskName).toEqual("A new task");
+    expect(room.currentEstimationInitiator).toEqual(CONNECTION_ID);
+    expect(room.currentEstimationStartDate).toEqual("2020-03-27T14:31:52.638Z");
+    expect(room.currentEstimates).toEqual([])
+  });
+
+  // it("can handle estimations", async () => {});
+  // it("starts a new estimation", async () => {});
 });

@@ -36,20 +36,20 @@ export class RoomRepository {
     return this.prepareRoom(room.Item);
   }
 
-  async deleteRoom(roomName: string): Promise<void> {
+  async deleteRoom(name: string): Promise<void> {
     await this.client.delete({
       tableName: this.roomsTableName,
-      partitionKey: { roomName }
+      partitionKey: { name }
     });
   }
 
   async addToParticipants(
-    roomName: string,
+    name: string,
     connectionId: string
   ): Promise<void> {
     await this.client.update({
       tableName: this.roomsTableName,
-      partitionKey: { roomName },
+      partitionKey: { name },
       updateExpression: "ADD participants :newParticipant",
       expressionAttributeValues: {
         ":newParticipant": this.client.createSetExpression([connectionId])
@@ -58,12 +58,12 @@ export class RoomRepository {
   }
 
   async removeFromParticipants(
-    roomName: string,
+    name: string,
     connectionId: string
   ): Promise<void> {
     await this.client.update({
       tableName: this.roomsTableName,
-      partitionKey: { roomName },
+      partitionKey: { name },
       updateExpression: "DELETE participants :participant",
       expressionAttributeValues: {
         ":participant": this.client.createSetExpression([connectionId])
@@ -72,14 +72,14 @@ export class RoomRepository {
   }
 
   async addToEstimations(
-    roomName: string,
+    name: string,
     taskName: string,
     value: string
   ): Promise<void> {
     return {} as any;
   }
 
-  async startNewEstimation(roomName: string, taskName: string): Promise<void> {
+  async startNewEstimation(name: string, taskName: string, initiator: string, startDate: string): Promise<void> {
     return {} as any;
   }
 
