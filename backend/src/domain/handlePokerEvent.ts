@@ -131,9 +131,14 @@ export const handlePokerEvent = (
       ];
 
     case "showResult":
-      const estimationCompleted = room.participants.every(
+      const estimatingParticipants = room.participants.filter(
+        p => !p.isSpectator
+      );
+
+      const estimationCompleted = estimatingParticipants.every(
         p => p.currentEstimation
       );
+
       if (!estimationCompleted) {
         return [];
       }
@@ -142,7 +147,7 @@ export const handlePokerEvent = (
         taskName: room.currentEstimation!.taskName,
         startDate: room.currentEstimation!.startDate,
         endDate: new Date().toISOString(),
-        estimates: room.participants.map(participant => ({
+        estimates: estimatingParticipants.map(participant => ({
           userName: participant.name,
           estimate: participant.currentEstimation!
         }))

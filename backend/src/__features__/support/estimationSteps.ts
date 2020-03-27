@@ -31,7 +31,16 @@ Given("there is a room with an ongoing estimation for {string}", function(
       startDate: new Date().toISOString(),
       initiator: participants[0]
     }
-  }
+  };
+});
+
+Given("a participant named {string} has joined the room as spectator", function(
+  userName: string
+) {
+  this.room!.participants = [
+    ...this.room!.participants,
+    buildParticipant(userName, true)
+  ];
 });
 
 Given("{string} estimated {string}", function(
@@ -154,12 +163,14 @@ Then("he should receive information about the task", function() {
   expect(this.outgoingCommands).toContainEqual({
     type: CommandType.SEND_MESSAGE,
     recipient: this.newParticipant,
-    payload: [{
-      eventType: "startEstimation",
-      userName: this.room?.currentEstimation?.initiator.name,
-      startDate: this.room?.currentEstimation?.startDate,
-      taskName: this.room?.currentEstimation?.taskName
-    }]
+    payload: [
+      {
+        eventType: "startEstimation",
+        userName: this.room?.currentEstimation?.initiator.name,
+        startDate: this.room?.currentEstimation?.startDate,
+        taskName: this.room?.currentEstimation?.taskName
+      }
+    ]
   });
 });
 
@@ -188,6 +199,11 @@ Then("all participants get informed about the estimation result", function() {
       command.type === CommandType.BROADCAST_MESSAGE &&
       command.payload.eventType === "estimationResult"
   ) as BroadcastMessage;
+
+  if (!broadcastCommand) {
+    throw new Error("No matching command was broadcasted");
+  }
+
   const payload = broadcastCommand.payload as EstimationResult;
 
   expect(payload).toMatchObject({

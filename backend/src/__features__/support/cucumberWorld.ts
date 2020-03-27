@@ -12,10 +12,10 @@ declare module "cucumber" {
   }
 }
 
-export const buildParticipant = (name: string) => ({
+export const buildParticipant = (name: string, isSpectator: boolean = false) => ({
   id: "some-id",
   name,
-  isSpectator: false
+  isSpectator
 });
 
 export const ROOM_NAME = "Awesome room";

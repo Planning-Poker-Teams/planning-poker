@@ -37,6 +37,15 @@ Feature: Performing estimations
     When showing the result is requested
     Then no action should be performed
 
+  Scenario: Estimation results can be shown without estimations from spectators
+    Given there is a room with an ongoing estimation for "Buy milk"
+    And a participant named "Lou" has joined the room as spectator
+    And "John" estimated "1"
+    And "Jimmy" estimated "10"
+    And "Fred" estimated "20"
+    When showing the result is requested
+    Then all participants get informed about the estimation result
+
   Scenario: Showing estimation results
     Given there is a room with an ongoing estimation for "Buy milk"
     And "Fred" estimated "20"
