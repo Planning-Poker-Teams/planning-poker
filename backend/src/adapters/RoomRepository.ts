@@ -112,7 +112,16 @@ export class RoomRepository {
   }
 
   async finishEstimation(name: string) {
-    throw new Error("Method not implemented.");
+    await this.client.update({
+      tableName: this.roomsTableName,
+      partitionKey: { name },
+      updateExpression: `
+      REMOVE 
+        currentEstimationTaskName,
+        currentEstimationStartDate,
+        currentEstimationInitiator,
+        currentEstimates`
+    });
   }
 
   private prepareRoom(roomItem: any): Room {
