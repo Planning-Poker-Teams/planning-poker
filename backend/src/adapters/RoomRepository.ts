@@ -18,14 +18,18 @@ export class RoomRepository {
     this.client = new DynamoDbClient(enableXRay);
   }
 
-  async getOrCreateRoom(roomName: string): Promise<Room> {
-    const room = await this.client.get(this.roomsTableName, { roomName }, true);
+  async getOrCreateRoom(name: string): Promise<Room> {
+    const room = await this.client.get(this.roomsTableName, { name }, true);
 
     if (!room.Item) {
       await this.client.put(this.roomsTableName, {
-        roomName
+        name
       });
-      const newRoom = await this.client.get(this.roomsTableName, { roomName }, true);
+      const newRoom = await this.client.get(
+        this.roomsTableName,
+        { name },
+        true
+      );
       return this.prepareRoom(newRoom.Item);
     }
 

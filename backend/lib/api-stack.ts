@@ -66,7 +66,7 @@ export class ApiStack extends cdk.Stack {
 
     const roomsTable = new Table(this, "RoomsTable", {
       tableName: "rooms",
-      partitionKey: { name: "roomName", type: AttributeType.STRING },
+      partitionKey: { name: "name", type: AttributeType.STRING },
       ...defaultTableProps
     });
 
