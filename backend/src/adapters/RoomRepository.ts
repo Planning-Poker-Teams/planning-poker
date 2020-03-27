@@ -93,7 +93,6 @@ export class RoomRepository {
 
   async addToEstimations(
     name: string,
-    taskName: string,
     connectionId: string,
     value: string
   ): Promise<void> {
@@ -110,6 +109,10 @@ export class RoomRepository {
         ])
       }
     });
+  }
+
+  async finishEstimation(name: string) {
+    throw new Error("Method not implemented.");
   }
 
   private prepareRoom(roomItem: any): Room {
