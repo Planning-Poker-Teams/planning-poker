@@ -94,10 +94,22 @@ export class RoomRepository {
   async addToEstimations(
     name: string,
     taskName: string,
-    participant: string,
+    connectionId: string,
     value: string
   ): Promise<void> {
-    return {} as any;
+    await this.client.update({
+      tableName: this.roomsTableName,
+      partitionKey: { name },
+      updateExpression: "ADD currentEstimates :newEstimate",
+      expressionAttributeValues: {
+        ":newEstimate": this.client.createSetExpression([
+          JSON.stringify({
+            connectionId,
+            value
+          })
+        ])
+      }
+    });
   }
 
   private prepareRoom(roomItem: any): Room {
@@ -107,7 +119,9 @@ export class RoomRepository {
       currentEstimationTaskName: roomItem.currentEstimationTaskName,
       currentEstimationStartDate: roomItem.currentEstimationStartDate,
       currentEstimationInitiator: roomItem.currentEstimationInitiator,
-      currentEstimates: roomItem.currentEstimates?.values ?? []
+      currentEstimates: roomItem.currentEstimates
+        ? roomItem.currentEstimates.values.map(JSON.parse)
+        : []
     };
   }
 }
