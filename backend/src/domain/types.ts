@@ -4,7 +4,6 @@ export interface PokerRoom {
   currentEstimation?: {
     taskName: string;
     startDate: string;
-    endDate?: string;
     initiator: Participant;
   }
 }

@@ -3,10 +3,12 @@ import { AttributeMap } from "aws-sdk/clients/dynamodb";
 import DynamoDB = require("aws-sdk/clients/dynamodb");
 
 export interface Room {
-  roomName: string;
+  name: string;
   participants: string[];
-  currentTaskName?: string;
-  estimates: { connectionId: string; value: string }[];
+  currentEstimationTaskName?: string;
+  currentEstimationStartDate?: string;
+  currentEstimationInitiator?: string;
+  currentEstimates: { connectionId: string; value: string }[];
 }
 
 export class RoomRepository {
@@ -79,10 +81,12 @@ export class RoomRepository {
 
   private prepareRoom(roomItem: any): Room {
     return {
-      roomName: roomItem.roomName,
+      name: roomItem.name,
       participants: roomItem.participants?.values ?? [],
-      currentTaskName: roomItem.currentTaskName,
-      estimates: roomItem.estimates?.values ?? []
+      currentEstimationTaskName: roomItem.currentEstimationTaskName,
+      currentEstimationStartDate: roomItem.currentEstimationStartDate,
+      currentEstimationInitiator: roomItem.currentEstimationInitiator,
+      currentEstimates: roomItem.currentEstimates?.values ?? []
     };
   }
 }
