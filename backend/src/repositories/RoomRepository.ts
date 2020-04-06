@@ -1,6 +1,4 @@
 import { DynamoDbClient } from "../lib/DynamoDbClient";
-import { AttributeMap } from "aws-sdk/clients/dynamodb";
-import DynamoDB = require("aws-sdk/clients/dynamodb");
 
 export interface Room {
   name: string;

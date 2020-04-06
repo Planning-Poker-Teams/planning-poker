@@ -32,6 +32,7 @@ import {
 // https://docs.aws.amazon.com/apigateway/latest/developerguide/how-to-custom-domains.html
 
 interface ApiStackProps extends cdk.StackProps {
+  domainName: string;
   stageName: string;
 }
 
@@ -72,43 +73,71 @@ export class ApiStack extends cdk.Stack {
 
     // Lambda
 
-    const lambda = new NodejsFunction(this, "HandleEvent", {
-      functionName: `${props.stackName}-websocket-handler`,
-      entry: path.join(__dirname, "../src/handlers/websocketHandler.ts"),
-      runtime: Runtime.NODEJS_12_X,
-      memorySize: 256,
-      tracing: Tracing.ACTIVE,
-      environment: {
-        PARTICIPANTS_TABLENAME: participantsTable.tableName,
-        ROOMS_TABLENAME: roomsTable.tableName
-      }
-    });
-
-    const eventSourceMapping = new EventSourceMapping(
+    const websocketEventHandlerLambda = new NodejsFunction(
       this,
-      "EventSourceMapping",
+      "HandleWebsocketEvent",
       {
-        target: lambda, // define a different lambda
-        eventSourceArn: participantsTable.tableStreamArn!,
-        batchSize: 1,
-        startingPosition: StartingPosition.LATEST
+        functionName: `${props.stackName}-websocket-handler`,
+        entry: path.join(__dirname, "../src/handlers/handleWebsocketEvents.ts"),
+        runtime: Runtime.NODEJS_12_X,
+        memorySize: 256,
+        tracing: Tracing.ACTIVE,
+        environment: {
+          PARTICIPANTS_TABLENAME: participantsTable.tableName,
+          ROOMS_TABLENAME: roomsTable.tableName,
+          API_GW_DOMAINNAME: `${props.domainName}/${props.stageName}`
+        }
       }
     );
 
-    participantsTable.grantStreamRead(lambda);
-
-    participantsTable.grantReadWriteData(lambda);
-    roomsTable.grantReadWriteData(lambda);
-
-    lambda.grantInvoke(new ServicePrincipal("apigateway.amazonaws.com"));
-    lambda.addToRolePolicy(
-      new PolicyStatement({
-        actions: ["execute-api:ManageConnections"],
-        resources: [
-          `arn:aws:execute-api:${this.region}:${this.account}:${api.ref}/*`
-        ]
-      })
+    const dynamoDbStreamsHandlerLambda = new NodejsFunction(
+      this,
+      "HandleDynamoDbStreamsEvent",
+      {
+        functionName: `${props.stackName}-dynamodb-streams-handler`,
+        entry: path.join(
+          __dirname,
+          "../src/handlers/handleDynamoDbStreamsEvents.ts"
+        ),
+        runtime: Runtime.NODEJS_12_X,
+        memorySize: 256,
+        tracing: Tracing.ACTIVE,
+        environment: {
+          PARTICIPANTS_TABLENAME: participantsTable.tableName,
+          ROOMS_TABLENAME: roomsTable.tableName,
+          API_GW_DOMAINNAME: `${props.domainName}/${props.stageName}`
+        }
+      }
     );
+
+    participantsTable.grantStreamRead(dynamoDbStreamsHandlerLambda);
+
+    participantsTable.grantReadWriteData(websocketEventHandlerLambda);
+    participantsTable.grantReadWriteData(dynamoDbStreamsHandlerLambda);
+
+    roomsTable.grantReadWriteData(websocketEventHandlerLambda);
+    roomsTable.grantReadWriteData(dynamoDbStreamsHandlerLambda);
+
+    websocketEventHandlerLambda.grantInvoke(
+      new ServicePrincipal("apigateway.amazonaws.com")
+    );
+
+    const manageConnectionsPolicy = new PolicyStatement({
+      actions: ["execute-api:ManageConnections"],
+      resources: [
+        `arn:aws:execute-api:${this.region}:${this.account}:${api.ref}/*`
+      ]
+    });
+    
+    dynamoDbStreamsHandlerLambda.addToRolePolicy(manageConnectionsPolicy);
+    websocketEventHandlerLambda.addToRolePolicy(manageConnectionsPolicy);
+
+    new EventSourceMapping(this, "EventSourceMapping", {
+      target: dynamoDbStreamsHandlerLambda,
+      eventSourceArn: participantsTable.tableStreamArn!,
+      batchSize: 1,
+      startingPosition: StartingPosition.LATEST
+    });
 
     // API Gateway (continued)
 
@@ -122,7 +151,7 @@ export class ApiStack extends cdk.Stack {
       const integration = new CfnIntegration(this, `${prefix}Integration`, {
         apiId: api.ref,
         integrationType: "AWS_PROXY",
-        integrationUri: `arn:aws:apigateway:${this.region}:lambda:path/2015-03-31/functions/${lambda.functionArn}/invocations`
+        integrationUri: `arn:aws:apigateway:${this.region}:lambda:path/2015-03-31/functions/${websocketEventHandlerLambda.functionArn}/invocations`
       });
 
       new CfnRoute(this, `${prefix}Route`, {

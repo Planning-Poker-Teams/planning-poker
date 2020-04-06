@@ -4,9 +4,9 @@ import { ParticipantRepository } from "./ParticipantRepository";
 describe("ParticipantRepository", () => {
   const repository = new ParticipantRepository("participants", false);
 
+  const exampleRoomName = "Test";
   const exampleParticipant = {
-    connectionId: "connection-id1",
-    roomName: "Test",
+    id: "connection-id1",
     name: "Gustavo",
     isSpectator: false
   };
@@ -17,19 +17,20 @@ describe("ParticipantRepository", () => {
   // })
 
   it("inserts a participant", async () => {
-    await repository.putParticipant(exampleParticipant);
+    await repository.putParticipant(exampleParticipant, exampleRoomName);
   });
 
   it("fetches a participant", async () => {
-    const participant = await repository.fetchParticipant("connection-id1");
-    expect(participant).toEqual(exampleParticipant);
+    const participantInfo = await repository.fetchParticipantInfo("connection-id1");
+    expect(participantInfo!.participant).toEqual(exampleParticipant);
+    expect(participantInfo!.roomName).toEqual(exampleRoomName);
   });
 
   it("can deal with a non-existing participant", async () => {
-    const participant = await repository.fetchParticipant(
+    const participantInfo = await repository.fetchParticipantInfo(
       "unknown-connection-id"
     );
-    expect(participant).toBeUndefined();
+    expect(participantInfo).toBeUndefined();
   });
 
   it("can handle existing and non-existing entries in a batchGet", async () => {
@@ -44,10 +45,10 @@ describe("ParticipantRepository", () => {
   it("returns multiple participants in a batchGet", async () => {
     const otherParticipant = {
       ...exampleParticipant,
-      connectionId: "connection-id2",
+      id: "connection-id2",
       name: "Rodolfo"
     };
-    await repository.putParticipant(otherParticipant);
+    await repository.putParticipant(otherParticipant, exampleRoomName);
 
     const participants = await repository.fetchParticipants([
       "connection-id1",
