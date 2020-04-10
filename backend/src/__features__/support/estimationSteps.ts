@@ -63,12 +63,12 @@ Given("{string} estimated {string}", function(
 When("a participant initiates a new estimation for {string}", function(
   taskName: string
 ) {
-  const participant = this.room!.participants[0];
+  this.initiatingParticipant = this.room!.participants[0];
   this.estimationStartDate = new Date().toISOString();
 
   this.inputEvent = {
     eventType: "startEstimation",
-    userName: participant.name,
+    userName: this.initiatingParticipant.name,
     taskName,
     startDate: this.estimationStartDate
   };
@@ -76,7 +76,7 @@ When("a participant initiates a new estimation for {string}", function(
   this.outgoingCommands = handlePokerEvent(
     this.room!,
     this.inputEvent,
-    participant
+    this.initiatingParticipant
   );
 });
 
@@ -123,7 +123,8 @@ Then("the current task name should be set to {string}", function(
   expect(this.outgoingCommands).toContainEqual({
     type: CommandType.SET_TASK,
     taskName,
-    startDate: this.estimationStartDate
+    startDate: this.estimationStartDate,
+    participantId: this.initiatingParticipant!.id
   });
 });
 
@@ -151,10 +152,13 @@ Then(
 );
 
 Then("the estimation of {string} gets recorded", function(userName: string) {
+  const participant = participants.find(p => p.name === userName)
+
   expect(this.outgoingCommands).toContainEqual({
     type: CommandType.RECORD_ESTIMATION,
     roomName: this.room?.name,
     taskName: this.room?.currentEstimation?.taskName,
+    participantId: participant!.id,
     estimate: estimations.get(userName)
   });
 });

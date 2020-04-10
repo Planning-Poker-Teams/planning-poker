@@ -67,14 +67,14 @@ export class RoomRepository {
   }
 
   async startNewEstimation(
-    name: string,
+    roomName: string,
     taskName: string,
     initiator: string,
     startDate: string
   ): Promise<void> {
     await this.client.update({
       tableName: this.roomsTableName,
-      partitionKey: { name },
+      partitionKey: { name: roomName },
       updateExpression: `
         SET 
           currentEstimationTaskName = :taskName, 
@@ -90,13 +90,13 @@ export class RoomRepository {
   }
 
   async addToEstimations(
-    name: string,
+    roomName: string,
     connectionId: string,
     value: string
   ): Promise<void> {
     await this.client.update({
       tableName: this.roomsTableName,
-      partitionKey: { name },
+      partitionKey: { name: roomName },
       updateExpression: "ADD currentEstimates :newEstimate",
       expressionAttributeValues: {
         ":newEstimate": this.client.createSetExpression([
@@ -109,10 +109,10 @@ export class RoomRepository {
     });
   }
 
-  async finishEstimation(name: string) {
+  async finishEstimation(roomName: string) {
     await this.client.update({
       tableName: this.roomsTableName,
-      partitionKey: { name },
+      partitionKey: { name: roomName },
       updateExpression: `
       REMOVE 
         currentEstimationTaskName,

@@ -8,7 +8,7 @@ const {
   REMOVE_PARTICIPANT,
   SET_TASK,
   RECORD_ESTIMATION,
-  FINISH_ROUND
+  FINISH_ROUND,
 } = CommandType;
 
 export const handlePokerEvent = (
@@ -19,28 +19,28 @@ export const handlePokerEvent = (
   switch (inputEvent.eventType) {
     case "userJoined":
       const userJoinedEvents: UserJoined[] = room.participants.map(
-        participant => ({
+        (participant) => ({
           eventType: "userJoined",
           userName: participant.name,
-          isSpectator: participant.isSpectator
+          isSpectator: participant.isSpectator,
         })
       );
 
       const messagesToSend: Command[] = [
         {
           type: BROADCAST_MESSAGE,
-          payload: inputEvent
+          payload: inputEvent,
         },
         {
           type: ADD_PARTICIPANT,
           roomName: room.name,
-          participant
+          participant,
         },
         {
           type: SEND_MESSAGE,
           recipient: participant,
-          payload: userJoinedEvents
-        }
+          payload: userJoinedEvents,
+        },
       ];
 
       if (room.currentEstimation) {
@@ -48,16 +48,16 @@ export const handlePokerEvent = (
           eventType: "startEstimation",
           userName: room.currentEstimation.initiator.name,
           startDate: room.currentEstimation.startDate,
-          taskName: room.currentEstimation.taskName
+          taskName: room.currentEstimation.taskName,
         };
 
         const userHasEstimatedEvents: UserHasEstimated[] = room.participants
-          .filter(p => p.currentEstimation !== undefined)
+          .filter((p) => p.currentEstimation !== undefined)
           .sort(sortByName)
-          .map(p => ({
+          .map((p) => ({
             eventType: "userHasEstimated",
             userName: p.name,
-            taskName: room.currentEstimation!.taskName
+            taskName: room.currentEstimation!.taskName,
           }));
 
         return [
@@ -65,13 +65,13 @@ export const handlePokerEvent = (
           {
             type: SEND_MESSAGE,
             recipient: participant,
-            payload: [startEstimationEvent]
+            payload: [startEstimationEvent],
           },
           {
             type: SEND_MESSAGE,
             recipient: participant,
-            payload: userHasEstimatedEvents
-          }
+            payload: userHasEstimatedEvents,
+          },
         ];
       } else {
         return messagesToSend;
@@ -82,18 +82,18 @@ export const handlePokerEvent = (
         {
           type: REMOVE_PARTICIPANT,
           roomName: room.name,
-          participant
+          participant,
         },
         {
           type: BROADCAST_MESSAGE,
-          payload: inputEvent
-        }
+          payload: inputEvent,
+        },
       ];
 
     case "startEstimation":
       const isEstimationOngoing =
         room.currentEstimation?.taskName !== undefined &&
-        !room.participants.every(p => p.currentEstimation);
+        !room.participants.every((p) => p.currentEstimation);
 
       if (isEstimationOngoing) {
         return [];
@@ -103,8 +103,9 @@ export const handlePokerEvent = (
           {
             type: SET_TASK,
             startDate: inputEvent.startDate,
-            taskName: inputEvent.taskName
-          }
+            taskName: inputEvent.taskName,
+            participantId: participant.id,
+          },
         ];
       }
 
@@ -115,28 +116,29 @@ export const handlePokerEvent = (
       const userHasEstimated: UserHasEstimated = {
         eventType: "userHasEstimated",
         userName: inputEvent.userName,
-        taskName: inputEvent.taskName
+        taskName: inputEvent.taskName,
       };
       return [
         {
           type: RECORD_ESTIMATION,
           roomName: room.name,
           taskName: inputEvent.taskName,
-          estimate: inputEvent.estimate
+          estimate: inputEvent.estimate,
+          participantId: participant.id,
         },
         {
           type: BROADCAST_MESSAGE,
-          payload: userHasEstimated
-        }
+          payload: userHasEstimated,
+        },
       ];
 
     case "showResult":
       const estimatingParticipants = room.participants.filter(
-        p => !p.isSpectator
+        (p) => !p.isSpectator
       );
 
       const estimationCompleted = estimatingParticipants.every(
-        p => p.currentEstimation
+        (p) => p.currentEstimation
       );
 
       if (!estimationCompleted) {
@@ -147,17 +149,17 @@ export const handlePokerEvent = (
         taskName: room.currentEstimation!.taskName,
         startDate: room.currentEstimation!.startDate,
         endDate: new Date().toISOString(),
-        estimates: estimatingParticipants.map(participant => ({
+        estimates: estimatingParticipants.map((participant) => ({
           userName: participant.name,
-          estimate: participant.currentEstimation!
-        }))
+          estimate: participant.currentEstimation!,
+        })),
       };
       return [
         {
           type: BROADCAST_MESSAGE,
-          payload
+          payload,
         },
-        { type: FINISH_ROUND, roomName: room.name }
+        { type: FINISH_ROUND, roomName: room.name },
       ];
 
     default:

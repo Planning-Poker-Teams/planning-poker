@@ -39,7 +39,7 @@ export class PokerEventInteractor {
   public async handleUserLeft(participant: Participant, roomName: string) {
     const userLeftEvent: UserLeft = {
       eventType: "userLeft",
-      userName: participant.name
+      userName: participant.name,
     };
     const room = await this.fetchRoom(roomName);
     const commands = handlePokerEvent(room, userLeftEvent, participant);
@@ -58,15 +58,15 @@ export class PokerEventInteractor {
             taskName: room.currentEstimationTaskName!,
             startDate: room.currentEstimationStartDate!,
             initiator: participants.find(
-              p => p.name === room.currentEstimationInitiator
-            )!
+              (p) => p.name === room.currentEstimationInitiator
+            )!,
           }
         : undefined;
 
     return {
       name: room.name,
       participants,
-      currentEstimation
+      currentEstimation,
     };
   }
 
@@ -92,7 +92,7 @@ export class PokerEventInteractor {
     switch (command.type) {
       case CommandType.BROADCAST_MESSAGE:
         const pokerRoom = await this.fetchRoom(roomName);
-        const allConnectionIds = pokerRoom.participants.map(p => p.id);
+        const allConnectionIds = pokerRoom.participants.map((p) => p.id);
         await this.messageSender.broadcast(
           allConnectionIds,
           JSON.stringify(command.payload)
@@ -102,7 +102,7 @@ export class PokerEventInteractor {
       case CommandType.SEND_MESSAGE:
         await Promise.all(
           command.payload.map(
-            async payload =>
+            async (payload) =>
               await this.messageSender.post(
                 command.recipient.id,
                 JSON.stringify(payload)
@@ -126,15 +126,24 @@ export class PokerEventInteractor {
         break;
 
       case CommandType.SET_TASK:
-        // set current estimation
+        await this.roomRepository.startNewEstimation(
+          roomName,
+          command.taskName,
+          command.participantId,
+          command.startDate
+        );
         break;
 
       case CommandType.RECORD_ESTIMATION:
-        // add new estimation
+        await this.roomRepository.addToEstimations(
+          roomName,
+          command.participantId,
+          command.estimate
+        );
         break;
 
       case CommandType.FINISH_ROUND:
-        // clear current task
+        await this.roomRepository.finishEstimation(roomName);
         break;
     }
   }

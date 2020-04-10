@@ -16,7 +16,7 @@ export enum CommandType {
   REMOVE_PARTICIPANT = "REMOVE_PARTICIPANT",
   SET_TASK = "SET_TASK",
   RECORD_ESTIMATION = "RECORD_ESTIMATION",
-  FINISH_ROUND = "FINISH_ROUND"
+  FINISH_ROUND = "FINISH_ROUND",
 }
 
 export interface BroadcastMessage {
@@ -46,6 +46,7 @@ export interface SetTask {
   type: CommandType.SET_TASK;
   taskName: string;
   startDate: string;
+  participantId: string;
 }
 
 export interface RecordEstimation {
@@ -53,6 +54,7 @@ export interface RecordEstimation {
   roomName: string;
   taskName: string;
   estimate: string;
+  participantId: string;
 }
 
 export interface FinishRound {

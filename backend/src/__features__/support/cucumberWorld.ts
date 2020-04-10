@@ -7,6 +7,7 @@ declare module "cucumber" {
     inputEvent?: PokerEvent;
     outgoingCommands?: Command[];
     newParticipant?: Participant;
+    initiatingParticipant?: Participant;
     leavingParticipant?: Participant;
     estimationStartDate?: string;
   }
