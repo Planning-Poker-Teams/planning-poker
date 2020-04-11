@@ -28,7 +28,7 @@ interface UserLeft {
 
 interface RequestStartEstimation {
   eventType: "startEstimation";
-  userName: string;
+  userName: string; // should be nullable
   taskName: string;
   startDate: string;
 }

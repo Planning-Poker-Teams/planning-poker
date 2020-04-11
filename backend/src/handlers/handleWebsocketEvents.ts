@@ -30,9 +30,13 @@ export const handler = async (
       break;
 
     case "MESSAGE":
-      const payload = JSON.parse(event.body);
-      console.log("Handling message", payload);
-      await pokerEventInteractor.handleIncomingEvent(payload, connectionId);
+      try {
+        const payload = JSON.parse(event.body);
+        console.log("Handling message", payload);
+        await pokerEventInteractor.handleIncomingEvent(payload, connectionId);
+      } catch (error) {
+        console.log("Message could not be processed", error)
+      }
       break;
 
     case "DISCONNECT":
