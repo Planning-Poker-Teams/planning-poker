@@ -1,6 +1,6 @@
-import { ParticipantRepository } from "../repositories/ParticipantRepository";
+import ParticipantRepository from "../repositories/ParticipantRepository";
 import { Participant, PokerRoom } from "../domain/types";
-import { RoomRepository } from "../repositories/RoomRepository";
+import RoomRepository from "../repositories/RoomRepository";
 import { handlePokerEvent } from "../domain/handlePokerEvent";
 import { ApiGatewayManagementClient } from "../lib/ApiGatewayManagementClient";
 import { Command, CommandType } from "../domain/commandTypes";
@@ -22,27 +22,49 @@ export class PokerEventInteractor {
       connectionId
     );
 
-    if (!participantInfo) {
+    const roomNameFromJoinRoomEvent =
+      pokerEvent.eventType === "joinRoom" ? pokerEvent.roomName : undefined;
+
+    const roomName = participantInfo?.roomName || roomNameFromJoinRoomEvent;
+
+    if (!roomName) {
       throw Error(`Participant with id ${connectionId} could not be found.`);
     }
 
-    console.log("Handling incoming event", pokerEvent);
-    const room = await this.fetchRoom(participantInfo.roomName);
+    const room = await this.fetchRoom(roomName);
     const commands = handlePokerEvent(
       room,
       pokerEvent,
-      participantInfo.participant
+      connectionId,
+      participantInfo?.participant
     );
     await this.processCommands(commands, room);
   }
 
-  public async handleUserLeft(participant: Participant, roomName: string) {
+  public async handleUserLeft(participantId: string) {
+    const participantInfo = await this.participantRepository.fetchParticipantInfo(
+      participantId
+    );
+
+    if (!participantInfo) {
+      throw Error(
+        `Participant with connectionId ${participantId} was not found when handling disconnection.`
+      );
+    }
+
+    const { participant, roomName } = participantInfo;
     const userLeftEvent: UserLeft = {
       eventType: "userLeft",
       userName: participant.name,
     };
+
     const room = await this.fetchRoom(roomName);
-    const commands = handlePokerEvent(room, userLeftEvent, participant);
+    const commands = handlePokerEvent(
+      room,
+      userLeftEvent,
+      participant.id,
+      participant
+    );
     await this.processCommands(commands, room);
   }
 
@@ -59,7 +81,7 @@ export class PokerEventInteractor {
             startDate: room.currentEstimationStartDate!,
             initiator: participants.find(
               (p) => p.name === room.currentEstimationInitiator
-            )!,
+            ),
           }
         : undefined;
 
@@ -88,10 +110,10 @@ export class PokerEventInteractor {
     roomName: string
   ): Promise<void> {
     console.log("Handling command", command);
+    const pokerRoom = await this.fetchRoom(roomName);
 
     switch (command.type) {
       case CommandType.BROADCAST_MESSAGE:
-        const pokerRoom = await this.fetchRoom(roomName);
         const allConnectionIds = pokerRoom.participants.map((p) => p.id);
         await this.messageSender.broadcast(
           allConnectionIds,
@@ -112,6 +134,10 @@ export class PokerEventInteractor {
         break;
 
       case CommandType.ADD_PARTICIPANT:
+        await this.participantRepository.putParticipant(
+          command.participant,
+          command.roomName
+        );
         await this.roomRepository.addToParticipants(
           command.roomName,
           command.participant.id
@@ -119,9 +145,31 @@ export class PokerEventInteractor {
         break;
 
       case CommandType.REMOVE_PARTICIPANT:
+        await this.participantRepository.removeParticipant(
+          command.participant.id
+        );
         await this.roomRepository.removeFromParticipants(
           command.roomName,
           command.participant.id
+        );
+        break;
+
+      case CommandType.SEND_EXISTING_PARTICIPANTS:
+        const userJoinedEvents: UserJoined[] = pokerRoom.participants.map(
+          (participant) => ({
+            eventType: "userJoined",
+            userName: participant.name,
+            isSpectator: participant.isSpectator,
+          })
+        );
+        await Promise.all(
+          userJoinedEvents.map(
+            async (payload) =>
+              await this.messageSender.post(
+                command.recipient.id,
+                JSON.stringify(payload)
+              )
+          )
         );
         break;
 

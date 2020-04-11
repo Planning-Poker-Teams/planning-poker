@@ -1,4 +1,4 @@
-import { RoomRepository } from "./RoomRepository";
+import RoomRepository from "./RoomRepository";
 
 // ⚠️ DynamoDB integration test (underlying AWS client is not mocked!)
 describe("RoomRepository", () => {
@@ -84,11 +84,11 @@ describe("RoomRepository", () => {
     const room = await repository.getOrCreateRoom(ROOM_ID);
     expect(room.currentEstimates).toEqual([
       { connectionId: CONNECTION_ID, value: "10" },
-      { connectionId: CONNECTION_ID_2, value: "2" }
+      { connectionId: CONNECTION_ID_2, value: "2" },
     ]);
   });
-  
-  it('finishes an estimation', async () => {
+
+  it("finishes an estimation", async () => {
     const TASK_NAME = "A new task";
     await repository.getOrCreateRoom(ROOM_ID);
     await repository.addToParticipants(ROOM_ID, CONNECTION_ID);
@@ -100,12 +100,12 @@ describe("RoomRepository", () => {
     );
     await repository.addToEstimations(ROOM_ID, CONNECTION_ID, "10");
 
-    await repository.finishEstimation(ROOM_ID)
+    await repository.finishEstimation(ROOM_ID);
 
-    const room = await repository.getOrCreateRoom(ROOM_ID)
+    const room = await repository.getOrCreateRoom(ROOM_ID);
     expect(room.currentEstimationTaskName).toEqual(undefined);
     expect(room.currentEstimationInitiator).toEqual(undefined);
     expect(room.currentEstimationStartDate).toEqual(undefined);
     expect(room.currentEstimates).toEqual([]);
-  })
+  });
 });

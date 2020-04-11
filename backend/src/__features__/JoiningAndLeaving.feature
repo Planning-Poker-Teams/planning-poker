@@ -12,6 +12,8 @@ Feature: Joining and leaving poker room
     And he should receive information about the existing participants
     And the existing participants should be informed about the new participant
 
+  # Scenario: Joining a room which already has a user with the same name
+
   Scenario: Leaving a room
     Given there is a room with a few participants
     When a participant named "Fred" leaves the room

@@ -3,7 +3,7 @@ import { CommandType } from "../../domain/commandTypes";
 import { handlePokerEvent } from "../../domain/handlePokerEvent";
 import { buildParticipant, ROOM_NAME } from "./cucumberWorld";
 
-Given("there is an {word} room", function(roomStatus: "empty" | "occupied") {
+Given("there is an {word} room", function (roomStatus: "empty" | "occupied") {
   const participants =
     roomStatus === "empty"
       ? []
@@ -11,48 +11,52 @@ Given("there is an {word} room", function(roomStatus: "empty" | "occupied") {
 
   this.room = {
     name: ROOM_NAME,
-    participants
+    participants,
   };
 });
 
-Given("there is a room with a few participants", function() {
+Given("there is a room with a few participants", function () {
   const participants = [
     buildParticipant("Jimmy"),
     buildParticipant("John"),
-    buildParticipant("Fred")
+    buildParticipant("Fred"),
   ];
 
   this.room = {
     name: ROOM_NAME,
-    participants
+    participants,
   };
 });
 
-When("a participant named {string} joins the room", function(userName: string) {
+When("a participant named {string} joins the room", function (
+  userName: string
+) {
   this.inputEvent = {
-    eventType: "userJoined",
+    eventType: "joinRoom",
     userName,
-    isSpectator: false
+    roomName: this.room!.name,
+    isSpectator: false,
   };
   this.newParticipant = buildParticipant(userName);
 
   this.outgoingCommands = handlePokerEvent(
     this.room!,
     this.inputEvent,
+    this.newParticipant.id,
     this.newParticipant
   );
 });
 
-When("a participant named {string} leaves the room", function(
+When("a participant named {string} leaves the room", function (
   userName: string
 ) {
   this.inputEvent = {
     eventType: "userLeft",
-    userName
+    userName,
   };
 
   const leavingParticipant = this.room?.participants.find(
-    p => p.name === userName
+    (p) => p.name === userName
   );
   if (!leavingParticipant) {
     throw Error("Participant not found in room");
@@ -63,59 +67,71 @@ When("a participant named {string} leaves the room", function(
   this.outgoingCommands = handlePokerEvent(
     this.room!,
     this.inputEvent,
+    leavingParticipant.id,
     leavingParticipant
   );
 });
 
-Then("he should be added as a new participant", function() {
+Then("he should be added as a new participant", function () {
   expect(this.outgoingCommands).toContainEqual({
     type: CommandType.ADD_PARTICIPANT,
     roomName: this.room!.name,
-    participant: this.newParticipant
+    participant: this.newParticipant,
   });
 });
 
-Then("he should be removed from the participants", function() {
+Then("he should be removed from the participants", function () {
   expect(this.outgoingCommands).toContainEqual({
     type: CommandType.REMOVE_PARTICIPANT,
     roomName: this.room!.name,
-    participant: this.leavingParticipant
+    participant: this.leavingParticipant,
   });
 });
 
 Then(
   "he should receive information about the existing participants",
-  function() {
-    const payload = this.room?.participants.map(participant => ({
-      eventType: "userJoined",
-      userName: participant.name,
-      isSpectator: participant.isSpectator
-    }));
+  function () {
+    // const payload = this.room?.participants.map((participant) => ({
+    //   eventType: "userJoined",
+    //   userName: participant.name,
+    //   isSpectator: participant.isSpectator,
+    // }));
+    // expect(this.outgoingCommands).toContainEqual({
+    //   type: CommandType.SEND_MESSAGE,
+    //   recipient: this.newParticipant,
+    //   payload,
+    // });
 
     expect(this.outgoingCommands).toContainEqual({
-      type: CommandType.SEND_MESSAGE,
+      type: CommandType.SEND_EXISTING_PARTICIPANTS,
       recipient: this.newParticipant,
-      payload
+      roomName: this.room!.name,
     });
   }
 );
 
 Then(
   "the existing participants should be informed about the new participant",
-  function() {
+  function () {
+    const userJoinedEvent: UserJoined = {
+      eventType: "userJoined",
+      userName: this.newParticipant!.name,
+      isSpectator: this.newParticipant!.isSpectator,
+    };
+
     expect(this.outgoingCommands).toContainEqual({
       type: CommandType.BROADCAST_MESSAGE,
-      payload: this.inputEvent
+      payload: userJoinedEvent,
     });
   }
 );
 
 Then(
   "the remaining participants should be informed the leaving participant",
-  function() {
+  function () {
     expect(this.outgoingCommands).toContainEqual({
       type: CommandType.BROADCAST_MESSAGE,
-      payload: this.inputEvent
+      payload: this.inputEvent,
     });
   }
 );

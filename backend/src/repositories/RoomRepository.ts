@@ -9,7 +9,7 @@ export interface Room {
   currentEstimates: { connectionId: string; value: string }[];
 }
 
-export class RoomRepository {
+export default class RoomRepository {
   private client: DynamoDbClient;
 
   constructor(private roomsTableName: string, enableXRay: boolean = true) {

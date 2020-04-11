@@ -6,6 +6,7 @@ const {
   SEND_MESSAGE,
   ADD_PARTICIPANT,
   REMOVE_PARTICIPANT,
+  SEND_EXISTING_PARTICIPANTS,
   SET_TASK,
   RECORD_ESTIMATION,
   FINISH_ROUND,
@@ -14,39 +15,44 @@ const {
 export const handlePokerEvent = (
   room: PokerRoom,
   inputEvent: PokerEvent,
-  participant: Participant
+  participantId: string,
+  participant?: Participant
 ): Command[] => {
   switch (inputEvent.eventType) {
-    case "userJoined":
-      const userJoinedEvents: UserJoined[] = room.participants.map(
-        (participant) => ({
-          eventType: "userJoined",
-          userName: participant.name,
-          isSpectator: participant.isSpectator,
-        })
-      );
+    case "joinRoom":
+      const newParticipant: Participant = {
+        id: participantId,
+        name: inputEvent.userName,
+        isSpectator: inputEvent.isSpectator,
+      };
+
+      const userJoinedEvent: UserJoined = {
+        eventType: "userJoined",
+        userName: inputEvent.userName,
+        isSpectator: inputEvent.isSpectator,
+      };
 
       const messagesToSend: Command[] = [
         {
           type: BROADCAST_MESSAGE,
-          payload: inputEvent,
+          payload: userJoinedEvent,
         },
         {
           type: ADD_PARTICIPANT,
-          roomName: room.name,
-          participant,
+          roomName: inputEvent.roomName,
+          participant: newParticipant,
         },
         {
-          type: SEND_MESSAGE,
-          recipient: participant,
-          payload: userJoinedEvents,
+          type: SEND_EXISTING_PARTICIPANTS,
+          roomName: inputEvent.roomName,
+          recipient: newParticipant,
         },
       ];
 
       if (room.currentEstimation) {
         const startEstimationEvent: RequestStartEstimation = {
           eventType: "startEstimation",
-          userName: room.currentEstimation.initiator.name,
+          userName: room.currentEstimation.initiator?.name || "unknown",
           startDate: room.currentEstimation.startDate,
           taskName: room.currentEstimation.taskName,
         };
@@ -64,12 +70,12 @@ export const handlePokerEvent = (
           ...messagesToSend,
           {
             type: SEND_MESSAGE,
-            recipient: participant,
+            recipient: newParticipant,
             payload: [startEstimationEvent],
           },
           {
             type: SEND_MESSAGE,
-            recipient: participant,
+            recipient: newParticipant,
             payload: userHasEstimatedEvents,
           },
         ];
@@ -82,7 +88,7 @@ export const handlePokerEvent = (
         {
           type: REMOVE_PARTICIPANT,
           roomName: room.name,
-          participant,
+          participant: participant!,
         },
         {
           type: BROADCAST_MESSAGE,
@@ -102,9 +108,9 @@ export const handlePokerEvent = (
           { type: BROADCAST_MESSAGE, payload: inputEvent },
           {
             type: SET_TASK,
-            startDate: inputEvent.startDate,
+            startDate: inputEvent.startDate || new Date().toISOString(),
             taskName: inputEvent.taskName,
-            participantId: participant.id,
+            participantId: participantId,
           },
         ];
       }
@@ -124,7 +130,7 @@ export const handlePokerEvent = (
           roomName: room.name,
           taskName: inputEvent.taskName,
           estimate: inputEvent.estimate,
-          participantId: participant.id,
+          participantId: participantId,
         },
         {
           type: BROADCAST_MESSAGE,

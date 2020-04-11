@@ -1,4 +1,5 @@
 type PokerEvent =
+  | JoinRoom
   | UserJoined
   | UserLeft
   | RequestStartEstimation
@@ -6,6 +7,13 @@ type PokerEvent =
   | UserHasEstimated
   | RequestShowEstimationResult
   | EstimationResult;
+
+interface JoinRoom  {
+  eventType: "joinRoom";
+  userName: string;
+  roomName: string;
+  isSpectator: boolean;
+}
 
 interface UserJoined {
   eventType: "userJoined";

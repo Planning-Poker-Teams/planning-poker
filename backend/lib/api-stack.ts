@@ -4,7 +4,7 @@ import {
   Runtime,
   Tracing,
   EventSourceMapping,
-  StartingPosition
+  StartingPosition,
 } from "@aws-cdk/aws-lambda";
 import { NodejsFunction } from "@aws-cdk/aws-lambda-nodejs";
 import {
@@ -12,20 +12,20 @@ import {
   CfnRoute,
   CfnIntegration,
   CfnDeployment,
-  CfnStage
+  CfnStage,
 } from "@aws-cdk/aws-apigatewayv2";
 import { CfnOutput } from "@aws-cdk/core";
 import {
   ServicePrincipal,
   PolicyStatement,
   Role,
-  ManagedPolicy
+  ManagedPolicy,
 } from "@aws-cdk/aws-iam";
 import {
   Table,
   AttributeType,
   BillingMode,
-  StreamViewType
+  StreamViewType,
 } from "@aws-cdk/aws-dynamodb";
 
 // TODO: add custom domain (api.planningpoker.cc)
@@ -48,30 +48,28 @@ export class ApiStack extends cdk.Stack {
     const api = new CfnApi(this, "Api", {
       name: "PlanningPoker-WebsocketApi",
       protocolType: "WEBSOCKET",
-      routeSelectionExpression: "$request.body.eventType"
+      routeSelectionExpression: "$request.body.eventType",
     });
 
     // DynamoDB
 
     const defaultTableProps = {
       billingMode: BillingMode.PAY_PER_REQUEST,
-      serverSideEncryption: true
+      serverSideEncryption: true,
     };
 
     const participantsTable = new Table(this, "ParticipantsTable", {
       tableName: "participants",
       partitionKey: { name: "connectionId", type: AttributeType.STRING },
       stream: StreamViewType.NEW_AND_OLD_IMAGES,
-      ...defaultTableProps
+      ...defaultTableProps,
     });
 
     const roomsTable = new Table(this, "RoomsTable", {
       tableName: "rooms",
       partitionKey: { name: "name", type: AttributeType.STRING },
-      ...defaultTableProps
+      ...defaultTableProps,
     });
-
-    // Lambda
 
     const websocketEventHandlerLambda = new NodejsFunction(
       this,
@@ -85,38 +83,13 @@ export class ApiStack extends cdk.Stack {
         environment: {
           PARTICIPANTS_TABLENAME: participantsTable.tableName,
           ROOMS_TABLENAME: roomsTable.tableName,
-          API_GW_DOMAINNAME: `${props.domainName}/${props.stageName}`
-        }
+          API_GW_DOMAINNAME: `${props.domainName}/${props.stageName}`,
+        },
       }
     );
-
-    const dynamoDbStreamsHandlerLambda = new NodejsFunction(
-      this,
-      "HandleDynamoDbStreamsEvent",
-      {
-        functionName: `${props.stackName}-dynamodb-streams-handler`,
-        entry: path.join(
-          __dirname,
-          "../src/handlers/handleDynamoDbStreamsEvents.ts"
-        ),
-        runtime: Runtime.NODEJS_12_X,
-        memorySize: 256,
-        tracing: Tracing.ACTIVE,
-        environment: {
-          PARTICIPANTS_TABLENAME: participantsTable.tableName,
-          ROOMS_TABLENAME: roomsTable.tableName,
-          API_GW_DOMAINNAME: `${props.domainName}/${props.stageName}`
-        }
-      }
-    );
-
-    participantsTable.grantStreamRead(dynamoDbStreamsHandlerLambda);
 
     participantsTable.grantReadWriteData(websocketEventHandlerLambda);
-    participantsTable.grantReadWriteData(dynamoDbStreamsHandlerLambda);
-
     roomsTable.grantReadWriteData(websocketEventHandlerLambda);
-    roomsTable.grantReadWriteData(dynamoDbStreamsHandlerLambda);
 
     websocketEventHandlerLambda.grantInvoke(
       new ServicePrincipal("apigateway.amazonaws.com")
@@ -125,33 +98,25 @@ export class ApiStack extends cdk.Stack {
     const manageConnectionsPolicy = new PolicyStatement({
       actions: ["execute-api:ManageConnections"],
       resources: [
-        `arn:aws:execute-api:${this.region}:${this.account}:${api.ref}/*`
-      ]
+        `arn:aws:execute-api:${this.region}:${this.account}:${api.ref}/*`,
+      ],
     });
-    
-    dynamoDbStreamsHandlerLambda.addToRolePolicy(manageConnectionsPolicy);
-    websocketEventHandlerLambda.addToRolePolicy(manageConnectionsPolicy);
 
-    new EventSourceMapping(this, "EventSourceMapping", {
-      target: dynamoDbStreamsHandlerLambda,
-      eventSourceArn: participantsTable.tableStreamArn!,
-      batchSize: 1,
-      startingPosition: StartingPosition.LATEST
-    });
+    websocketEventHandlerLambda.addToRolePolicy(manageConnectionsPolicy);
 
     // API Gateway (continued)
 
     const routesToCreate: { prefix: string; routeKey: string }[] = [
       { prefix: "Connect", routeKey: "$connect" },
       { prefix: "Default", routeKey: "$default" },
-      { prefix: "Disconnect", routeKey: "$disconnect" }
+      { prefix: "Disconnect", routeKey: "$disconnect" },
     ];
 
     routesToCreate.forEach(({ prefix, routeKey }) => {
       const integration = new CfnIntegration(this, `${prefix}Integration`, {
         apiId: api.ref,
         integrationType: "AWS_PROXY",
-        integrationUri: `arn:aws:apigateway:${this.region}:lambda:path/2015-03-31/functions/${websocketEventHandlerLambda.functionArn}/invocations`
+        integrationUri: `arn:aws:apigateway:${this.region}:lambda:path/2015-03-31/functions/${websocketEventHandlerLambda.functionArn}/invocations`,
       });
 
       new CfnRoute(this, `${prefix}Route`, {
@@ -159,23 +124,23 @@ export class ApiStack extends cdk.Stack {
         apiId: api.ref,
         apiKeyRequired: false,
         authorizationType: "NONE",
-        target: `integrations/${integration.ref}`
+        target: `integrations/${integration.ref}`,
       });
     });
 
     new CfnDeployment(this, "Deployment", {
-      apiId: api.ref
+      apiId: api.ref,
     });
 
     const stage = new CfnStage(this, "Stage", {
       stageName: props.stageName,
-      apiId: api.ref
+      apiId: api.ref,
     });
 
     // Outputs
 
     new CfnOutput(this, "WebSocketURI", {
-      value: `wss://${api.ref}.execute-api.${this.region}.amazonaws.com/${stage.stageName}`
+      value: `wss://${api.ref}.execute-api.${this.region}.amazonaws.com/${stage.stageName}`,
     });
 
     // Note: When making changes to an existing stage it needs to be redeployed
@@ -194,12 +159,12 @@ export class ApiStack extends cdk.Stack {
       managedPolicies: [
         ManagedPolicy.fromAwsManagedPolicyName(
           "service-role/AmazonAPIGatewayPushToCloudWatchLogs"
-        )
-      ]
+        ),
+      ],
     });
 
     new CfnOutput(this, "CloudWatchRoleArn", {
-      value: cloudWatchRole.roleArn
+      value: cloudWatchRole.roleArn,
     });
   }
 }

@@ -1,4 +1,4 @@
-import { ParticipantRepository } from "./ParticipantRepository";
+import ParticipantRepository from "./ParticipantRepository";
 
 // ⚠️ DynamoDB integration test (underlying AWS client is not mocked!)
 describe("ParticipantRepository", () => {

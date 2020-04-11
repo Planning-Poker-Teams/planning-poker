@@ -76,6 +76,7 @@ When("a participant initiates a new estimation for {string}", function(
   this.outgoingCommands = handlePokerEvent(
     this.room!,
     this.inputEvent,
+    this.initiatingParticipant.id,
     this.initiatingParticipant
   );
 });
@@ -98,6 +99,7 @@ When("{string} estimates {string} for {string}", function(
   this.outgoingCommands = handlePokerEvent(
     this.room!,
     this.inputEvent,
+    participant.id,
     participant
   );
 });
@@ -113,6 +115,7 @@ When("showing the result is requested", function() {
   this.outgoingCommands = handlePokerEvent(
     this.room!,
     this.inputEvent,
+    participant.id,
     participant
   );
 });
@@ -170,7 +173,7 @@ Then("he should receive information about the task", function() {
     payload: [
       {
         eventType: "startEstimation",
-        userName: this.room?.currentEstimation?.initiator.name,
+        userName: this.room?.currentEstimation?.initiator?.name,
         startDate: this.room?.currentEstimation?.startDate,
         taskName: this.room?.currentEstimation?.taskName
       }

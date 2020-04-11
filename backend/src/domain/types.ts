@@ -4,8 +4,9 @@ export interface PokerRoom {
   currentEstimation?: {
     taskName: string;
     startDate: string;
-    initiator: Participant;
-  }
+    // can be undefined if participant leaves after starting estimation:
+    initiator?: Participant;
+  };
 }
 
 export interface Participant {
