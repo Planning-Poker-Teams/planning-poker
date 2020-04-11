@@ -70,9 +70,17 @@ export class PokerEventInteractor {
 
   private async fetchRoom(roomName: string): Promise<PokerRoom> {
     const room = await this.roomRepository.getOrCreateRoom(roomName);
-    const participants = await this.participantRepository.fetchParticipants(
+
+    const participantsWithoutEstimations = await this.participantRepository.fetchParticipants(
       room.participants
     );
+
+    const participants = participantsWithoutEstimations.map((p) => ({
+      ...p,
+      currentEstimation: room.currentEstimates.find(
+        (e) => e.connectionId === p.id
+      )?.value,
+    }));
 
     const currentEstimation =
       room.currentEstimationTaskName != undefined
