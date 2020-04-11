@@ -104,12 +104,19 @@ export const handlePokerEvent = (
       if (isEstimationOngoing) {
         return [];
       } else {
+        const startEstimation: RequestStartEstimation = {
+          eventType: "startEstimation",
+          startDate: inputEvent.startDate || new Date().toISOString(),
+          taskName: inputEvent.taskName,
+          userName: inputEvent.userName,
+        };
+
         return [
-          { type: BROADCAST_MESSAGE, payload: inputEvent },
+          { type: BROADCAST_MESSAGE, payload: startEstimation },
           {
             type: SET_TASK,
-            startDate: inputEvent.startDate || new Date().toISOString(),
-            taskName: inputEvent.taskName,
+            startDate: startEstimation.startDate,
+            taskName: startEstimation.taskName,
             participantId: participantId,
           },
         ];
