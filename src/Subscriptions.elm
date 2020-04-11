@@ -5,7 +5,7 @@ import Model
     exposing
         ( Model
         , Msg
-        , Msg(IncomingEvent, SendRoomDataTick, TimerTick)
+        , Msg(IncomingEvent, RequestJoinRoom, TimerTick)
         , State(Estimate)
         )
 import WebSocket
@@ -16,9 +16,6 @@ import Platform.Sub exposing (none, batch)
 subscriptions : Model -> Sub Msg
 subscriptions model =
     let
-        isSpectator =
-            False
-
         serverUrl =
             planningPokerServerUrl model
 
@@ -34,15 +31,8 @@ subscriptions model =
             else
                 Platform.Sub.none
 
-        sendRoomSubscription =
-            if model.roomJoined then
-                Time.every (3 * second) SendRoomDataTick
-            else
-                Platform.Sub.none
-
     in
         Sub.batch
             [ webSocketSubscription
             , timerTickSubscription
-            , sendRoomSubscription
             ]

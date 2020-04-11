@@ -79,7 +79,6 @@ type Msg
     | JoinRoom
     | LeaveRoom
     | TimerTick Time
-    | SendRoomDataTick Time
     | IncomingEvent String
       -- IncomingEvent is being decoded and mapped to these:
     | UnexpectedPayload String

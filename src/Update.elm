@@ -49,13 +49,6 @@ sendPayload model payload =
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
-        SendRoomDataTick _ ->
-            let
-                nextMessage =
-                    RequestJoinRoom model.user model.roomId
-            in
-                update nextMessage model
-
         SetNewTaskName taskName ->
             ( { model | newTaskName = taskName }, Cmd.none )
 
@@ -156,22 +149,27 @@ update msg model =
 
         JoinRoom ->
             let
-                missingData =
-                    String.isEmpty model.roomId || String.isEmpty model.user.name
+                formIsValid =
+                    not (String.isEmpty model.roomId || String.isEmpty model.user.name)
 
                 newPage =
-                    if missingData then
-                        LandingPage
-                    else
+                    if formIsValid then
                         PlanningPokerRoom
-            in
-                ( { model
-                    | roomJoined = not missingData
+                    else
+                        LandingPage
+
+                updatedModel = 
+                    { model
+                    | roomJoined = formIsValid
                     , activePage = newPage
                     , users = []
-                  }
-                , Cmd.none
-                )
+                    }
+            in
+                if formIsValid then
+                    update (RequestJoinRoom model.user model.roomId) updatedModel
+                else
+                    (updatedModel, Cmd.none)
+                    
 
         LeaveRoom ->
             let
