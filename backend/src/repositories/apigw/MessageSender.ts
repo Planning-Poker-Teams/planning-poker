@@ -1,34 +1,35 @@
 import AWSXRay from "aws-xray-sdk-core";
 import ApiGatewayManagementApi from "aws-sdk/clients/apigatewaymanagementapi";
-import { Severity } from "./buildLogger";
+import { Severity } from "../../../buildLogger";
+import { MessageSender } from "../types";
 
-export class ApiGatewayManagementClient {
+export class ApiGatewayMessageSender implements MessageSender {
   private managementApi: ApiGatewayManagementApi;
 
   constructor(endpoint: string) {
     this.managementApi = AWSXRay.captureAWSClient(
       new ApiGatewayManagementApi({
         apiVersion: "2018-11-29",
-        endpoint
+        endpoint,
       })
     ) as ApiGatewayManagementApi;
   }
 
-  async broadcast(connectionIds: string[], data: string) {
-    await Promise.all(connectionIds.map(id => this.post(id, data)));
+  async broadcast(recipientIds: string[], data: string) {
+    await Promise.all(recipientIds.map((id) => this.post(id, data)));
   }
 
-  async post(connectionId: string, data: string) {
+  async post(recipientId: string, data: string): Promise<void> {
     try {
-      return await this.managementApi
+      await this.managementApi
         .postToConnection({
-          ConnectionId: connectionId,
-          Data: data
+          ConnectionId: recipientId,
+          Data: data,
         })
         .promise();
     } catch (error) {
       console.error(Severity.ERROR, "Error sending websocket message", {
-        error
+        error,
       });
       return Promise.resolve();
     }

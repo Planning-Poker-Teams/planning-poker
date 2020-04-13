@@ -1,5 +1,7 @@
-import { DynamoDbClient } from "../lib/DynamoDbClient";
-import { Participant } from "../domain/types";
+import { ParticipantRepository } from '../types';
+import { DynamoDbClient } from './DynamoDbClient';
+import { Participant } from '../../domain/types';
+
 
 interface ParticipantRowSchema {
   connectionId: string;
@@ -8,7 +10,7 @@ interface ParticipantRowSchema {
   isSpectator: boolean;
 }
 
-export default class ParticipantRepository {
+export default class DynamoDbParticipantRepository implements ParticipantRepository {
   private client: DynamoDbClient;
   private cache = new Map<string, ParticipantRowSchema>();
 

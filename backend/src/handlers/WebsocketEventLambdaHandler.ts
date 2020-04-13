@@ -1,21 +1,17 @@
-import { ApiGatewayManagementClient } from "../lib/ApiGatewayManagementClient";
-import { buildLogger } from "../lib/buildLogger";
+import { ApiGatewayMessageSender } from "../repositories/apigw/MessageSender";
+import { buildLogger } from "../../buildLogger";
 import {
   APIGatewayWebsocketInvocationRequest,
   LambdaResponse,
 } from "./lambdaTypes";
-import ParticipantRepository from "../repositories/ParticipantRepository";
-import RoomRepository from "../repositories/RoomRepository";
-import { PokerEventInteractor } from "../interactors/PokerEventInteractor";
-
-const participantRepository = new ParticipantRepository(
-  process.env.PARTICIPANTS_TABLENAME!
-);
+import DynamoDbRoomRepository from "../repositories/dynamodb/RoomRepository";
+import DynamoDbParticipantRepository from "../repositories/dynamodb/ParticipantRepository";
+import PokerEventInteractor from "../interactors/PokerEventInteractor";
 
 const pokerEventInteractor = new PokerEventInteractor(
-  participantRepository,
-  new RoomRepository(process.env.ROOMS_TABLENAME!),
-  new ApiGatewayManagementClient(process.env.API_GW_DOMAINNAME!)
+  new DynamoDbParticipantRepository(process.env.PARTICIPANTS_TABLENAME!),
+  new DynamoDbRoomRepository(process.env.ROOMS_TABLENAME!),
+  new ApiGatewayMessageSender(process.env.API_GW_DOMAINNAME!)
 );
 
 export const handler = async (
@@ -35,7 +31,7 @@ export const handler = async (
         console.log("Handling message", payload);
         await pokerEventInteractor.handleIncomingEvent(payload, connectionId);
       } catch (error) {
-        console.log("Message could not be processed", error)
+        console.log("Message could not be processed", error);
       }
       break;
 

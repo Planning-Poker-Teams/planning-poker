@@ -1,5 +1,5 @@
 import { Given, When, Then } from "cucumber";
-import { buildParticipant, ROOM_NAME } from "./cucumberWorld";
+import { buildParticipant, ROOM_NAME } from "./world";
 import { handlePokerEvent } from "../../domain/handlePokerEvent";
 import { CommandType, BroadcastMessage } from "../../domain/commandTypes";
 

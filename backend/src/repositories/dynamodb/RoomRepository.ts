@@ -1,4 +1,5 @@
-import { DynamoDbClient } from "../lib/DynamoDbClient";
+import { DynamoDbClient } from "./DynamoDbClient";
+import { RoomRepository } from "../types";
 
 export interface Room {
   name: string;
@@ -9,7 +10,7 @@ export interface Room {
   currentEstimates: { connectionId: string; value: string }[];
 }
 
-export default class RoomRepository {
+export default class DynamoDbRoomRepository implements RoomRepository {
   private client: DynamoDbClient;
 
   constructor(private roomsTableName: string, enableXRay: boolean = true) {
@@ -21,7 +22,7 @@ export default class RoomRepository {
 
     if (!room.Item) {
       await this.client.put(this.roomsTableName, {
-        name
+        name,
       });
       const newRoom = await this.client.get(
         this.roomsTableName,
@@ -37,7 +38,7 @@ export default class RoomRepository {
   async deleteRoom(name: string): Promise<void> {
     await this.client.delete({
       tableName: this.roomsTableName,
-      partitionKey: { name }
+      partitionKey: { name },
     });
   }
 
@@ -47,8 +48,8 @@ export default class RoomRepository {
       partitionKey: { name },
       updateExpression: "ADD participants :newParticipant",
       expressionAttributeValues: {
-        ":newParticipant": this.client.createSetExpression([connectionId])
-      }
+        ":newParticipant": this.client.createSetExpression([connectionId]),
+      },
     });
   }
 
@@ -61,8 +62,8 @@ export default class RoomRepository {
       partitionKey: { name },
       updateExpression: "DELETE participants :participant",
       expressionAttributeValues: {
-        ":participant": this.client.createSetExpression([connectionId])
-      }
+        ":participant": this.client.createSetExpression([connectionId]),
+      },
     });
   }
 
@@ -84,8 +85,8 @@ export default class RoomRepository {
       expressionAttributeValues: {
         ":taskName": taskName,
         ":initiator": initiator,
-        ":startDate": startDate
-      }
+        ":startDate": startDate,
+      },
     });
   }
 
@@ -102,14 +103,14 @@ export default class RoomRepository {
         ":newEstimate": this.client.createSetExpression([
           JSON.stringify({
             connectionId,
-            value
-          })
-        ])
-      }
+            value,
+          }),
+        ]),
+      },
     });
   }
 
-  async finishEstimation(roomName: string) {
+  async finishEstimation(roomName: string): Promise<void> {
     await this.client.update({
       tableName: this.roomsTableName,
       partitionKey: { name: roomName },
@@ -118,7 +119,7 @@ export default class RoomRepository {
         currentEstimationTaskName,
         currentEstimationStartDate,
         currentEstimationInitiator,
-        currentEstimates`
+        currentEstimates`,
     });
   }
 
@@ -131,7 +132,7 @@ export default class RoomRepository {
       currentEstimationInitiator: roomItem.currentEstimationInitiator,
       currentEstimates: roomItem.currentEstimates
         ? roomItem.currentEstimates.values.map(JSON.parse)
-        : []
+        : [],
     };
   }
 }

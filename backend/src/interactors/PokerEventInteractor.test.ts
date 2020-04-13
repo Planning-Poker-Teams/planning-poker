@@ -1,5 +1,4 @@
-import { PokerEventInteractor } from "./PokerEventInteractor";
-import ParticipantRepository from "../repositories/ParticipantRepository";
+import PokerEventInteractor from "./PokerEventInteractor";
 
 describe("PokerEventInteractor", () => {
   const participantRepositoryMock = {
