@@ -26,7 +26,7 @@ export const queryRoomState = (
           taskName: room.currentEstimationTaskName!,
           startDate: room.currentEstimationStartDate!,
           initiator: participants.find(
-            (p) => p.name === room.currentEstimationInitiator
+            (p) => p.id === room.currentEstimationInitiator
           ),
         }
       : undefined;
