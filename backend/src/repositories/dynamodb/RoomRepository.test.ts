@@ -88,6 +88,27 @@ describe("RoomRepository", () => {
     ]);
   });
 
+  it("records all estimation history for a user", async () => {
+    const TASK_NAME = "A new task";
+    await repository.getOrCreateRoom(ROOM_ID);
+    await repository.addToParticipants(ROOM_ID, CONNECTION_ID);
+    await repository.startNewEstimation(
+      ROOM_ID,
+      TASK_NAME,
+      CONNECTION_ID,
+      "2020-03-27T14:31:52.638Z"
+    );
+
+    await repository.addToEstimations(ROOM_ID, CONNECTION_ID, "10");
+    await repository.addToEstimations(ROOM_ID, CONNECTION_ID, "2");
+
+    const room = await repository.getOrCreateRoom(ROOM_ID);
+    expect(room.currentEstimates).toEqual([
+      { connectionId: CONNECTION_ID, value: "10" },
+      { connectionId: CONNECTION_ID, value: "2" },
+    ]);
+  });
+
   it("finishes an estimation", async () => {
     const TASK_NAME = "A new task";
     await repository.getOrCreateRoom(ROOM_ID);

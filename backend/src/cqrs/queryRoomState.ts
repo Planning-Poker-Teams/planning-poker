@@ -15,9 +15,9 @@ export const queryRoomState = (
 
   const participants = participantsWithoutEstimations.map((p) => ({
     ...p,
-    currentEstimation: room.currentEstimates.find(
-      (e) => e.connectionId === p.id
-    )?.value,
+    currentEstimation: room.currentEstimates
+      .reverse() // only take latest estimation into account
+      .find((e) => e.connectionId === p.id)?.value,
   }));
 
   const currentEstimation =
