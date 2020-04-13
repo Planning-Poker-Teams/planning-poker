@@ -28,7 +28,7 @@
     "@types/node": "^13.7.7",
     "aws-cdk": "^1.31.0",
     "cucumber": "^6.0.5",
-    "jest": "^25.2.3",
+    "jest": "^24",
     "ts-jest": "^24.1.0",
     "ts-node": "^8.6.2",
     "typescript": "~3.7.2"
