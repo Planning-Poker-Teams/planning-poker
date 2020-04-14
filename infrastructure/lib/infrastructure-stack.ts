@@ -14,7 +14,15 @@ export class InfrastructureStack extends cdk.Stack {
     const webApp = new CfnApp(this, "WebApp", {
       name: `${props?.stackName}-amplify-app`,
       repository: "https://github.com/c-st/planning-poker-web",
-      accessToken: oauthToken.toString()
+      accessToken: oauthToken.toString(),
+      customRules: [
+        {
+          source:
+            "</^((?!.(css|gif|ico|jpg|js|json|png|txt|svg|woff|ttf|map)$).)*$/>",
+          target: "/",
+          status: "200"
+        }
+      ]
     });
 
     new CfnBranch(this, "WebAppRepoBranch", {
