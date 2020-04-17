@@ -58,9 +58,10 @@ export default class PokerEventInteractor {
     );
 
     if (!participantInfo) {
-      throw Error(
-        `Participant with connectionId ${participantId} was not found when handling disconnection.`
+      console.log(
+        `Participant with connectionId ${participantId} was not found. Will not handle disconnection.`
       );
+      return;
     }
 
     const { participant, roomName } = participantInfo;
