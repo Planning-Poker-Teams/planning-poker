@@ -1615,9 +1615,9 @@
     physical-cpu-count "^2.0.0"
 
 "@types/aws-lambda@^8.10.47":
-  version "8.10.48"
-  resolved "https://registry.yarnpkg.com/@types/aws-lambda/-/aws-lambda-8.10.48.tgz#9171dd239b53673281b81fc6e718bc440696c5ca"
-  integrity sha512-+qFDcssXvrdXIxBbKCJp0atg94TJVJSt5sx3Cu6LOQX/EV2mbInjgxGeKuLmFFBjoxD7G6fSytZoeC6A9fzTuw==
+  version "8.10.50"
+  resolved "https://registry.yarnpkg.com/@types/aws-lambda/-/aws-lambda-8.10.50.tgz#fecc12b91cf9c58e98b6cc201b5996a3bb1e7cee"
+  integrity sha512-RDzmQ5mO1f0BViKiuOudENZmoCACEa461nTRVtxhsAiEqGCgwdhCYN0aFgk42X5+ELAiqJKbv2mK0LkopYRYQg==
 
 "@types/babel__core@^7.1.0":
   version "7.1.7"
@@ -1728,6 +1728,13 @@
   dependencies:
     jest-diff "^25.2.1"
     pretty-format "^25.2.1"
+
+"@types/lambda-log@^2.2.0":
+  version "2.2.0"
+  resolved "https://registry.yarnpkg.com/@types/lambda-log/-/lambda-log-2.2.0.tgz#fef6d443b30313df9f7cc529627d740591d05001"
+  integrity sha512-fkx6+kvOw75+2Mh6gyYrCN3uTVP8rJfj1TSXW4bmtjyoleoPWGoPHjxiFexZl5Ub5TQqyaZn/xQPh9NDR0Dh2Q==
+  dependencies:
+    "@types/node" "*"
 
 "@types/mime@*":
   version "2.0.1"
@@ -2140,7 +2147,22 @@ aws-sdk@^2.304.0:
     uuid "3.3.2"
     xml2js "0.4.19"
 
-aws-sdk@^2.630.0, aws-sdk@^2.654.0:
+aws-sdk@^2.630.0:
+  version "2.657.0"
+  resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.657.0.tgz#427cecd81aebfc247ec7f876a62f74456439e76c"
+  integrity sha512-CGxnYEFkZwIflH0cnylMtyNNmjkQIK5gG9L0MRGha4ANSogBrCXfWcjSWP1ziDK0FhRBAyJVdMX0il/kW4ya+A==
+  dependencies:
+    buffer "4.9.1"
+    events "1.1.1"
+    ieee754 "1.1.13"
+    jmespath "0.15.0"
+    querystring "0.2.0"
+    sax "1.2.1"
+    url "0.10.3"
+    uuid "3.3.2"
+    xml2js "0.4.19"
+
+aws-sdk@^2.654.0:
   version "2.656.0"
   resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.656.0.tgz#0d74664ddbf30701073be9f9913ee7266afef3b4"
   integrity sha512-UzqDvvt6i7gpuzEdK0GT/JOfBJcsCPranzZWdQ9HR4+5E0m5kf5gybZ6OX+UseIAE2/WND6Dv0aHgiI21AKenw==
@@ -3916,6 +3938,11 @@ fast-levenshtein@~2.0.6:
   resolved "https://registry.yarnpkg.com/fast-levenshtein/-/fast-levenshtein-2.0.6.tgz#3d8a5c66883a16a30ca8643e851f19baa7797917"
   integrity sha1-PYpcZog6FqMMqGQ+hR8Zuqd5eRc=
 
+fast-safe-stringify@^2.0.6:
+  version "2.0.7"
+  resolved "https://registry.yarnpkg.com/fast-safe-stringify/-/fast-safe-stringify-2.0.7.tgz#124aa885899261f68aedb42a7c080de9da608743"
+  integrity sha512-Utm6CdzT+6xsDk2m8S6uL8VHxNwI6Jub+e9NYTcAms28T84pTa25GJQV9j0CY0N1rM8hK4x6grpF2BQf+2qwVA==
+
 fastparse@^1.1.2:
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/fastparse/-/fastparse-1.1.2.tgz#91728c5a5942eced8531283c79441ee4122c35a9"
@@ -5340,6 +5367,13 @@ knuth-shuffle-seeded@^1.0.6:
   integrity sha1-AfG2VzOqdUDuCNiwF0Fk0iCB5OE=
   dependencies:
     seed-random "~2.2.0"
+
+lambda-log@^2.3.1:
+  version "2.3.1"
+  resolved "https://registry.yarnpkg.com/lambda-log/-/lambda-log-2.3.1.tgz#9326b9534e2259b29d766985134c1929d3244fc6"
+  integrity sha512-wJE7mD3Pj+rK7CcZC8hK5wU8kOOenbHMOt0zPnojoX7tLaT+Z592nxCyy1R4Tp8Xt8mMAjbkJqNeoX8knyHyxQ==
+  dependencies:
+    fast-safe-stringify "^2.0.6"
 
 lazystream@^1.0.0:
   version "1.0.0"

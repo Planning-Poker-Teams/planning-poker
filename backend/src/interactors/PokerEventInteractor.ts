@@ -1,3 +1,4 @@
+import log from "../../log";
 import { handlePokerEvent } from "../domain/handlePokerEvent";
 import { Command } from "../domain/commandTypes";
 import {
@@ -42,6 +43,10 @@ export default class PokerEventInteractor {
       throw Error(`Participant with id ${connectionId} could not be found.`);
     }
 
+    log.options.meta.roomName = roomName;
+    log.options.meta.userName = participantInfo?.participant.name;
+    log.info("Incoming message", { message: pokerEvent, direction: "incoming" });
+
     const room = await this.queryRoomState(roomName);
     const commands = handlePokerEvent(
       room,
@@ -58,7 +63,7 @@ export default class PokerEventInteractor {
     );
 
     if (!participantInfo) {
-      console.log(
+      log.warn(
         `Participant with connectionId ${participantId} was not found. Will not handle disconnection.`
       );
       return;

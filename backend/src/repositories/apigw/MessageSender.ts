@@ -1,6 +1,6 @@
+import log from "../../../log";
 import AWSXRay from "aws-xray-sdk-core";
 import ApiGatewayManagementApi from "aws-sdk/clients/apigatewaymanagementapi";
-import { Severity } from "../../../buildLogger";
 import { MessageSender } from "../types";
 
 export class ApiGatewayMessageSender implements MessageSender {
@@ -28,9 +28,7 @@ export class ApiGatewayMessageSender implements MessageSender {
         })
         .promise();
     } catch (error) {
-      console.error(Severity.ERROR, "Error sending websocket message", {
-        error,
-      });
+      log.error(error);
       return Promise.resolve();
     }
   }

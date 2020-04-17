@@ -1,3 +1,4 @@
+import log from "../../log";
 import {
   RoomRepository,
   ParticipantRepository,
@@ -19,6 +20,11 @@ export const handleCommand = (
   switch (command.type) {
     case CommandType.BROADCAST_MESSAGE:
       const allConnectionIds = room.participants.map((p) => p.id);
+      log.info("Outgoing message (broadcast)", {
+        message: command.payload,
+        direction: "outgoing",
+        broadcast: true,
+      });
       await messageSender.broadcast(
         allConnectionIds,
         JSON.stringify(command.payload)
@@ -27,13 +33,17 @@ export const handleCommand = (
 
     case CommandType.SEND_MESSAGE:
       await Promise.all(
-        command.payload.map(
-          async (payload) =>
-            await messageSender.post(
-              command.recipient.id,
-              JSON.stringify(payload)
-            )
-        )
+        command.payload.map(async (payload) => {
+          log.info("Outgoing message", {
+            message: payload,
+            direction: "outgoing",
+            connectionId: command.recipient.id,
+          });
+          await messageSender.post(
+            command.recipient.id,
+            JSON.stringify(payload)
+          );
+        })
       );
       break;
 

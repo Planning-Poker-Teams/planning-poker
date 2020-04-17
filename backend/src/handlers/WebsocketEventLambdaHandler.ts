@@ -1,5 +1,5 @@
+import log from "../../log";
 import { ApiGatewayMessageSender } from "../repositories/apigw/MessageSender";
-import { buildLogger } from "../../buildLogger";
 import {
   APIGatewayWebsocketInvocationRequest,
   LambdaResponse,
@@ -17,26 +17,30 @@ const pokerEventInteractor = new PokerEventInteractor(
 export const handler = async (
   event: APIGatewayWebsocketInvocationRequest
 ): Promise<LambdaResponse> => {
-  const { connectionId, requestId, eventType } = event.requestContext;
-  const log = buildLogger(connectionId, requestId);
+  const { connectionId, eventType } = event.requestContext;
+  log.options.meta.connectionId = connectionId;
 
   switch (eventType) {
     case "CONNECT":
-      console.log(`New connection established ${connectionId}`);
+      log.info("User connected");
       break;
 
     case "MESSAGE":
       try {
-        const payload = JSON.parse(event.body);
-        console.log("Handling message", payload);
-        await pokerEventInteractor.handleIncomingEvent(payload, connectionId);
+        const incomingMessage = JSON.parse(event.body);
+        await pokerEventInteractor.handleIncomingEvent(
+          incomingMessage,
+          connectionId
+        );
       } catch (error) {
-        console.log("Message could not be processed", error);
+        log.error("Incoming message could not be parsed", {
+          incomingMessage: event.body,
+        });
       }
       break;
 
     case "DISCONNECT":
-      console.log(`Disconnected ${connectionId}`);
+      log.info("User disconnected");
       await pokerEventInteractor.handleUserLeft(connectionId);
       break;
   }
