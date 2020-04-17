@@ -7,7 +7,13 @@ export interface Room {
   currentEstimationTaskName?: string;
   currentEstimationStartDate?: string;
   currentEstimationInitiator?: string;
-  currentEstimates: { connectionId: string; value: string }[];
+  currentEstimates: Estimate[];
+}
+
+export interface Estimate {
+  connectionId: string;
+  timestamp: string;
+  value: string;
 }
 
 export default class DynamoDbRoomRepository implements RoomRepository {
@@ -93,7 +99,8 @@ export default class DynamoDbRoomRepository implements RoomRepository {
   async addToEstimations(
     roomName: string,
     connectionId: string,
-    value: string
+    value: string,
+    timestamp: Date = new Date()
   ): Promise<void> {
     await this.client.update({
       tableName: this.roomsTableName,
@@ -103,6 +110,7 @@ export default class DynamoDbRoomRepository implements RoomRepository {
         ":newEstimate": this.client.createSetExpression([
           JSON.stringify({
             connectionId,
+            timestamp,
             value,
           }),
         ]),

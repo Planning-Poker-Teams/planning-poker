@@ -83,8 +83,8 @@ describe("RoomRepository", () => {
 
     const room = await repository.getOrCreateRoom(ROOM_ID);
     expect(room.currentEstimates).toEqual([
-      { connectionId: CONNECTION_ID, value: "10" },
-      { connectionId: CONNECTION_ID_2, value: "2" },
+      { connectionId: CONNECTION_ID, timestamp: expect.anything(), value: "10" },
+      { connectionId: CONNECTION_ID_2, timestamp: expect.anything(), value: "2" },
     ]);
   });
 
@@ -99,13 +99,18 @@ describe("RoomRepository", () => {
       "2020-03-27T14:31:52.638Z"
     );
 
-    await repository.addToEstimations(ROOM_ID, CONNECTION_ID, "10");
-    await repository.addToEstimations(ROOM_ID, CONNECTION_ID, "2");
+    const firstTimestamp = new Date()
+    firstTimestamp.setSeconds(20)
+    const secondTimestamp = new Date()
+    secondTimestamp.setSeconds(40)
+
+    await repository.addToEstimations(ROOM_ID, CONNECTION_ID, "10", firstTimestamp);
+    await repository.addToEstimations(ROOM_ID, CONNECTION_ID, "2", secondTimestamp);
 
     const room = await repository.getOrCreateRoom(ROOM_ID);
     expect(room.currentEstimates).toEqual([
-      { connectionId: CONNECTION_ID, value: "10" },
-      { connectionId: CONNECTION_ID, value: "2" },
+      { connectionId: CONNECTION_ID, timestamp: firstTimestamp.toISOString(), value: "10" },
+      { connectionId: CONNECTION_ID, timestamp: secondTimestamp.toISOString(), value: "2" },
     ]);
   });
 
