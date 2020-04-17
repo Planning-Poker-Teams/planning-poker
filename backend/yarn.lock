@@ -152,6 +152,48 @@
     "@aws-cdk/core" "1.32.2"
     constructs "^2.0.0"
 
+"@aws-cdk/aws-codebuild@1.32.2":
+  version "1.32.2"
+  resolved "https://registry.yarnpkg.com/@aws-cdk/aws-codebuild/-/aws-codebuild-1.32.2.tgz#8c69477a083a832ddd6721a6003a337cecf262b2"
+  integrity sha512-ZtiqmbqAZszcQ1i+chY12PyO3yHEggjHsEiy0kRsmKotH0cwa8DLTmn7WvLSEoKzA5lasaEsDFWUCJaGwE3iXA==
+  dependencies:
+    "@aws-cdk/assets" "1.32.2"
+    "@aws-cdk/aws-cloudwatch" "1.32.2"
+    "@aws-cdk/aws-codecommit" "1.32.2"
+    "@aws-cdk/aws-ec2" "1.32.2"
+    "@aws-cdk/aws-ecr" "1.32.2"
+    "@aws-cdk/aws-ecr-assets" "1.32.2"
+    "@aws-cdk/aws-events" "1.32.2"
+    "@aws-cdk/aws-iam" "1.32.2"
+    "@aws-cdk/aws-kms" "1.32.2"
+    "@aws-cdk/aws-s3" "1.32.2"
+    "@aws-cdk/aws-s3-assets" "1.32.2"
+    "@aws-cdk/aws-secretsmanager" "1.32.2"
+    "@aws-cdk/core" "1.32.2"
+    constructs "^2.0.0"
+
+"@aws-cdk/aws-codecommit@1.32.2":
+  version "1.32.2"
+  resolved "https://registry.yarnpkg.com/@aws-cdk/aws-codecommit/-/aws-codecommit-1.32.2.tgz#2b631007c98b5ffdc10fa8f8bcb2a0a2dbd53fc5"
+  integrity sha512-eL5+9j//iNd9ylh7dWi9wAH6kOOxQU+J0XbIvkdBEBvYmJ13a6XZVWppP5Jcq/brRqWlmz2nT7DtMnG2RHMARg==
+  dependencies:
+    "@aws-cdk/aws-events" "1.32.2"
+    "@aws-cdk/aws-iam" "1.32.2"
+    "@aws-cdk/core" "1.32.2"
+    constructs "^2.0.0"
+
+"@aws-cdk/aws-codepipeline@1.32.2":
+  version "1.32.2"
+  resolved "https://registry.yarnpkg.com/@aws-cdk/aws-codepipeline/-/aws-codepipeline-1.32.2.tgz#c72a08f66b57af89b9a1cbb5e3b11d876186a62c"
+  integrity sha512-SNAaw6IwuuAGEqRxx9BrBVj6Wdk2T90TRyUllsjJRojjQFwFxUA+Mb74eWWaIsN2S1J9Xy40OpQmLIwaIJLSPg==
+  dependencies:
+    "@aws-cdk/aws-events" "1.32.2"
+    "@aws-cdk/aws-iam" "1.32.2"
+    "@aws-cdk/aws-kms" "1.32.2"
+    "@aws-cdk/aws-s3" "1.32.2"
+    "@aws-cdk/core" "1.32.2"
+    constructs "^2.0.0"
+
 "@aws-cdk/aws-dynamodb@^1.26.0":
   version "1.32.2"
   resolved "https://registry.yarnpkg.com/@aws-cdk/aws-dynamodb/-/aws-dynamodb-1.32.2.tgz#364da2b41c0f116cfd9542f1eaf84a59bf240b2d"
@@ -259,7 +301,28 @@
     "@aws-cdk/core" "1.32.2"
     constructs "^2.0.0"
 
-"@aws-cdk/aws-events@1.32.2":
+"@aws-cdk/aws-events-targets@^1.32.2":
+  version "1.32.2"
+  resolved "https://registry.yarnpkg.com/@aws-cdk/aws-events-targets/-/aws-events-targets-1.32.2.tgz#480599861962fcbcea51746bbd048bc272edd74c"
+  integrity sha512-fOHRik+r09ckUWzu8xWEVs9z3VlfJUpMwUC8cTsjBGdJtPRJXD8MyrVe858OVTXOohvdT/OXGCppB982wuuLUw==
+  dependencies:
+    "@aws-cdk/aws-batch" "1.32.2"
+    "@aws-cdk/aws-cloudformation" "1.32.2"
+    "@aws-cdk/aws-codebuild" "1.32.2"
+    "@aws-cdk/aws-codepipeline" "1.32.2"
+    "@aws-cdk/aws-ec2" "1.32.2"
+    "@aws-cdk/aws-ecs" "1.32.2"
+    "@aws-cdk/aws-events" "1.32.2"
+    "@aws-cdk/aws-iam" "1.32.2"
+    "@aws-cdk/aws-lambda" "1.32.2"
+    "@aws-cdk/aws-sns" "1.32.2"
+    "@aws-cdk/aws-sns-subscriptions" "1.32.2"
+    "@aws-cdk/aws-sqs" "1.32.2"
+    "@aws-cdk/aws-stepfunctions" "1.32.2"
+    "@aws-cdk/core" "1.32.2"
+    constructs "^2.0.0"
+
+"@aws-cdk/aws-events@1.32.2", "@aws-cdk/aws-events@^1.32.2":
   version "1.32.2"
   resolved "https://registry.yarnpkg.com/@aws-cdk/aws-events/-/aws-events-1.32.2.tgz#664130414bc4772d20dba1b3710451b890c2b643"
   integrity sha512-HmgngkQVE8ePAfy62dMb6bFzLT2XywrNb7JkcOk/u8VOCdWxMX10fk3YjMoNBknYdMaPolvDFPFURkWCsoMOSw==

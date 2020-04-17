@@ -1,11 +1,6 @@
 import * as path from "path";
 import * as cdk from "@aws-cdk/core";
-import {
-  Runtime,
-  Tracing,
-  EventSourceMapping,
-  StartingPosition,
-} from "@aws-cdk/aws-lambda";
+import { Runtime, Tracing } from "@aws-cdk/aws-lambda";
 import { NodejsFunction } from "@aws-cdk/aws-lambda-nodejs";
 import {
   CfnApi,
@@ -27,6 +22,8 @@ import {
   BillingMode,
   StreamViewType,
 } from "@aws-cdk/aws-dynamodb";
+import { Rule, Schedule } from "@aws-cdk/aws-events";
+import { LambdaFunction } from "@aws-cdk/aws-events-targets";
 
 // TODO: add custom domain (api.planningpoker.cc)
 // https://docs.aws.amazon.com/apigateway/latest/developerguide/how-to-custom-domains.html
@@ -76,7 +73,10 @@ export class ApiStack extends cdk.Stack {
       "HandleWebsocketEvent",
       {
         functionName: `${props.stackName}-websocket-handler`,
-        entry: path.join(__dirname, "../src/handlers/websocketEventLambdaHandler.ts"),
+        entry: path.join(
+          __dirname,
+          "../src/handlers/websocketEventLambdaHandler.ts"
+        ),
         runtime: Runtime.NODEJS_12_X,
         memorySize: 256,
         tracing: Tracing.ACTIVE,
@@ -103,6 +103,35 @@ export class ApiStack extends cdk.Stack {
     });
 
     websocketEventHandlerLambda.addToRolePolicy(manageConnectionsPolicy);
+
+    const preventClientTimeoutLambda = new NodejsFunction(
+      this,
+      "PreventClientTimeoutLambda",
+      {
+        functionName: `${props.stackName}-prevent-client-timeout`,
+        entry: path.join(__dirname, "../src/handlers/preventClientTimeout.ts"),
+        runtime: Runtime.NODEJS_12_X,
+        memorySize: 256,
+        tracing: Tracing.ACTIVE,
+        environment: {
+          PARTICIPANTS_TABLENAME: participantsTable.tableName,
+          API_GW_DOMAINNAME: `${props.domainName}/${props.stageName}`,
+        },
+      }
+    );
+
+    const preventClientTimeoutLambdaTrigger = new Rule(
+      this,
+      "PreventClientTimeoutLambdaTrigger",
+      {
+        ruleName: `${props.stackName}-prevent-client-timeout-lambda-trigger`,
+        schedule: Schedule.expression("rate(5 minutes)"),
+      }
+    );
+
+    preventClientTimeoutLambdaTrigger.addTarget(
+      new LambdaFunction(preventClientTimeoutLambda)
+    );
 
     // API Gateway (continued)
 
