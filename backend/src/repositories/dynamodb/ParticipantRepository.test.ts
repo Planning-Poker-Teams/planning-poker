@@ -1,4 +1,5 @@
 import ParticipantRepository from "./ParticipantRepository";
+import { assert } from "lambda-log";
 
 // ⚠️ DynamoDB integration test (underlying AWS client is not mocked!)
 describe("ParticipantRepository", () => {
@@ -8,7 +9,7 @@ describe("ParticipantRepository", () => {
   const exampleParticipant = {
     id: "connection-id1",
     name: "Gustavo",
-    isSpectator: false
+    isSpectator: false,
   };
 
   // beforeEach(async () => {
@@ -16,12 +17,20 @@ describe("ParticipantRepository", () => {
   //     // const client = new DynamoDB.DocumentClient();
   // })
 
+  it("returns all participants", async () => {
+    await repository.putParticipant(exampleParticipant, exampleRoomName);
+    const participants = await repository.getAllParticipants();
+    expect(participants.length).toBeGreaterThanOrEqual(1);
+  });
+
   it("inserts a participant", async () => {
     await repository.putParticipant(exampleParticipant, exampleRoomName);
   });
 
   it("fetches a participant", async () => {
-    const participantInfo = await repository.fetchParticipantInfo("connection-id1");
+    const participantInfo = await repository.fetchParticipantInfo(
+      "connection-id1"
+    );
     expect(participantInfo!.participant).toEqual(exampleParticipant);
     expect(participantInfo!.roomName).toEqual(exampleRoomName);
   });
@@ -36,7 +45,7 @@ describe("ParticipantRepository", () => {
   it("can handle existing and non-existing entries in a batchGet", async () => {
     const participants = await repository.fetchParticipants([
       "connection-id1",
-      "unknown"
+      "unknown",
     ]);
 
     expect(participants).toEqual([exampleParticipant]);
@@ -46,13 +55,13 @@ describe("ParticipantRepository", () => {
     const otherParticipant = {
       ...exampleParticipant,
       id: "connection-id2",
-      name: "Rodolfo"
+      name: "Rodolfo",
     };
     await repository.putParticipant(otherParticipant, exampleRoomName);
 
     const participants = await repository.fetchParticipants([
       "connection-id1",
-      "connection-id2"
+      "connection-id2",
     ]);
 
     expect(participants.length).toBe(2);
@@ -66,7 +75,7 @@ describe("ParticipantRepository", () => {
 
     const participants = await repository.fetchParticipants([
       "connection-id1",
-      "connection-id2"
+      "connection-id2",
     ]);
 
     expect(participants.length).toBe(0);

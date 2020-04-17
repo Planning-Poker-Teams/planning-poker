@@ -1,5 +1,6 @@
 import AWSXRay from "aws-xray-sdk-core";
 import { DocumentClient } from "aws-sdk/lib/dynamodb/document_client";
+import { ScanInput } from "aws-sdk/clients/dynamodb";
 import DynamoDB = require("aws-sdk/clients/dynamodb");
 import BatchGetItemInput = DocumentClient.BatchGetItemInput;
 import GetItemInput = DocumentClient.GetItemInput;
@@ -13,6 +14,7 @@ import BatchGetItemOutput = DocumentClient.BatchGetItemOutput;
 import GetItemOutput = DocumentClient.GetItemOutput;
 import PutItemOutput = DocumentClient.PutItemOutput;
 import QueryOutput = DocumentClient.QueryOutput;
+import AttributeMap = DocumentClient.AttributeMap;
 
 interface QueryIndexParameters {
   tableName: string;
@@ -48,7 +50,7 @@ export class DynamoDbClient {
     if (enableXRay) {
       // Workaround for https://github.com/aws/aws-xray-sdk-node/issues/23
       this.client = new DynamoDB.DocumentClient({
-        service: new DynamoDB({ apiVersion: "2012-10-08" })
+        service: new DynamoDB({ apiVersion: "2012-10-08" }),
       });
       AWSXRay.captureAWSClient((this.client as any).service);
     } else {
@@ -57,22 +59,43 @@ export class DynamoDbClient {
   }
 
   put(tableName: string, item: object): Promise<PutItemOutput> {
-    const payload = {
+    const args = {
       TableName: tableName,
-      Item: item
+      Item: item,
     };
 
-    return this.client.put(payload).promise();
+    return this.client.put(args).promise();
   }
 
-  get(tableName: string, keyInfo: KeyInfo, consistentRead: boolean = false): Promise<GetItemOutput> {
-    const payload: GetItemInput = {
+  async scan(tableName: string): Promise<AttributeMap[]> {
+    const args: ScanInput = {
       TableName: tableName,
-      Key: keyInfo,
-      ConsistentRead: consistentRead
     };
 
-    return this.client.get(payload).promise();
+    let items: AttributeMap[] = [];
+    let pagedItems;
+
+    do {
+      pagedItems = await this.client.scan(args).promise();
+      pagedItems.Items?.forEach((item) => items.push(item));
+      args.ExclusiveStartKey = pagedItems.LastEvaluatedKey;
+    } while (pagedItems.LastEvaluatedKey);
+
+    return items;
+  }
+
+  get(
+    tableName: string,
+    keyInfo: KeyInfo,
+    consistentRead: boolean = false
+  ): Promise<GetItemOutput> {
+    const args: GetItemInput = {
+      TableName: tableName,
+      Key: keyInfo,
+      ConsistentRead: consistentRead,
+    };
+
+    return this.client.get(args).promise();
   }
 
   batchGet(
@@ -80,43 +103,43 @@ export class DynamoDbClient {
     fieldName: string,
     ids: string[]
   ): Promise<BatchGetItemOutput> {
-    const payload: BatchGetItemInput = {
+    const args: BatchGetItemInput = {
       RequestItems: {
         [tableName]: {
-          Keys: ids.map(id => ({ [fieldName]: id }))
-        }
-      }
+          Keys: ids.map((id) => ({ [fieldName]: id })),
+        },
+      },
     };
 
-    return this.client.batchGet(payload).promise();
+    return this.client.batchGet(args).promise();
   }
 
   update(parameters: UpdateParameters): Promise<UpdateItemOutput> {
-    const payload: UpdateItemInput = {
+    const args: UpdateItemInput = {
       TableName: parameters.tableName,
       Key: parameters.partitionKey,
       ConditionExpression: parameters.conditionExpression,
       ExpressionAttributeValues: parameters.expressionAttributeValues,
       UpdateExpression: parameters.updateExpression,
-      ReturnValues: parameters.returnValues
+      ReturnValues: parameters.returnValues,
     };
 
-    return this.client.update(payload).promise();
+    return this.client.update(args).promise();
   }
 
   delete(parameters: DeleteParameters): Promise<DeleteItemOutput> {
-    const payload: DeleteItemInput = {
+    const args: DeleteItemInput = {
       TableName: parameters.tableName,
       Key: parameters.partitionKey,
       ConditionExpression: parameters.conditionExpression,
-      ExpressionAttributeValues: parameters.expressionAttributeValues
+      ExpressionAttributeValues: parameters.expressionAttributeValues,
     };
 
-    return this.client.delete(payload).promise();
+    return this.client.delete(args).promise();
   }
 
   queryIndex(parameters: QueryIndexParameters): Promise<QueryOutput> {
-    const payload = {
+    const args = {
       TableName: parameters.tableName,
       IndexName: parameters.indexName,
       KeyConditionExpression: parameters.keyConditionExpression,
@@ -126,10 +149,10 @@ export class DynamoDbClient {
           ? parameters.scanIndexForward
           : true,
       Limit: parameters.limit,
-      ExclusiveStartKey: parameters.startKeyObject
+      ExclusiveStartKey: parameters.startKeyObject,
     };
 
-    return this.client.query(payload).promise();
+    return this.client.query(args).promise();
   }
 
   createSetExpression(values: any) {

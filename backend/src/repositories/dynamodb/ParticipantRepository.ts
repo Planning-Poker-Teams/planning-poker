@@ -1,7 +1,6 @@
-import { ParticipantRepository } from '../types';
-import { DynamoDbClient } from './DynamoDbClient';
-import { Participant } from '../../domain/types';
-
+import { ParticipantRepository } from "../types";
+import { DynamoDbClient } from "./DynamoDbClient";
+import { Participant } from "../../domain/types";
 
 interface ParticipantRowSchema {
   connectionId: string;
@@ -10,7 +9,8 @@ interface ParticipantRowSchema {
   isSpectator: boolean;
 }
 
-export default class DynamoDbParticipantRepository implements ParticipantRepository {
+export default class DynamoDbParticipantRepository
+  implements ParticipantRepository {
   private client: DynamoDbClient;
   private cache = new Map<string, ParticipantRowSchema>();
 
@@ -19,6 +19,19 @@ export default class DynamoDbParticipantRepository implements ParticipantReposit
     enableXRay: boolean = true
   ) {
     this.client = new DynamoDbClient(enableXRay);
+  }
+
+  async getAllParticipants(): Promise<Participant[]> {
+    const allItems = await this.client.scan(this.participantsTableName);
+
+    return allItems.map((item) => {
+      const participant = {
+        id: item.connectionId,
+        name: item.name,
+        isSpectator: item.isSpectator,
+      };
+      return participant;
+    });
   }
 
   async putParticipant(

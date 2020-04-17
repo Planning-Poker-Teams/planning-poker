@@ -9,7 +9,7 @@ import {
   CfnDeployment,
   CfnStage,
 } from "@aws-cdk/aws-apigatewayv2";
-import { CfnOutput } from "@aws-cdk/core";
+import { CfnOutput, Duration } from "@aws-cdk/core";
 import {
   ServicePrincipal,
   PolicyStatement,
@@ -111,7 +111,8 @@ export class ApiStack extends cdk.Stack {
         functionName: `${props.stackName}-prevent-client-timeout`,
         entry: path.join(__dirname, "../src/handlers/preventClientTimeout.ts"),
         runtime: Runtime.NODEJS_12_X,
-        memorySize: 256,
+        memorySize: 128,
+        timeout: Duration.seconds(20),
         tracing: Tracing.ACTIVE,
         environment: {
           PARTICIPANTS_TABLENAME: participantsTable.tableName,
@@ -119,6 +120,9 @@ export class ApiStack extends cdk.Stack {
         },
       }
     );
+
+    participantsTable.grantReadData(preventClientTimeoutLambda);
+    preventClientTimeoutLambda.addToRolePolicy(manageConnectionsPolicy);
 
     const preventClientTimeoutLambdaTrigger = new Rule(
       this,
