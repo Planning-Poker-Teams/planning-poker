@@ -67,7 +67,7 @@ export class ApiStack extends cdk.Stack {
           "../src/handlers/websocketEventLambdaHandler.ts"
         ),
         runtime: Runtime.NODEJS_12_X,
-        memorySize: 256,
+        memorySize: 512,
         tracing: Tracing.ACTIVE,
         environment: {
           PARTICIPANTS_TABLENAME: participantsTable.tableName,
