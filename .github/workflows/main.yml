@@ -16,9 +16,14 @@ jobs:
     - name: Install dependencies
       working-directory: ./backend
       run: |
-          npm install --frozen-lockfile
+          yarn install --frozen-lockfile
+
+    - name: Lint
+      working-directory: ./backend
+      run: |
+          yarn lint
 
     - name: Run feature tests
       working-directory: ./backend
       run: |
-          npm run features
+          yarn features
