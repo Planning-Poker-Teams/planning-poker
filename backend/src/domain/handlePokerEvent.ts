@@ -12,6 +12,12 @@ const {
   FINISH_ROUND,
 } = CommandType;
 
+const sortByName = (first: Participant, other: Participant): number => {
+  if (first.name < other.name) return -1;
+  if (first.name > other.name) return 1;
+  return 0;
+};
+
 export const handlePokerEvent = (
   room: PokerRoom,
   inputEvent: PokerEvent,
@@ -19,7 +25,7 @@ export const handlePokerEvent = (
   participant?: Participant
 ): Command[] => {
   switch (inputEvent.eventType) {
-    case "joinRoom":
+    case "joinRoom": {
       const newParticipant: Participant = {
         id: participantId,
         name: inputEvent.userName,
@@ -82,8 +88,9 @@ export const handlePokerEvent = (
       } else {
         return messagesToSend;
       }
+    }
 
-    case "userLeft":
+    case "userLeft": {
       return [
         {
           type: REMOVE_PARTICIPANT,
@@ -95,8 +102,9 @@ export const handlePokerEvent = (
           payload: inputEvent,
         },
       ];
+    }
 
-    case "startEstimation":
+    case "startEstimation": {
       const isEstimationOngoing =
         room.currentEstimation?.taskName !== undefined &&
         !room.participants.every((p) => p.currentEstimation);
@@ -121,8 +129,9 @@ export const handlePokerEvent = (
           },
         ];
       }
+    }
 
-    case "estimate":
+    case "estimate": {
       if (inputEvent.taskName !== room.currentEstimation?.taskName) {
         return [];
       }
@@ -144,8 +153,9 @@ export const handlePokerEvent = (
           payload: userHasEstimated,
         },
       ];
+    }
 
-    case "showResult":
+    case "showResult": {
       const estimatingParticipants = room.participants.filter(
         (p) => !p.isSpectator
       );
@@ -174,14 +184,9 @@ export const handlePokerEvent = (
         },
         { type: FINISH_ROUND, roomName: room.name },
       ];
+    }
 
     default:
       return [];
   }
-};
-
-export const sortByName = (first: Participant, other: Participant): number => {
-  if (first.name < other.name) return -1;
-  if (first.name > other.name) return 1;
-  return 0;
 };

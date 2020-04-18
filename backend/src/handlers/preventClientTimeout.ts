@@ -15,6 +15,10 @@ export const handler = async (): Promise<any> => {
   });
 
   const participants = await participantRepository.getAllParticipants();
+  if (participants.length == 0) {
+    return;
+  }
+
   const allConnectionIds = participants.map((p) => p.id);
   await Promise.all(
     allConnectionIds.map(async (id) => {

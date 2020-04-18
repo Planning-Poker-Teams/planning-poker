@@ -13,7 +13,7 @@ declare module "cucumber" {
   }
 }
 
-export const buildParticipant = (name: string, isSpectator: boolean = false) => ({
+export const buildParticipant = (name: string, isSpectator = false): Participant => ({
   id: "some-id",
   name,
   isSpectator

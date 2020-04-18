@@ -65,8 +65,7 @@ These events are exchanged as JSON in the following format:
 In order to try out the API you can connect to the websocket endpoint with a tool like `wscat`:
 
 ```sh
-# Query parameters `name` and `room` are mandatory
-npx wscat -c "wss://api.planningpoker.cc/dev?name=Test&room=MyRoom&isSpectator=false"
+npx wscat -c "wss://api.planningpoker.cc/dev"
 ```
 
 ## Estimation stages

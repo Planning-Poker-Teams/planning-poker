@@ -1,5 +1,4 @@
 import ParticipantRepository from "./ParticipantRepository";
-import { assert } from "lambda-log";
 
 // ⚠️ DynamoDB integration test (underlying AWS client is not mocked!)
 describe("ParticipantRepository", () => {

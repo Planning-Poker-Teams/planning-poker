@@ -18,7 +18,7 @@ export const handleCommand = (
   messageSender: MessageSender
 ) => async (command: Command, room: PokerRoom): Promise<void> => {
   switch (command.type) {
-    case CommandType.BROADCAST_MESSAGE:
+    case CommandType.BROADCAST_MESSAGE: {
       const allConnectionIds = room.participants.map((p) => p.id);
       log.info("Outgoing message (broadcast)", {
         message: command.payload,
@@ -30,8 +30,8 @@ export const handleCommand = (
         JSON.stringify(command.payload)
       );
       break;
-
-    case CommandType.SEND_MESSAGE:
+    }
+    case CommandType.SEND_MESSAGE: {
       await Promise.all(
         command.payload.map(async (payload) => {
           log.info("Outgoing message", {
@@ -46,8 +46,9 @@ export const handleCommand = (
         })
       );
       break;
+    }
 
-    case CommandType.ADD_PARTICIPANT:
+    case CommandType.ADD_PARTICIPANT: {
       await participantRepository.putParticipant(
         command.participant,
         command.roomName
@@ -57,16 +58,18 @@ export const handleCommand = (
         command.participant.id
       );
       break;
+    }
 
-    case CommandType.REMOVE_PARTICIPANT:
+    case CommandType.REMOVE_PARTICIPANT: {
       await participantRepository.removeParticipant(command.participant.id);
       await roomRepository.removeFromParticipants(
         command.roomName,
         command.participant.id
       );
       break;
+    }
 
-    case CommandType.SEND_EXISTING_PARTICIPANTS:
+    case CommandType.SEND_EXISTING_PARTICIPANTS: {
       const userJoinedEvents: UserJoined[] = room.participants.map(
         (participant) => ({
           eventType: "userJoined",
@@ -84,8 +87,9 @@ export const handleCommand = (
         )
       );
       break;
+    }
 
-    case CommandType.SET_TASK:
+    case CommandType.SET_TASK: {
       await roomRepository.startNewEstimation(
         room.name,
         command.taskName,
@@ -93,17 +97,20 @@ export const handleCommand = (
         command.startDate
       );
       break;
+    }
 
-    case CommandType.RECORD_ESTIMATION:
+    case CommandType.RECORD_ESTIMATION: {
       await roomRepository.addToEstimations(
         room.name,
         command.participantId,
         command.estimate
       );
       break;
+    }
 
-    case CommandType.FINISH_ROUND:
+    case CommandType.FINISH_ROUND: {
       await roomRepository.finishEstimation(room.name);
       break;
+    }
   }
 };

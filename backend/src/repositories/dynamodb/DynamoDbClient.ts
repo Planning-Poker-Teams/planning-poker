@@ -34,7 +34,7 @@ interface BaseParameters {
   expressionAtributeNames?: ExpressionAttributeNameMap;
 }
 
-interface DeleteParameters extends BaseParameters {}
+type DeleteParameters = BaseParameters;
 
 interface UpdateParameters extends BaseParameters {
   updateExpression: string;
@@ -46,7 +46,7 @@ type KeyInfo = { [key: string]: any };
 export class DynamoDbClient {
   private client: DocumentClient;
 
-  constructor(enableXRay: boolean = true) {
+  constructor(enableXRay = true) {
     if (enableXRay) {
       // Workaround for https://github.com/aws/aws-xray-sdk-node/issues/23
       this.client = new DynamoDB.DocumentClient({
@@ -72,7 +72,7 @@ export class DynamoDbClient {
       TableName: tableName,
     };
 
-    let items: AttributeMap[] = [];
+    const items: AttributeMap[] = [];
     let pagedItems;
 
     do {
@@ -87,7 +87,7 @@ export class DynamoDbClient {
   get(
     tableName: string,
     keyInfo: KeyInfo,
-    consistentRead: boolean = false
+    consistentRead = false
   ): Promise<GetItemOutput> {
     const args: GetItemInput = {
       TableName: tableName,
@@ -155,7 +155,7 @@ export class DynamoDbClient {
     return this.client.query(args).promise();
   }
 
-  createSetExpression(values: any) {
+  createSetExpression(values: any): DocumentClient.DynamoDbSet {
     // see https://stackoverflow.com/questions/37194794/how-to-update-an-item-in-dynamodb-of-type-string-set-ss
     return this.client.createSet(values);
   }

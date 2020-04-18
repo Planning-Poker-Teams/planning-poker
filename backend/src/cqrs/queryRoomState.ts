@@ -7,7 +7,7 @@ export type queryRoomState = (roomName: string) => Promise<PokerRoom>;
 const sortByDescendingTimestamp = (
   first: Estimate,
   second: Estimate
-) => {
+): number => {
   const firstTimestamp = new Date(first.timestamp);
   const secondTimestamp = new Date(second.timestamp);
   return firstTimestamp < secondTimestamp

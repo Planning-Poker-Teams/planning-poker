@@ -16,7 +16,7 @@ export default class DynamoDbParticipantRepository
 
   constructor(
     private participantsTableName: string,
-    enableXRay: boolean = true
+    enableXRay = true
   ) {
     this.client = new DynamoDbClient(enableXRay);
   }

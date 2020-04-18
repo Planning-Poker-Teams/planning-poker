@@ -16,7 +16,7 @@ describe("PokerEventInteractor", () => {
     messageSenderMock as any
   );
 
-  it("handles joining users", () => {
+  xit("handles joining users", async () => {
     const connectionId = "id-1";
     const event: JoinRoom = {
       eventType: "joinRoom",
@@ -25,6 +25,6 @@ describe("PokerEventInteractor", () => {
       isSpectator: false,
     };
 
-    interactor.handleIncomingEvent(event, connectionId);
+    await interactor.handleIncomingEvent(event, connectionId);
   });
 });

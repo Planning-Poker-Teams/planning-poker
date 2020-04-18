@@ -15,7 +15,7 @@ export class ApiGatewayMessageSender implements MessageSender {
     ) as ApiGatewayManagementApi;
   }
 
-  async broadcast(recipientIds: string[], data: string) {
+  async broadcast(recipientIds: string[], data: string): Promise<void> {
     await Promise.all(recipientIds.map((id) => this.post(id, data)));
   }
 

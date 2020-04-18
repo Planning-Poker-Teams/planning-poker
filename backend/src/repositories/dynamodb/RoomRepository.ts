@@ -19,7 +19,7 @@ export interface Estimate {
 export default class DynamoDbRoomRepository implements RoomRepository {
   private client: DynamoDbClient;
 
-  constructor(private roomsTableName: string, enableXRay: boolean = true) {
+  constructor(private roomsTableName: string, enableXRay = true) {
     this.client = new DynamoDbClient(enableXRay);
   }
 
