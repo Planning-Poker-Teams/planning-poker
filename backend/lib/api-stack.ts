@@ -10,12 +10,7 @@ import {
   CfnStage,
 } from "@aws-cdk/aws-apigatewayv2";
 import { CfnOutput, Duration } from "@aws-cdk/core";
-import {
-  ServicePrincipal,
-  PolicyStatement,
-  Role,
-  ManagedPolicy,
-} from "@aws-cdk/aws-iam";
+import { ServicePrincipal, PolicyStatement } from "@aws-cdk/aws-iam";
 import {
   Table,
   AttributeType,
@@ -25,9 +20,6 @@ import {
 import { Rule, Schedule } from "@aws-cdk/aws-events";
 import { LambdaFunction } from "@aws-cdk/aws-events-targets";
 
-// TODO: add custom domain (api.planningpoker.cc)
-// https://docs.aws.amazon.com/apigateway/latest/developerguide/how-to-custom-domains.html
-
 interface ApiStackProps extends cdk.StackProps {
   domainName: string;
   stageName: string;
@@ -36,9 +28,6 @@ interface ApiStackProps extends cdk.StackProps {
 export class ApiStack extends cdk.Stack {
   constructor(scope: cdk.Construct, id: string, props: ApiStackProps) {
     super(scope, id, props);
-
-    // Required for debugging API Gateway. Can be removed eventually:
-    this.createCloudWatchLogRole();
 
     // API Gateway
 
@@ -179,25 +168,5 @@ export class ApiStack extends cdk.Stack {
     // Note: When making changes to an existing stage it needs to be redeployed
     // manually: (API GW/Routes/Actions/Deploy API)
     // https://stackoverflow.com/questions/41423439/cloudformation-doesnt-deploy-to-api-gateway-stages-on-update
-  }
-
-  private createCloudWatchLogRole() {
-    // The following role is required for allowing API Gateway to log to CloudWatch.
-    // It has to be configured at the API GW Account. However `CfnAccount` seems
-    // to be missing so for now I have set it manually in the Console.
-    // https://github.com/awsdocs/aws-cloudformation-user-guide/blob/master/doc_source/aws-resource-apigateway-account.md
-
-    const cloudWatchRole = new Role(this, "CloudWatchRole", {
-      assumedBy: new ServicePrincipal("apigateway.amazonaws.com"),
-      managedPolicies: [
-        ManagedPolicy.fromAwsManagedPolicyName(
-          "service-role/AmazonAPIGatewayPushToCloudWatchLogs"
-        ),
-      ],
-    });
-
-    new CfnOutput(this, "CloudWatchRoleArn", {
-      value: cloudWatchRole.roleArn,
-    });
   }
 }
