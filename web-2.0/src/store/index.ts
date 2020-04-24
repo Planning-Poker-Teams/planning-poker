@@ -5,15 +5,28 @@ Vue.use(Vuex);
 
 interface State {
   roomName?: string;
+  userName?: string;
+}
+
+interface RoomInformation {
+  roomName?: string;
+  userName?: string;
 }
 
 export default new Vuex.Store<State>({
   state: {
     roomName: undefined,
+    userName: undefined,
   },
   mutations: {
-    setRoomName(state: State, value: string) {
-      state.roomName = value;
+    setRoomInformation(state: State, roomInformation: RoomInformation) {
+      state.userName = roomInformation.userName;
+      state.roomName = roomInformation.roomName;
+      // doesn't work:
+      // state = {
+      //   ...state,
+      //   ...roomInformation,
+      // };
     },
   },
   actions: {},
