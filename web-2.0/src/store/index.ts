@@ -3,11 +3,19 @@ import Vuex from "vuex";
 
 Vue.use(Vuex);
 
-export default new Vuex.Store({
+interface State {
+  roomName?: string;
+}
+
+export default new Vuex.Store<State>({
   state: {
-    roomName: ''
+    roomName: undefined,
   },
-  mutations: {},
+  mutations: {
+    setRoomName(state: State, value: string) {
+      state.roomName = value;
+    },
+  },
   actions: {},
-  modules: {}
+  modules: {},
 });
