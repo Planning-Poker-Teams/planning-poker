@@ -70,6 +70,7 @@ export class ApiStack extends cdk.Stack {
         memorySize: 512,
         tracing: Tracing.ACTIVE,
         environment: {
+          AWS_NODEJS_CONNECTION_REUSE_ENABLED: "1",
           PARTICIPANTS_TABLENAME: participantsTable.tableName,
           ROOMS_TABLENAME: roomsTable.tableName,
           API_GW_DOMAINNAME: `${props.domainName}/${props.stageName}`,
@@ -104,6 +105,7 @@ export class ApiStack extends cdk.Stack {
         timeout: Duration.seconds(20),
         tracing: Tracing.ACTIVE,
         environment: {
+          AWS_NODEJS_CONNECTION_REUSE_ENABLED: "1",
           PARTICIPANTS_TABLENAME: participantsTable.tableName,
           API_GW_DOMAINNAME: `${props.domainName}/${props.stageName}`,
         },
