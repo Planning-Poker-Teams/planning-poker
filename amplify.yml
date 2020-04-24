@@ -2,10 +2,12 @@ version: 1.0
 frontend:
   phases:
     build:
+      baseDirectory: web-2.0
       commands:
+        - cd web-2.0
         - yarn install
         - yarn build
   artifacts:
-    baseDirectory: dist
+    baseDirectory: web-2.0/dist
     files:
       - '**/*'

@@ -20,14 +20,19 @@ export class InfrastructureStack extends cdk.Stack {
           source:
             "</^((?!.(css|gif|ico|jpg|js|json|png|txt|svg|woff|ttf|map)$).)*$/>",
           target: "/",
-          status: "200"
-        }
-      ]
+          status: "200",
+        },
+      ],
     });
 
     new CfnBranch(this, "WebAppRepoBranch", {
       branchName: "master",
-      appId: webApp.attrAppId
+      appId: webApp.attrAppId,
+    });
+
+    new CfnBranch(this, "NextWebAppRepoBranch", {
+      branchName: "web-2.0",
+      appId: webApp.attrAppId,
     });
   }
 }
