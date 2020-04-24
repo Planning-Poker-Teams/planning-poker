@@ -1,14 +1,25 @@
 <template>
-  <div>
-    <h1>Planning Poker</h1>
-    <form @submit.prevent>
-      <label>Room name</label>
-      <input v-model="roomName" />
-      <button v-on:click="joinRoom" :disabled="!formIsCompleted">
-        Join Room
-      </button>
+  <div class="w-full m-4 p-2 ">
+    <h1 class="font-medium text-xl">Planning Poker</h1>
+    <form class="bg-gray-100 p-4" @submit.prevent>
+      <div class="mb-4">
+        <input
+          class="p-2 border border-gray-300 font-medium"
+          placeholder="Room name"
+          v-model="roomName"
+        />
+      </div>
+      <div class="">
+        <button
+          class="border py-2 px-4 rounded disabled:cursor-not-allowed"
+          v-on:click="joinRoom"
+          :disabled="!formIsCompleted"
+        >
+          Join Room
+        </button>
+      </div>
     </form>
-    <p>State: {{ joinRoomProperties }}</p>
+    <p class="font-mono m-2">State: {{ joinRoomProperties }}</p>
   </div>
 </template>
 
