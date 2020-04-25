@@ -43,13 +43,13 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-import Component from "vue-class-component";
+import Vue from 'vue';
+import Component from 'vue-class-component';
 
-@Component({})
+@Component
 export default class Lobby extends Vue {
-  roomName = "";
-  userName = "";
+  roomName = '';
+  userName = '';
 
   get joinRoomProperties() {
     return JSON.stringify(this.$store.state);
@@ -61,8 +61,7 @@ export default class Lobby extends Vue {
 
   joinRoom() {
     const { roomName, userName } = this;
-    console.log("joinRoom", { roomName, userName });
-    this.$store.commit("setRoomInformation", { roomName, userName });
+    this.$store.commit('joinRoom', { roomName, userName });
   }
 }
 </script>

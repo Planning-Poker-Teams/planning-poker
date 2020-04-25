@@ -1,11 +1,14 @@
-import Vue from "vue";
-import Vuex from "vuex";
+import Vue from 'vue';
+import Vuex from 'vuex';
+import webSocketPlugin from './websocketPlugin';
+import createWebSocketPlugin from './websocketPlugin';
 
 Vue.use(Vuex);
 
-interface State {
+export interface State {
   roomName?: string;
   userName?: string;
+  participants: string[];
 }
 
 interface RoomInformation {
@@ -13,13 +16,20 @@ interface RoomInformation {
   userName?: string;
 }
 
+export enum Mutations {
+  JOIN_ROOM = 'joinRoom',
+  LEAVE_ROOM = 'leaveRoom',
+  USER_JOINED = 'userJoined',
+}
+
 export default new Vuex.Store<State>({
   state: {
     roomName: undefined,
     userName: undefined,
+    participants: [],
   },
   mutations: {
-    setRoomInformation(state: State, roomInformation: RoomInformation) {
+    joinRoom(state: State, roomInformation: RoomInformation) {
       state.userName = roomInformation.userName;
       state.roomName = roomInformation.roomName;
       // doesn't work:
@@ -28,7 +38,11 @@ export default new Vuex.Store<State>({
       //   ...roomInformation,
       // };
     },
+    userJoined(state: State, userName: string) {
+      state.participants.push(userName);
+    },
   },
   actions: {},
   modules: {},
+  plugins: [webSocketPlugin],
 });
