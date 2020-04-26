@@ -1,13 +1,18 @@
 <template>
-  <div class="min-w-64">
-    <div class="m-4 flex flex-col items-center bg-gray-100 shadow-lg rounded-lg">
-      <img class="m-8 object-contain h-24 shadow-md rounded-lg" src="AppIcon.png" />
+  <div class="w-full h-full p-16 flex flex-col items-center">
+    <div
+      class="w-96 flex flex-col items-center bg-gray-100 shadow-lg rounded-lg"
+    >
+      <img
+        class="m-8 mb-4 object-contain h-24 shadow-md rounded-lg"
+        src="planning-poker-app-icon.png"
+      />
       <h1 class="text-2xl font-medium font-sans mb-2 text-center">
         Planning Poker
         <br />for teams
       </h1>
 
-      <form class="mb-4 p-4" @submit.prevent="joinRoom">
+      <form class="w-full px-10 mb-4 p-4" @submit.prevent="joinRoom">
         <div class="flex flex-col">
           <input
             class="mb-2 py-2 px-3 text-lg font-semi bg-white appearance-none border-2 rounded text-grey-darker focus:outline-none focus:border-green-300"
@@ -15,7 +20,7 @@
             v-model="roomName"
           />
           <input
-            class="mb-2 mb-4 py-2 px-3 text-lg font-semi bg-white appearance-none border-2 rounded text-grey-darker focus:outline-none focus:border-green-300"
+            class="mb-2 py-2 px-3 text-lg font-semi bg-white appearance-none border-2 rounded text-grey-darker focus:outline-none focus:border-green-300"
             placeholder="Your name"
             v-model="userName"
           />
@@ -24,9 +29,19 @@
               class="my-2 bg-gray-300 hover:bg-gray-100 text-lg text-gray-700 font- py-2 px-4 border-2 border-gray-400 rounded"
               :disabled="!formIsCompleted"
               type="submit"
-            >Join room</button>
+            >
+              Join room
+            </button>
           </div>
-          <p class="w-64 text-xs font-mono m-2 text-gray-400">Debug state: {{ joinRoomProperties }}</p>
+          <div class="flex flex-col items-center">
+            <div class="w-full my-6 rounded border border-gray-200"/>
+            <a
+              href="https://apps.apple.com/app/planning-poker-for-teams/id1495956287"
+              target="_blank"
+            >
+              <img class="w-32" src="app-store-badge.png" />
+            </a>
+          </div>
         </div>
       </form>
     </div>
@@ -44,14 +59,10 @@ export default class Lobby extends Vue {
   userName = '';
 
   beforeMount() {
-    const roomNameQuery = this.$route.query.roomName as string;
+    const roomNameQuery = this.$route.query.room as string;
     if (roomNameQuery) {
       this.roomName = roomNameQuery;
     }
-  }
-
-  get joinRoomProperties() {
-    return JSON.stringify(this.$store.state);
   }
 
   get formIsCompleted(): boolean {
