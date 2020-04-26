@@ -23,26 +23,18 @@
             placeholder="Your name"
             v-model="userName"
           />
-          <label class="ml-1 my-2 block text-gray-700 font-semi">
-            <input
-              v-model="isSpectator"
-              class="mr-2 leading-tight"
-              type="checkbox"
-            />
-            <span class="text-lg select-none">
-              Join as spectator
-            </span>
-          </label>
-          <label class="ml-1 mb-2 block text-gray-700 font-semi">
-            <input
-              v-model="showCats"
-              class="mr-2 leading-tight"
-              type="checkbox"
-            />
-            <span class="text-lg select-none">
-              Consensus cats
-            </span>
-          </label>
+          <toggle
+            class="m-2"
+            id="isSpectator"
+            v-model="isSpectator"
+            label="Join as spectator"
+          />
+          <toggle
+            class="mx-2 mb-2"
+            id="showCats"
+            v-model="showCats"
+            label="Consensus cats"
+          />
           <div class="flex flex-row-reverse">
             <button
               class="mt-6 my-2 bg-gray-300 hover:bg-gray-100 text-lg text-gray-700 font- py-2 px-4 border-2 border-gray-400 rounded"
