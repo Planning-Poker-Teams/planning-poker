@@ -2,12 +2,15 @@ version: 1.0
 frontend:
   phases:
     build:
-      baseDirectory: web-2.0
       commands:
-        - cd web-2.0
+        - cd web
         - yarn install
         - yarn build
+    test:
+      commands:
+        - cd web
+        - yarn test:unit
   artifacts:
-    baseDirectory: web-2.0/dist
+    baseDirectory: web/dist
     files:
       - '**/*'

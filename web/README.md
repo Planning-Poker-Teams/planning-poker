@@ -1,4 +1,4 @@
-# web-2.0
+# Planning Poker Web
 
 ## Project setup
 ```
