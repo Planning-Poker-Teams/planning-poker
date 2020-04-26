@@ -33,15 +33,15 @@ import { Route } from 'vue-router';
 export default class Room extends Vue {
   beforeMount() {
     const roomNameParam = this.$route.params.roomName;
-    const { userName, roomName } = this.$store.state;
+    const roomName = this.$store.state.room?.name;
 
-    if (!userName || !roomName || roomName !== roomNameParam) {
+    if (!this.$store.state.room || roomName !== roomNameParam) {
       this.$router.push({ name: 'lobby', query: { room: roomNameParam } });
     }
   }
 
   get roomName(): string {
-    return this.$store.state.roomName;
+    return this.$store.state.room?.name;
   }
 }
 </script>

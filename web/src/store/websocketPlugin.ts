@@ -9,8 +9,10 @@ const webSocketPlugin = (store: Store<State>) => {
 
     switch (mutation.type) {
       case Mutations.JOIN_ROOM: {
-        const { userName, roomName } = state;
-        socket = setupWebSocketConnection(roomName!, userName!);
+        if (state.room) {
+          const { name, userName, isSpectator } = state.room;
+          socket = setupWebSocketConnection(name, userName, isSpectator);
+        }
         break;
       }
       case Mutations.LEAVE_ROOM: {
@@ -31,13 +33,12 @@ const webSocketPlugin = (store: Store<State>) => {
 
   const setupWebSocketConnection = (
     roomName: string,
-    userName: string
+    userName: string,
+    isSpectator: boolean
   ): WebSocket => {
     const socket = new WebSocket('wss://api.planningpoker.cc/dev');
 
     socket.onopen = event => {
-      console.log('Socket opened', event);
-
       socket.send(
         JSON.stringify({
           eventType: 'joinRoom',

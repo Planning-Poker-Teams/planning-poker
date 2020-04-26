@@ -6,14 +6,15 @@ import createWebSocketPlugin from './websocketPlugin';
 Vue.use(Vuex);
 
 export interface State {
-  roomName?: string;
-  userName?: string;
+  room?: RoomInformation;
   participants: string[];
 }
 
-interface RoomInformation {
-  roomName?: string;
-  userName?: string;
+export interface RoomInformation {
+  name: string;
+  userName: string;
+  isSpectator: boolean;
+  showCats: boolean;
 }
 
 export enum Mutations {
@@ -24,25 +25,19 @@ export enum Mutations {
 
 export default new Vuex.Store<State>({
   state: {
-    roomName: undefined,
-    userName: undefined,
+    room: undefined,
     participants: [],
   },
+  getters: {},
+  actions: {},
   mutations: {
     joinRoom(state: State, roomInformation: RoomInformation) {
-      state.userName = roomInformation.userName;
-      state.roomName = roomInformation.roomName;
-      // doesn't work:
-      // state = {
-      //   ...state,
-      //   ...roomInformation,
-      // };
+      state.room = roomInformation;
     },
     userJoined(state: State, userName: string) {
       state.participants.push(userName);
     },
   },
-  actions: {},
   modules: {},
   plugins: [webSocketPlugin],
 });

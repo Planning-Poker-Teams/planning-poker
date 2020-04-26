@@ -7,11 +7,10 @@
         class="m-8 mb-4 object-contain h-24 shadow-md rounded-lg"
         src="../assets/planning-poker-app-icon.png"
       />
-      <h1 class="text-2xl font-medium font-sans mb-2 text-center">
+      <h1 class="text-2xl font-medium font-sans mb-2 text-center select-none">
         Planning Poker
         <br />for teams
       </h1>
-
       <form class="w-full px-10 mb-4 p-4" @submit.prevent="joinRoom">
         <div class="flex flex-col">
           <input
@@ -24,9 +23,29 @@
             placeholder="Your name"
             v-model="userName"
           />
+          <label class="ml-1 my-2 block text-gray-700 font-semi">
+            <input
+              v-model="isSpectator"
+              class="mr-2 leading-tight"
+              type="checkbox"
+            />
+            <span class="text-lg select-none">
+              Join as spectator
+            </span>
+          </label>
+          <label class="ml-1 mb-2 block text-gray-700 font-semi">
+            <input
+              v-model="showCats"
+              class="mr-2 leading-tight"
+              type="checkbox"
+            />
+            <span class="text-lg select-none">
+              Consensus cats
+            </span>
+          </label>
           <div class="flex flex-row-reverse">
             <button
-              class="my-2 bg-gray-300 hover:bg-gray-100 text-lg text-gray-700 font- py-2 px-4 border-2 border-gray-400 rounded"
+              class="mt-6 my-2 bg-gray-300 hover:bg-gray-100 text-lg text-gray-700 font- py-2 px-4 border-2 border-gray-400 rounded"
               :disabled="!formIsCompleted"
               type="submit"
             >
@@ -34,7 +53,7 @@
             </button>
           </div>
           <div class="flex flex-col items-center">
-            <div class="w-full my-6 rounded border border-gray-200"/>
+            <div class="w-full my-6 rounded border border-gray-200" />
             <a
               href="https://apps.apple.com/app/planning-poker-for-teams/id1495956287"
               target="_blank"
@@ -57,6 +76,8 @@ import { Route } from 'vue-router';
 export default class Lobby extends Vue {
   roomName = '';
   userName = '';
+  isSpectator = false;
+  showCats = true;
 
   beforeMount() {
     const roomNameQuery = this.$route.query.room as string;
@@ -70,8 +91,13 @@ export default class Lobby extends Vue {
   }
 
   joinRoom() {
-    const { roomName, userName } = this;
-    this.$store.commit('joinRoom', { roomName, userName });
+    const { roomName, userName, isSpectator, showCats } = this;
+    this.$store.commit('joinRoom', {
+      name: roomName,
+      userName,
+      isSpectator,
+      showCats,
+    });
     this.$router.push({ name: 'room', params: { roomName } });
   }
 }
