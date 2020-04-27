@@ -63,8 +63,13 @@
 import Vue from 'vue';
 import Component from 'vue-class-component';
 import { Route } from 'vue-router';
+import Toggle from '@/components/Toggle.vue';
 
-@Component
+@Component({
+  components: {
+    Toggle,
+  },
+})
 export default class Lobby extends Vue {
   roomName = '';
   userName = '';
