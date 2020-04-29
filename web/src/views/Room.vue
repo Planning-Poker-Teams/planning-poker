@@ -1,54 +1,48 @@
 <template>
   <div class="p-16 w-full h-full">
     <div
-      class="w-full h-full p-2 bg-gray-100 shadow-lg rounded-lg grid grid-rows-3"
+      class="h-full p-2 bg-gray-100 shadow-lg rounded-lg grid grid-rows-5"
     >
       <div class="">
-        <h1 class="text-xs font-mono">Room: {{ roomName }}</h1>
-        <div class="flex">
-          <div v-for="participant in participants" :key="participant.name">
-            <div class="w-12 h-12 m-1 p-2 bg-gray-400">
-              <p class="text-xs">
-                {{ participant.name }} {{ participant.hasEstimated }}
-              </p>
-            </div>
-          </div>
-        </div>
+        
+        <!-- 1/3 -->
+        
+        <participant-list
+          v-bind:participants="participants"
+          v-bind:roomName="roomName"
+        />
+        <div class="mx-4 h-0 rounded border border-gray-200" />
       </div>
+      
 
-      <div class="row-span-2 grid grid-rows-2">
-        <div v-if="!isEstimationOngoing" class="flex justify-center">
-          Start estimation form
-        </div>
-
-        <div v-if="isEstimationOngoing" class="flex justify-center">
-          <div
-            class="h-32 w-64 flex flex-col justify-center rounded border-4 border-gray-300 border-dashed"
-          >
-            <p class="text-2xl font-medium font-sans text-center text-gray-800">
-              {{ taskName }}
-            </p>
-          </div>
-        </div>
-
-        <div v-if="isEstimationOngoing" class="flex">
-          Estimation cards
-          <div class="w-16 h-24 m-2 bg-gray-300">Card</div>
-        </div>
+      <div class="h-fullx row-span-4 bg-red-700x">
+        <!-- 2/3 -->
+        <start-estimation-form v-if="!isEstimationOngoing" />
+        <ongoing-estimation
+          v-if="isEstimationOngoing"
+          v-bind:taskName="taskName"
+        />
       </div>
     </div>
-    <div class="text-white text-xs font-mono">{{ currentState }}</div>
+    <!-- <div class="text-white text-xs font-mono">{{ currentState }}</div> -->
   </div>
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
-import Component from 'vue-class-component';
-import { Prop, Watch } from 'vue-property-decorator';
+import { Vue, Prop, Watch, Component } from 'vue-property-decorator';
 import { Route } from 'vue-router';
 import { EstimationState, Participant } from '../store';
+import ParticipantList from '@/components/ParticipantList.vue';
+import StartEstimationForm from '@/components/StartEstimationForm.vue';
+import OngoingEstimation from '@/components/OngoingEstimation.vue';
 
-@Component
+@Component({
+  components: {
+    ParticipantList,
+    StartEstimationForm,
+    OngoingEstimation,
+  },
+})
 export default class Room extends Vue {
   beforeMount() {
     const roomNameParam = this.$route.params.roomName;
