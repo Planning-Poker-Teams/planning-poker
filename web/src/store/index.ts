@@ -40,6 +40,7 @@ export interface EstimationResult {
 export enum Actions {
   REQUEST_START_ESTIMATION = 'requestStartEstimation',
   SEND_ESTIMATION = 'sendEstimation',
+  REQUEST_RESULT = 'requestShowResult',
 }
 
 export enum Mutations {
@@ -71,6 +72,9 @@ export default new Vuex.Store<State>({
       } else {
         return EstimationState.NOT_STARTED;
       }
+    },
+    votingIsComplete: (state: State): boolean => {
+      return state.participants.every(p => p.hasEstimated || p.isSpectator);
     },
   },
   actions: {

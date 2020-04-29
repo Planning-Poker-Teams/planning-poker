@@ -18,6 +18,7 @@
           v-if="isEstimationOngoing"
           v-bind:taskName="taskName"
           v-on:send-estimation="sendEstimation"
+          v-on:request-result="requestResult"
         />
       </div>
     </div>
@@ -55,6 +56,10 @@ export default class Room extends Vue {
 
   sendEstimation(value: string) {
     this.$store.dispatch(Actions.SEND_ESTIMATION, value);
+  }
+
+  requestResult() {
+    this.$store.dispatch(Actions.REQUEST_RESULT);
   }
 
   get participants(): Participant[] {

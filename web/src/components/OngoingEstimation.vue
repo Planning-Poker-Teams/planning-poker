@@ -8,6 +8,9 @@
         <p class="text-2xl font-medium font-sans text-center text-gray-800">
           {{ taskName }}
         </p>
+        <div v-if="votingIsComplete">
+          <button @click="requestResult">Show result</button>
+        </div>
       </div>
     </div>
 
@@ -18,7 +21,9 @@
       <div v-for="value in possibleEstimationValues" :key="value">
         <div
           class="flex flex-col justify-center w-20 h-32 m-1 rounded-lg shadow cursor-pointer select-none"
-          v-bind:class="value == selectedEstimation ? 'bg-red-400' : 'bg-blue-400'"
+          v-bind:class="
+            value == selectedEstimation ? 'bg-red-400' : 'bg-blue-400'
+          "
           @click="sendEstimation(value)"
         >
           <p class="text-white font-medium text-2xl text-center font-mono">
@@ -52,9 +57,17 @@ export default class OngoingEstimation extends Vue {
     '???',
   ];
 
+  get votingIsComplete() {
+    return this.$store.getters.votingIsComplete;
+  }
+
   sendEstimation(value: string) {
     this.selectedEstimation = value;
     this.$emit('send-estimation', value);
+  }
+
+  requestResult() {
+    this.$emit('request-result');
   }
 }
 </script>
