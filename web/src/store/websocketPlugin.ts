@@ -1,4 +1,4 @@
-import { Store, MutationPayload } from 'vuex';
+import { Store, MutationPayload, ActionPayload } from 'vuex';
 import { State, Mutations } from '.';
 
 const webSocketPlugin = (store: Store<State>) => {
@@ -17,10 +17,15 @@ const webSocketPlugin = (store: Store<State>) => {
         socket?.close();
         break;
       }
-
-      // send message
+      case Mutations.SEND_MESSAGE: {
+        console.log('Outgoing message', mutation.payload);
+        socket?.send(JSON.stringify(mutation.payload));
+        break;
+      }
     }
   });
+
+  store.subscribeAction((action: ActionPayload, state: State) => {});
 
   const handleIncomingMessage = (message: PokerEvent) => {
     console.log('Received incoming JSON message', message);

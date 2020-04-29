@@ -37,11 +37,16 @@ export interface EstimationResult {
   estimates: { userName: string; estimate: string }[];
 }
 
+export enum Actions {
+  REQUEST_START_ESTIMATION = 'requestStartEstimation',
+  SEND_ESTIMATION = 'sendEstimation',
+}
+
 export enum Mutations {
   JOIN_ROOM = 'joinRoom',
   LEAVE_ROOM = 'leaveRoom',
   USER_JOINED = 'userJoined',
-  // send message
+  SEND_MESSAGE = 'sendMessage',
 }
 
 export enum EstimationState {
@@ -68,8 +73,48 @@ export default new Vuex.Store<State>({
       }
     },
   },
-  actions: {},
+  actions: {
+    // should joinRoom, leaveRoom be actions too?
+    sendEstimation({ commit, state }, estimate: string) {
+      if (!state.room || !state.ongoingEstimation) {
+        console.error('There is no room or no ongoing estimation', state);
+        return;
+      }
+      const estimationMessage: UserEstimate = {
+        eventType: 'estimate',
+        userName: state.room.userName,
+        taskName: state.ongoingEstimation?.taskName,
+        estimate,
+      };
+      commit(Mutations.SEND_MESSAGE, estimationMessage);
+    },
+    requestStartEstimation({ commit, state }, taskName: string) {
+      if (!state.room) {
+        console.error('There is no room', state);
+        return;
+      }
+      const startEstimationMessage: StartEstimation = {
+        eventType: 'startEstimation',
+        userName: state.room.userName,
+        taskName,
+        startDate: new Date().toISOString(),
+      };
+      commit(Mutations.SEND_MESSAGE, startEstimationMessage);
+    },
+    requestShowResult({ commit, state }) {
+      if (!state.room) {
+        console.error('There is no room', state);
+        return;
+      }
+      const showResultMessage: RequestShowEstimationResult = {
+        eventType: 'showResult',
+        userName: state.room?.userName,
+      };
+      commit(Mutations.SEND_MESSAGE, showResultMessage);
+    },
+  },
   mutations: {
+    sendMessage(state: State, payload: PokerEvent) {},
     joinRoom(state: State, roomInformation: RoomInformation) {
       state.room = roomInformation;
     },

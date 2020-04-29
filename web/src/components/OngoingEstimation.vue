@@ -12,10 +12,17 @@
     </div>
 
     <!-- Cards -->
-    <div class="row-span-2 flex flex-wrap px-8 pb-8 justify-center items-end overflow-scroll">
+    <div
+      class="row-span-2 flex flex-wrap px-8 pb-8 justify-center items-end overflow-scroll"
+    >
       <div v-for="value in possibleEstimationValues" :key="value">
-        <div class="flex flex-col justify-center w-20 h-32 m-1 rounded-lg shadow cursor-pointer select-none bg-blue-400 ">
-          <p class="text-white font-medium text-2xl text-center font-mono">{{ value }}</p>
+        <div
+          class="flex flex-col justify-center w-20 h-32 m-1 rounded-lg shadow cursor-pointer select-none bg-blue-400"
+          @click="sendEstimation(value)"
+        >
+          <p class="text-white font-medium text-2xl text-center font-mono">
+            {{ value }}
+          </p>
         </div>
       </div>
     </div>
@@ -27,7 +34,24 @@ import { Vue, Component, Prop } from 'vue-property-decorator';
 
 @Component
 export default class OngoingEstimation extends Vue {
-  private possibleEstimationValues = ['0', '1', '2', '3', '5', '8', '13', '20', '40', '100', '???'];
   @Prop() taskName!: string;
+
+  possibleEstimationValues = [
+    '0',
+    '1',
+    '2',
+    '3',
+    '5',
+    '8',
+    '13',
+    '20',
+    '40',
+    '100',
+    '???',
+  ];
+
+  sendEstimation(value: string) {
+    this.$emit('send-estimation', value);
+  }
 }
 </script>
