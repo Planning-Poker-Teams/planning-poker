@@ -1,5 +1,5 @@
 <template>
-  <div class="h-full flex justify-center items-center bg-red-700x">
+  <div class="h-40 flex justify-center items-center">
     <form @submit.prevent>
       <input
         class="m-2 p-2 text-2xl font-semi bg-white appearance-none border-4 rounded text-grey-darker focus:outline-none focus:border-green-300"

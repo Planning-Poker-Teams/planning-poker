@@ -14,6 +14,9 @@
           v-if="!isEstimationOngoing"
           v-on:start-estimation="startEstimation"
         />
+        <estimation-result 
+          v-if="estimationResultAvailable"
+        />
         <ongoing-estimation
           v-if="isEstimationOngoing"
           v-bind:taskName="taskName"
@@ -32,12 +35,14 @@ import { EstimationState, Participant, Actions } from '../store';
 import ParticipantList from '@/components/ParticipantList.vue';
 import StartEstimationForm from '@/components/StartEstimationForm.vue';
 import OngoingEstimation from '@/components/OngoingEstimation.vue';
+import EstimationResult from '@/components/EstimationResult.vue';
 
 @Component({
   components: {
     ParticipantList,
     StartEstimationForm,
     OngoingEstimation,
+    EstimationResult
   },
 })
 export default class Room extends Vue {
@@ -76,6 +81,10 @@ export default class Room extends Vue {
 
   get isEstimationOngoing(): boolean {
     return this.$store.getters.estimationState == EstimationState.ONGOING;
+  }
+
+  get estimationResultAvailable() {
+    return this.$store.state.estimationResult !== undefined
   }
 }
 </script>
