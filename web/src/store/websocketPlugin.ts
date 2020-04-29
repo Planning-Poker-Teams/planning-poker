@@ -5,8 +5,6 @@ const webSocketPlugin = (store: Store<State>) => {
   let socket: WebSocket | undefined = undefined;
 
   store.subscribe((mutation: MutationPayload, state: State) => {
-    console.log('Store mutation', mutation);
-
     switch (mutation.type) {
       case Mutations.JOIN_ROOM: {
         if (state.room) {
@@ -19,15 +17,21 @@ const webSocketPlugin = (store: Store<State>) => {
         socket?.close();
         break;
       }
+
+      // send message
     }
   });
 
-  const handleIncomingMessage = (message: any) => {
+  const handleIncomingMessage = (message: PokerEvent) => {
     console.log('Received incoming JSON message', message);
     switch (message.eventType) {
-      case 'userJoined': {
-        store.commit('userJoined', message.userName);
-      }
+      case 'userJoined':
+      case 'userLeft':
+      case 'startEstimation':
+      case 'userHasEstimated':
+      case 'estimationResult':
+        store.commit(message.eventType, message);
+        break;
     }
   };
 
@@ -38,13 +42,13 @@ const webSocketPlugin = (store: Store<State>) => {
   ): WebSocket => {
     const socket = new WebSocket('wss://api.planningpoker.cc/dev');
 
-    socket.onopen = event => {
+    socket.onopen = () => {
       socket.send(
         JSON.stringify({
           eventType: 'joinRoom',
           userName,
           roomName,
-          isSpectator: false,
+          isSpectator,
         })
       );
     };
