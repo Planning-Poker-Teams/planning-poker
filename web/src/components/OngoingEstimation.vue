@@ -17,7 +17,8 @@
     >
       <div v-for="value in possibleEstimationValues" :key="value">
         <div
-          class="flex flex-col justify-center w-20 h-32 m-1 rounded-lg shadow cursor-pointer select-none bg-blue-400"
+          class="flex flex-col justify-center w-20 h-32 m-1 rounded-lg shadow cursor-pointer select-none"
+          v-bind:class="value == selectedEstimation ? 'bg-red-400' : 'bg-blue-400'"
           @click="sendEstimation(value)"
         >
           <p class="text-white font-medium text-2xl text-center font-mono">
@@ -35,6 +36,7 @@ import { Vue, Component, Prop } from 'vue-property-decorator';
 @Component
 export default class OngoingEstimation extends Vue {
   @Prop() taskName!: string;
+  selectedEstimation = '';
 
   possibleEstimationValues = [
     '0',
@@ -51,6 +53,7 @@ export default class OngoingEstimation extends Vue {
   ];
 
   sendEstimation(value: string) {
+    this.selectedEstimation = value;
     this.$emit('send-estimation', value);
   }
 }

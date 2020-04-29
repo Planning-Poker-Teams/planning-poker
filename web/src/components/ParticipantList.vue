@@ -10,11 +10,11 @@
       :key="participant.name"
     >
       <div
-        class="flex justify-center items-center w-20 h-20 shadow rounded-full m-1 p-2 select-none bg-green-400"
+        class="flex justify-center items-center w-20 h-20 shadow rounded-full m-1 p-2 select-none"
+        v-bind:class="participant.hasEstimated ? 'bg-red-400' : 'bg-green-400'"
       >
-        <p class="text-center text-white font-medium text-xs">
-          {{ participant.name }} <br />
-          {{ participant.hasEstimated }}
+        <p class="text-center text-white font-medium text-xsx overflow-hidden">
+          {{ participant.name }}
         </p>
       </div>
     </div>
