@@ -1,25 +1,22 @@
 <template>
   <div class="p-16 w-full h-full">
     <div class="h-full p-2 bg-gray-100 shadow-lg rounded-lg grid grid-rows-5">
-      <div class="">
-        <participant-list
-          v-bind:participants="participants"
-          v-bind:roomName="roomName"
-        />
-        <div class="mx-4 h-0 rounded border border-gray-200" />
-      </div>
-      <div class="h-fullx row-span-4 bg-red-700x">
+      <participant-list
+        v-bind:participants="participants"
+        v-bind:roomName="roomName"
+      />
+      <div class="row-span-4">
         <start-estimation-form
           v-if="!isEstimationOngoing"
           v-on:start-estimation="startEstimation"
         />
-        <estimation-result v-if="estimationResultAvailable" />
         <ongoing-estimation
           v-if="isEstimationOngoing"
           v-bind:taskName="taskName"
           v-on:send-estimation="sendEstimation"
           v-on:request-result="requestResult"
         />
+        <estimation-result v-if="estimationResultAvailable" />
       </div>
     </div>
   </div>

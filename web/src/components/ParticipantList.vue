@@ -1,5 +1,5 @@
 <template>
-  <div class="h-full flex justify-center bg-blue-400x">
+  <div class="flex justify-center bg-blue-400x border-b">
     <!-- <div>
       Leave room
       <h1 class="text-xs font-mono">Current room: {{ roomName }}</h1>

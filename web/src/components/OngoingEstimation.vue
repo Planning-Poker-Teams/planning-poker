@@ -1,9 +1,9 @@
 <template>
-  <div class="h-full grid grid-rows-3 bg-green-400x">
+  <div class="h-full grid grid-rows-3">
     <!-- Drop zone -->
     <div class="flex justify-center items-center">
       <div
-        class="h-32 w-64 flex flex-col justify-center rounded border-4 border-gray-300 border-dashed"
+        class="h-40 w-64 flex flex-col justify-center rounded border-4 border-gray-300 border-dashed"
       >
         <p class="text-2xl font-medium font-sans text-center text-gray-800">
           {{ taskName }}
@@ -23,18 +23,18 @@
     <div
       class="row-span-2 flex flex-wrap px-8 pb-8 justify-center items-end overflow-scroll"
     >
-      <div v-for="value in possibleEstimationValues" :key="value">
-        <div
-          class="flex flex-col justify-center w-20 h-32 m-1 rounded-lg shadow cursor-pointer select-none"
-          v-bind:class="
-            value == selectedEstimation ? 'bg-red-400' : 'bg-blue-400'
-          "
-          @click="sendEstimation(value)"
-        >
-          <p class="text-white font-medium text-2xl text-center font-mono">
-            {{ value }}
-          </p>
-        </div>
+      <div
+        class="flex flex-col justify-center w-20 h-32 m-1 rounded-lg shadow cursor-pointer select-none"
+        v-for="value in possibleEstimationValues"
+        :key="value"
+        v-bind:class="
+          value == selectedEstimation ? 'bg-red-400' : 'bg-blue-400'
+        "
+        @click="sendEstimation(value)"
+      >
+        <p class="text-white font-medium text-2xl text-center font-mono">
+          {{ value }}
+        </p>
       </div>
     </div>
   </div>
