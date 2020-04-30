@@ -1,16 +1,19 @@
 import { Store, MutationPayload, ActionPayload } from 'vuex';
-import { State, Mutations } from '.';
+import { State } from './types';
+import { Mutations } from '.';
 
 const webSocketPlugin = (store: Store<State>) => {
   let socket: WebSocket | undefined = undefined;
 
   store.subscribe((mutation: MutationPayload, state: State) => {
     switch (mutation.type) {
-      case Mutations.JOIN_ROOM: {
-        if (state.room) {
-          const { name, userName, isSpectator } = state.room;
-          socket = setupWebSocketConnection(name, userName, isSpectator);
+      case Mutations.ENTER_ROOM: {
+        if (!state.room) {
+          console.error('Missing room information. Cannot enter room.');
+          return;
         }
+        const { name, userName, isSpectator } = state.room;
+        socket = setupWebSocketConnection(name, userName, isSpectator);
         break;
       }
       case Mutations.LEAVE_ROOM: {
@@ -18,7 +21,7 @@ const webSocketPlugin = (store: Store<State>) => {
         break;
       }
       case Mutations.SEND_MESSAGE: {
-        console.log('Outgoing message', mutation.payload);
+        console.log('Sending JSON message', mutation.payload);
         socket?.send(JSON.stringify(mutation.payload));
         break;
       }

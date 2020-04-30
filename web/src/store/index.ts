@@ -1,41 +1,9 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 import webSocketPlugin from './websocketPlugin';
+import { State, RoomInformation } from './types';
 
 Vue.use(Vuex);
-
-export interface State {
-  room?: RoomInformation;
-  participants: Participant[];
-  ongoingEstimation?: Estimation;
-  estimationResult?: EstimationResult;
-}
-
-export interface RoomInformation {
-  name: string;
-  userName: string;
-  isSpectator: boolean;
-  showCats: boolean;
-}
-
-export interface Participant {
-  name: string;
-  isSpectator: boolean;
-  hasEstimated: boolean;
-  estimationValue?: string;
-}
-
-export interface Estimation {
-  taskName: string;
-  start: Date;
-}
-
-export interface EstimationResult {
-  taskName: string;
-  startDate: Date;
-  endDate: Date;
-  estimates: { userName: string; estimate: string }[];
-}
 
 export enum Actions {
   REQUEST_START_ESTIMATION = 'requestStartEstimation',
@@ -44,7 +12,8 @@ export enum Actions {
 }
 
 export enum Mutations {
-  JOIN_ROOM = 'joinRoom',
+  SET_ROOM_INFORMATION = 'setRoomInformation',
+  ENTER_ROOM = 'enterRoom',
   LEAVE_ROOM = 'leaveRoom',
   USER_JOINED = 'userJoined',
   SEND_MESSAGE = 'sendMessage',
@@ -119,8 +88,17 @@ export default new Vuex.Store<State>({
   },
   mutations: {
     sendMessage(state: State, payload: PokerEvent) {},
-    joinRoom(state: State, roomInformation: RoomInformation) {
+    enterRoom(state: State) {},
+    setRoomInformation(state: State, roomInformation: RoomInformation) {
       state.room = roomInformation;
+      state.participants = [];
+      state.ongoingEstimation = undefined;
+      state.estimationResult = undefined;
+    },
+    leaveRoom(state: State) {
+      state = {
+        participants: [],
+      };
     },
     userJoined(state: State, event: UserJoined) {
       const participant = {

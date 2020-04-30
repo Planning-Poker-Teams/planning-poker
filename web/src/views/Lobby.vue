@@ -64,6 +64,7 @@ import Vue from 'vue';
 import Component from 'vue-class-component';
 import { Route } from 'vue-router';
 import Toggle from '@/components/Toggle.vue';
+import { Mutations } from '../store';
 
 @Component({
   components: {
@@ -89,7 +90,7 @@ export default class Lobby extends Vue {
 
   joinRoom() {
     const { roomName, userName, isSpectator, showCats } = this;
-    this.$store.commit('joinRoom', {
+    this.$store.commit(Mutations.SET_ROOM_INFORMATION, {
       name: roomName,
       userName,
       isSpectator,

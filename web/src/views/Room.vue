@@ -8,15 +8,12 @@
         />
         <div class="mx-4 h-0 rounded border border-gray-200" />
       </div>
-
       <div class="h-fullx row-span-4 bg-red-700x">
         <start-estimation-form
           v-if="!isEstimationOngoing"
           v-on:start-estimation="startEstimation"
         />
-        <estimation-result 
-          v-if="estimationResultAvailable"
-        />
+        <estimation-result v-if="estimationResultAvailable" />
         <ongoing-estimation
           v-if="isEstimationOngoing"
           v-bind:taskName="taskName"
@@ -31,28 +28,34 @@
 <script lang="ts">
 import { Vue, Prop, Watch, Component } from 'vue-property-decorator';
 import { Route } from 'vue-router';
-import { EstimationState, Participant, Actions } from '../store';
+import { EstimationState, Actions, Mutations } from '../store';
 import ParticipantList from '@/components/ParticipantList.vue';
 import StartEstimationForm from '@/components/StartEstimationForm.vue';
 import OngoingEstimation from '@/components/OngoingEstimation.vue';
 import EstimationResult from '@/components/EstimationResult.vue';
+import { Participant } from '../store/types';
 
 @Component({
   components: {
     ParticipantList,
     StartEstimationForm,
     OngoingEstimation,
-    EstimationResult
+    EstimationResult,
   },
 })
 export default class Room extends Vue {
-  beforeMount() {
+  mounted() {
     const roomNameParam = this.$route.params.roomName;
     const roomName = this.$store.state.room?.name;
 
     if (!this.$store.state.room || roomName !== roomNameParam) {
       this.$router.push({ name: 'lobby', query: { room: roomNameParam } });
     }
+    this.$store.commit(Mutations.ENTER_ROOM);
+  }
+
+  beforeDestroy() {
+    this.$store.commit(Mutations.LEAVE_ROOM);
   }
 
   startEstimation(taskName: string) {
@@ -84,7 +87,7 @@ export default class Room extends Vue {
   }
 
   get estimationResultAvailable() {
-    return this.$store.state.estimationResult !== undefined
+    return this.$store.state.estimationResult !== undefined;
   }
 }
 </script>
