@@ -1,4 +1,5 @@
 module.exports = {
+  purge: { content: ['./public/index.html', './src/**/*.html', './src/**/*.vue'] },
   theme: {
     extend: {
       width: {
