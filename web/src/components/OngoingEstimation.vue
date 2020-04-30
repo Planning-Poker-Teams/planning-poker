@@ -1,14 +1,14 @@
 <template>
   <div class="h-full grid grid-rows-3">
-    <!-- Drop zone -->
-    <div class="flex justify-center items-center">
+    <div class="flex flex-col justify-center items-center">
       <div
-        class="h-40 w-64 flex flex-col justify-center rounded border-4 border-gray-300 border-dashed"
+        class="h-32 w-64 m-4 flex flex-col justify-center rounded border-4 border-gray-300 border-dashed"
       >
         <p class="text-2xl font-medium font-sans text-center text-gray-800">
           {{ taskName }}
         </p>
-        <button
+      </div>
+      <button
           class="m-2 p-2 bg-gray-300 hover:bg-gray-100 text-2xl text-gray-700 py-2 px-4 border-4 border-gray-300 rounded"
           type="submit"
           v-if="votingIsComplete"
@@ -16,10 +16,8 @@
         >
           Show result
         </button>
-      </div>
     </div>
 
-    <!-- Cards -->
     <div
       class="row-span-2 flex flex-wrap px-8 pb-8 justify-center items-end overflow-scroll"
     >
