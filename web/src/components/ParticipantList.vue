@@ -23,7 +23,7 @@
 
 <script lang="ts">
 import { Vue, Prop, Component } from 'vue-property-decorator';
-import { Participant } from '../store';
+import { Participant } from '../store/types';
 
 @Component
 export default class ParticipantList extends Vue {

@@ -8,9 +8,14 @@
         <p class="text-2xl font-medium font-sans text-center text-gray-800">
           {{ taskName }}
         </p>
-        <div v-if="votingIsComplete">
-          <button @click="requestResult">Show result</button>
-        </div>
+        <button
+          class="m-2 p-2 bg-gray-300 hover:bg-gray-100 text-2xl text-gray-700 py-2 px-4 border-4 border-gray-300 rounded"
+          type="submit"
+          v-if="votingIsComplete"
+          @click="requestResult"
+        >
+          Show result
+        </button>
       </div>
     </div>
 
