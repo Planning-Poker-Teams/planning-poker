@@ -9,6 +9,7 @@
       <button
         class="p-2 bg-gray-300 hover:bg-gray-100 text-2xl text-gray-700 py-2 px-4 border-4 border-gray-300 rounded"
         type="submit"
+        :disabled="!taskNameIsSet"
         @click="startEstimation()"
       >
         Start estimating
@@ -23,6 +24,10 @@ import { Vue, Component } from 'vue-property-decorator';
 @Component
 export default class StartEstimationForm extends Vue {
   newTaskName = '';
+
+  get taskNameIsSet() {
+    return this.newTaskName.length > 0
+  }
 
   startEstimation() {
     this.$emit('start-estimation', this.newTaskName);
