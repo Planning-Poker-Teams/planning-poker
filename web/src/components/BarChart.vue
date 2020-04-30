@@ -58,20 +58,7 @@ export default class BarChart extends Vue {
         title: { display: true },
         legend: { display: false },
         tooltips: {
-          enabled: true,
-          mode: 'nearest',
-          backgroundColor: 'rgba(0, 0, 0, 0.0)',
-          bodyFontSize: 16,
-          bodyFontColor: 'rgba(0, 0, 0, 0.8)',
-          displayColors: false,
-          callbacks: {
-            title: (item, data) => {
-              return '';
-            },
-            label: (item, data) => {
-              return this.chartNames[item.index];
-            },
-          },
+          enabled: false,
         },
         scales: {
           xAxes: [

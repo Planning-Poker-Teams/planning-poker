@@ -16,7 +16,6 @@ export interface Participant {
   name: string;
   isSpectator: boolean;
   hasEstimated: boolean;
-  estimationValue?: string;
 }
 
 export interface Estimation {

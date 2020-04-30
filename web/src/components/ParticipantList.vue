@@ -11,7 +11,11 @@
     >
       <div
         class="flex justify-center items-center w-20 h-20 shadow rounded-full m-1 p-2 select-none"
-        v-bind:class="participant.hasEstimated ? 'bg-red-400' : 'bg-green-400'"
+        v-bind:class="
+          participant.hasEstimated || participant.isSpectator
+            ? 'bg-red-400'
+            : 'bg-green-400'
+        "
       >
         <p class="text-center text-white font-medium text-xsx overflow-hidden">
           {{ participant.name }}

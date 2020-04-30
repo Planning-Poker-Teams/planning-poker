@@ -4,7 +4,6 @@
     <div class="p-4 md:w-2/3">
       <bar-chart v-bind:estimation-data="chartData" />
     </div>
-    <!-- <p class="font-mono">{{ JSON.stringify(chartData) }}</p> -->
   </div>
 </template>
 
@@ -33,6 +32,8 @@ export default class EstimationResult extends Vue {
           return accumulator.map(e => {
             if (e.value == value) {
               return { ...e, names: [...e.names, estimate.userName] };
+            } else {
+              return e;
             }
           });
         } else {

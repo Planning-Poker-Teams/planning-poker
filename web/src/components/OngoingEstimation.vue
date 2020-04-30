@@ -2,20 +2,20 @@
   <div class="h-full grid grid-rows-3">
     <div class="flex flex-col justify-center items-center">
       <div
-        class="h-32 w-64 m-4 flex flex-col justify-center rounded border-4 border-gray-300 border-dashed"
+        class="h-24 w-64 m-4 flex flex-col justify-center rounded border-4 border-gray-300 border-dashed"
       >
         <p class="text-2xl font-medium font-sans text-center text-gray-800">
           {{ taskName }}
         </p>
       </div>
       <button
-          class="m-2 p-2 bg-gray-300 hover:bg-gray-100 text-2xl text-gray-700 py-2 px-4 border-4 border-gray-300 rounded"
-          type="submit"
-          v-if="votingIsComplete"
-          @click="requestResult"
-        >
-          Show result
-        </button>
+        class="m-2 p-2 bg-gray-300 hover:bg-gray-100 text-2xl text-gray-700 py-2 px-4 border-4 border-gray-300 rounded"
+        type="submit"
+        v-if="votingIsComplete"
+        @click="requestResult"
+      >
+        Show result
+      </button>
     </div>
 
     <div
