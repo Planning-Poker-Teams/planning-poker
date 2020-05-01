@@ -1,6 +1,6 @@
 import { Store, MutationPayload, ActionPayload } from 'vuex';
 import { State } from './types';
-import { Mutations } from '.';
+import { Mutations } from './mutations';
 
 const webSocketPlugin = (store: Store<State>) => {
   let socket: WebSocket | undefined = undefined;

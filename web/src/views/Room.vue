@@ -25,12 +25,14 @@
 <script lang="ts">
 import { Vue, Prop, Watch, Component } from 'vue-property-decorator';
 import { Route } from 'vue-router';
-import { EstimationState, Actions, Mutations } from '../store';
 import ParticipantList from '@/components/ParticipantList.vue';
 import StartEstimationForm from '@/components/StartEstimationForm.vue';
 import OngoingEstimation from '@/components/OngoingEstimation.vue';
 import EstimationResult from '@/components/EstimationResult.vue';
 import { Participant } from '../store/types';
+import { Mutations } from '../store/mutations';
+import { Actions } from '../store/actions';
+import { EstimationState } from '../store/getters';
 
 @Component({
   components: {

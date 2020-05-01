@@ -64,7 +64,7 @@ import Vue from 'vue';
 import Component from 'vue-class-component';
 import { Route } from 'vue-router';
 import Toggle from '@/components/Toggle.vue';
-import { Mutations } from '../store';
+import { Mutations } from '../store/mutations';
 
 @Component({
   components: {
