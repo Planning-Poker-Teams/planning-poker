@@ -18,8 +18,8 @@ export const initialState: State = {
 export default new Vuex.Store<State>({
   state: initialState,
   getters,
-  actions,
-  mutations,
+  actions, // observed by plugin, trigger an outgoing message
+  mutations, // only mutations to internal states
   modules: {},
   plugins: [webSocketPlugin],
 });

@@ -1,37 +1,40 @@
-import { Store, MutationPayload, ActionPayload } from 'vuex';
+import { Store, ActionPayload } from 'vuex';
 import { State } from './types';
-import { Mutations } from './mutations';
+import { Actions } from './actions';
+
+const log = (msg: string, obj?: any) => {
+  if (process.env.ENVIRONMENT !== 'production') {
+    console.log(msg, obj);
+  }
+};
 
 const webSocketPlugin = (store: Store<State>) => {
   let socket: WebSocket | undefined = undefined;
 
-  store.subscribe((mutation: MutationPayload, state: State) => {
-    switch (mutation.type) {
-      case Mutations.ENTER_ROOM: {
+  store.subscribeAction((action: ActionPayload, state: State) => {
+    switch (action.type) {
+      case Actions.ENTER_ROOM: {
         if (!state.room) {
-          console.error('Missing room information. Cannot enter room.');
           return;
         }
         const { name, userName, isSpectator } = state.room;
         socket = setupWebSocketConnection(name, userName, isSpectator);
         break;
       }
-      case Mutations.LEAVE_ROOM: {
+      case Actions.LEAVE_ROOM: {
         socket?.close();
         break;
       }
-      case Mutations.SEND_MESSAGE: {
-        console.log('Sending JSON message', mutation.payload);
-        socket?.send(JSON.stringify(mutation.payload));
+      case Actions.SEND_MESSAGE: {
+        log('Sending JSON message', action.payload);
+        socket?.send(JSON.stringify(action.payload));
         break;
       }
     }
   });
 
-  store.subscribeAction((action: ActionPayload, state: State) => {});
-
   const handleIncomingMessage = (message: PokerEvent) => {
-    console.log('Received incoming JSON message', message);
+    log('Received incoming JSON message', message);
     switch (message.eventType) {
       case 'userJoined':
       case 'userLeft':

@@ -3,16 +3,12 @@ import { State, RoomInformation } from './types';
 
 export enum Mutations {
   SET_ROOM_INFORMATION = 'setRoomInformation',
-  ENTER_ROOM = 'enterRoom',
-  LEAVE_ROOM = 'leaveRoom',
   USER_JOINED = 'userJoined',
   SEND_MESSAGE = 'sendMessage',
 }
 
 export const mutations: MutationTree<State> = {
-  sendMessage(state: State, payload: PokerEvent) {},
-  enterRoom(state: State) {},
-  setRoomInformation(state: State, roomInformation: RoomInformation) {
+  [Mutations.SET_ROOM_INFORMATION](state: State, roomInformation: RoomInformation) {
     state.room = roomInformation;
     state.participants = [];
     state.ongoingEstimation = undefined;

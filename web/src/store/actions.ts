@@ -1,29 +1,20 @@
 import { ActionTree } from 'vuex';
 import { State } from './types';
-import { Mutations } from './mutations';
 
 export enum Actions {
+  ENTER_ROOM = 'enterRoom', // handled by websocketPlugin
+  LEAVE_ROOM = 'leaveRoom', // handled by websocketPlugin
+  SEND_MESSAGE = 'sendMessage', // handled by websocketPlugin
   REQUEST_START_ESTIMATION = 'requestStartEstimation',
   SEND_ESTIMATION = 'sendEstimation',
   REQUEST_RESULT = 'requestShowResult',
 }
 
 export const actions: ActionTree<State, State> = {
-  // should joinRoom, leaveRoom be actions too?
-  sendEstimation({ commit, state }, estimate: string) {
-    if (!state.room || !state.ongoingEstimation) {
-      console.error('There is no room or no ongoing estimation', state);
-      return;
-    }
-    const estimationMessage: UserEstimate = {
-      eventType: 'estimate',
-      userName: state.room.userName,
-      taskName: state.ongoingEstimation?.taskName,
-      estimate,
-    };
-    commit(Mutations.SEND_MESSAGE, estimationMessage);
-  },
-  requestStartEstimation({ commit, state }, taskName: string) {
+  [Actions.ENTER_ROOM]() {},
+  [Actions.LEAVE_ROOM]() {},
+  [Actions.SEND_MESSAGE]() {},
+  [Actions.REQUEST_START_ESTIMATION]({ dispatch, state }, taskName: string) {
     if (!state.room) {
       console.error('There is no room', state);
       return;
@@ -34,9 +25,22 @@ export const actions: ActionTree<State, State> = {
       taskName,
       startDate: new Date().toISOString(),
     };
-    commit(Mutations.SEND_MESSAGE, startEstimationMessage);
+    dispatch(Actions.SEND_MESSAGE, startEstimationMessage);
   },
-  requestShowResult({ commit, state }) {
+  [Actions.SEND_ESTIMATION]({ dispatch, state }, estimate: string) {
+    if (!state.room || !state.ongoingEstimation) {
+      console.error('There is no room or no ongoing estimation', state);
+      return;
+    }
+    const estimationMessage: UserEstimate = {
+      eventType: 'estimate',
+      userName: state.room.userName,
+      taskName: state.ongoingEstimation?.taskName,
+      estimate,
+    };
+    dispatch(Actions.SEND_MESSAGE, estimationMessage);
+  },
+  [Actions.REQUEST_RESULT]({ dispatch, state }) {
     if (!state.room) {
       console.error('There is no room', state);
       return;
@@ -45,6 +49,6 @@ export const actions: ActionTree<State, State> = {
       eventType: 'showResult',
       userName: state.room?.userName,
     };
-    commit(Mutations.SEND_MESSAGE, showResultMessage);
+    dispatch(Actions.SEND_MESSAGE, showResultMessage);
   },
 };

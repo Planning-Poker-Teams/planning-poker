@@ -50,11 +50,11 @@ export default class Room extends Vue {
     if (!this.$store.state.room || roomName !== roomNameParam) {
       this.$router.push({ name: 'lobby', query: { room: roomNameParam } });
     }
-    this.$store.commit(Mutations.ENTER_ROOM);
+    this.$store.dispatch(Actions.ENTER_ROOM);
   }
 
   beforeDestroy() {
-    this.$store.commit(Mutations.LEAVE_ROOM);
+    this.$store.dispatch(Actions.LEAVE_ROOM);
   }
 
   startEstimation(taskName: string) {
