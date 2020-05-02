@@ -1,7 +1,5 @@
 <template>
-  <div class="bg-gray-200x m-2">
-    <canvas id="chart"></canvas>
-  </div>
+  <canvas id="chart"></canvas>
 </template>
 
 <script lang="ts">

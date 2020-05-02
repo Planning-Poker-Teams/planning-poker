@@ -6,10 +6,6 @@
         v-bind:roomName="roomName"
       />
       <div class="row-span-4">
-        <start-estimation-form
-          v-if="!isEstimationOngoing"
-          v-on:start-estimation="startEstimation"
-        />
         <ongoing-estimation
           v-if="isEstimationOngoing"
           v-bind:taskName="taskName"
@@ -17,6 +13,10 @@
           v-on:request-result="requestResult"
         />
         <estimation-result v-if="estimationResultAvailable" />
+        <start-estimation-form
+          v-if="!isEstimationOngoing"
+          v-on:start-estimation="startEstimation"
+        />
       </div>
     </div>
   </div>

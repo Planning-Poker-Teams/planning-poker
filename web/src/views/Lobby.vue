@@ -5,6 +5,7 @@
     >
       <img
         class="m-8 mb-4 object-contain h-24 shadow-md rounded-lg"
+        alt="Planning Poker App logo"
         src="../assets/planning-poker-app-icon.png"
       />
       <h1 class="text-2xl font-medium font-sans mb-2 text-center select-none">

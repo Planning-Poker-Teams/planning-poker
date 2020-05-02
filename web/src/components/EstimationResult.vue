@@ -1,8 +1,19 @@
 <template>
   <div class="flex flex-col pt-4 justify-center items-center">
-    <h1 class="font-bold text-sans text-2xl">{{ taskName }}</h1>
-    <div class="p-4 md:w-2/3">
-      <bar-chart v-bind:estimation-data="chartData" />
+    <h1 class="text-sans text-3xl">
+      <p class="font-bold">{{ taskName }}</p>
+    </h1>
+    <div class="flex flex-row justify-center items-center">
+      <bar-chart
+        class="m-2 p-2 max-w-md rounded bg-gray-200 border"
+        v-bind:estimation-data="chartData"
+      />
+      <img
+        class="m-2 object-contain h-48 rounded"
+        alt="Consensus cats!"
+        v-if="showConsensusCats"
+        :src="catUrl"
+      />
     </div>
   </div>
 </template>
@@ -18,6 +29,14 @@ import { Estimate } from '../store/types';
 export default class EstimationResult extends Vue {
   get taskName() {
     return this.$store.state.estimationResult.taskName;
+  }
+
+  get showConsensusCats(): boolean {
+    return this.$store.state.room?.showCats && this.chartData.length == 1;
+  }
+
+  get catUrl(): string {
+    return `https://thecatapi.com/api/images/get?format=src&type=gif&nocache=${new Date().toISOString()}`;
   }
 
   get chartData(): { value: string; names: string[] }[] {
