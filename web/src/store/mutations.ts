@@ -19,9 +19,10 @@ export const mutations: MutationTree<State> = {
     state.estimationResult = undefined;
   },
   leaveRoom(state: State) {
-    state = {
-      participants: [],
-    };
+    state.room = undefined;
+    state.participants = [];
+    state.ongoingEstimation = undefined;
+    state.estimationResult = undefined;
   },
   userJoined(state: State, event: UserJoined) {
     const participant = {
@@ -49,7 +50,7 @@ export const mutations: MutationTree<State> = {
     }));
     state.ongoingEstimation = {
       taskName: event.taskName,
-      start: new Date(event.startDate),
+      startDate: new Date(event.startDate),
     };
   },
   userHasEstimated(state: State, event: UserHasEstimated) {

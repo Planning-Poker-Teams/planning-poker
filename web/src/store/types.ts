@@ -20,7 +20,7 @@ export interface Participant {
 
 export interface Estimation {
   taskName: string;
-  start: Date;
+  startDate: Date;
 }
 
 export interface EstimationResult {

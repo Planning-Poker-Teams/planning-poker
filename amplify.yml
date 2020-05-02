@@ -9,7 +9,7 @@ frontend:
     test:
       commands:
         - cd web
-        - yarn test:unit
+        - yarn test
   artifacts:
     baseDirectory: web/dist
     files:
