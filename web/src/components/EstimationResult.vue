@@ -1,15 +1,15 @@
 <template>
   <div class="flex flex-col pt-4 justify-center items-center">
-    <h1 class="text-sans text-3xl">
-      <p class="font-bold">{{ taskName }}</p>
+    <h1 class="text-sans text-xl font-medium">
+      {{ taskName }}
     </h1>
-    <div class="flex flex-row justify-center items-center">
+    <div class="flex flex-row flex-wrap justify-center items-center">
       <bar-chart
         class="m-2 p-2 max-w-md rounded bg-gray-200 border"
         v-bind:estimation-data="chartData"
       />
       <img
-        class="m-2 object-contain h-48 rounded"
+        class="m-2 object-contain h-32 rounded"
         alt="Consensus cats!"
         v-if="showConsensusCats"
         :src="catUrl"
