@@ -56,9 +56,9 @@ export const handlePokerEvent = (
       ];
 
       if (room.currentEstimation) {
-        const startEstimationEvent: RequestStartEstimation = {
+        const startEstimationEvent: StartEstimation = {
           eventType: "startEstimation",
-          userName: room.currentEstimation.initiator?.name || "unknown",
+          userName: room.currentEstimation.initiator?.name,
           startDate: room.currentEstimation.startDate,
           taskName: room.currentEstimation.taskName,
         };
@@ -112,7 +112,7 @@ export const handlePokerEvent = (
       if (isEstimationOngoing) {
         return [];
       } else {
-        const startEstimation: RequestStartEstimation = {
+        const startEstimation: StartEstimation = {
           eventType: "startEstimation",
           startDate: inputEvent.startDate || new Date().toISOString(),
           taskName: inputEvent.taskName,

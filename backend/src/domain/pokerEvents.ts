@@ -2,7 +2,7 @@ type PokerEvent =
   | JoinRoom
   | UserJoined
   | UserLeft
-  | RequestStartEstimation
+  | StartEstimation
   | UserEstimate
   | UserHasEstimated
   | RequestShowEstimationResult
@@ -26,9 +26,9 @@ interface UserLeft {
   userName: string;
 }
 
-interface RequestStartEstimation {
+interface StartEstimation {
   eventType: "startEstimation";
-  userName: string; // should be nullable
+  userName?: string;
   taskName: string;
   startDate: string;
 }
