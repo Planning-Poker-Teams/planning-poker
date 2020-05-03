@@ -20,20 +20,22 @@
 
     <div
       class="row-span-2 flex flex-wrap px-8 pb-8 justify-center items-end overflow-scroll"
+      v-if="!isSpectator"
     >
       <div
         class="flex flex-col justify-center w-20 h-32 m-1 rounded-lg shadow cursor-pointer select-none"
         v-for="value in possibleEstimationValues"
         :key="value"
-        v-bind:class="
-          value == selectedEstimation ? 'bg-red-400' : 'bg-blue-400'
-        "
+        :class="value == selectedEstimation ? 'bg-red-400' : 'bg-blue-400'"
         @click="sendEstimation(value)"
       >
         <p class="text-white font-medium text-2xl text-center font-mono">
           {{ value }}
         </p>
       </div>
+    </div>
+    <div class="row-span-2 flex items-center justify-center" v-if="isSpectator">
+      <p class="font-medium text-4xl text-gray-500">Participants are voting</p>
     </div>
   </div>
 </template>
@@ -62,6 +64,10 @@ export default class OngoingEstimation extends Vue {
 
   get votingIsComplete() {
     return this.$store.getters.votingIsComplete;
+  }
+
+  get isSpectator() {
+    return this.$store.state.room?.isSpectator;
   }
 
   sendEstimation(value: string) {
