@@ -142,7 +142,10 @@ export const handlePokerEvent = (
         estimate: inputEvent.estimate,
         participantId: participantId,
       };
-      if (participant?.currentEstimation == undefined) {
+      const previousEstimation = room.participants.find(
+        (p) => p.id === participant?.id
+      )?.currentEstimation;
+      if (!previousEstimation) {
         const userHasEstimated: UserHasEstimated = {
           eventType: "userHasEstimated",
           userName: inputEvent.userName,

@@ -64,7 +64,7 @@ export class ApiStack extends cdk.Stack {
         functionName: `${props.stackName}-websocket-handler`,
         entry: path.join(
           __dirname,
-          "../src/handlers/websocketEventLambdaHandler.ts"
+          "../src/handlers/handleWebsocketEvents.ts"
         ),
         runtime: Runtime.NODEJS_12_X,
         memorySize: 512,

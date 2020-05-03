@@ -33,7 +33,7 @@ export const handler = async (
           connectionId
         );
       } catch (error) {
-        log.error("Incoming message could not be parsed", {
+        log.error("Incoming message could not be parsed. Ignoring it.", {
           incomingMessage: event.body,
         });
       }

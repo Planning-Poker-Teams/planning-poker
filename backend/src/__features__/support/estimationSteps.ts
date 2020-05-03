@@ -62,8 +62,9 @@ Given("{string} estimated {string}", function (
         ...participant,
         currentEstimation: estimation,
       };
+    } else {
+      return participant;
     }
-    return participant;
   });
 });
 
