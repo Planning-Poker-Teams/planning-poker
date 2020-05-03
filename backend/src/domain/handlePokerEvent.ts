@@ -135,24 +135,29 @@ export const handlePokerEvent = (
       if (inputEvent.taskName !== room.currentEstimation?.taskName) {
         return [];
       }
-      const userHasEstimated: UserHasEstimated = {
-        eventType: "userHasEstimated",
-        userName: inputEvent.userName,
+      const recordEstimationCommand: Command = {
+        type: RECORD_ESTIMATION,
+        roomName: room.name,
         taskName: inputEvent.taskName,
+        estimate: inputEvent.estimate,
+        participantId: participantId,
       };
-      return [
-        {
-          type: RECORD_ESTIMATION,
-          roomName: room.name,
+      if (participant?.currentEstimation == undefined) {
+        const userHasEstimated: UserHasEstimated = {
+          eventType: "userHasEstimated",
+          userName: inputEvent.userName,
           taskName: inputEvent.taskName,
-          estimate: inputEvent.estimate,
-          participantId: participantId,
-        },
-        {
-          type: BROADCAST_MESSAGE,
-          payload: userHasEstimated,
-        },
-      ];
+        };
+        return [
+          recordEstimationCommand,
+          {
+            type: BROADCAST_MESSAGE,
+            payload: userHasEstimated,
+          },
+        ];
+      } else {
+        return [recordEstimationCommand];
+      }
     }
 
     case "showResult": {

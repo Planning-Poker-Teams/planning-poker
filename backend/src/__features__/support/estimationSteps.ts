@@ -161,6 +161,20 @@ Then(
   }
 );
 
+Then(
+  "the other participants do not get informed that {string} has estimated",
+  function (userName: string) {
+    const broadcastEvent = this.outgoingCommands?.find(
+      (e) =>
+        e.type == CommandType.BROADCAST_MESSAGE &&
+        e.payload.eventType == "userHasEstimated" &&
+        e.payload.userName == userName
+    );
+
+    expect(broadcastEvent).toBeUndefined();
+  }
+);
+
 Then("the estimation of {string} gets recorded", function (userName: string) {
   const participant = participants.find((p) => p.name === userName);
 

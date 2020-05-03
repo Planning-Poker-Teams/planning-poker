@@ -17,6 +17,13 @@ Feature: Performing estimations
     Then the estimation of "Fred" gets recorded
     And the other participants get informed that "Fred" has estimated
 
+  Scenario: Participants get only informed once about estimations
+    Given there is a room with an ongoing estimation for "Buy milk"
+    And "Fred" estimated "1"
+    When "Fred" estimates "10" for "Buy milk"
+    Then the estimation of "Fred" gets recorded
+    And the other participants do not get informed that "Fred" has estimated
+
   Scenario: Ignoring invalid estimation
     Given there is a room with an ongoing estimation for "Buy milk"
     When "Fred" estimates "20" for "Do the laundry"
