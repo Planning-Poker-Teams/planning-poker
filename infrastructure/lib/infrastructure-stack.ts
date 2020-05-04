@@ -29,10 +29,5 @@ export class InfrastructureStack extends cdk.Stack {
       branchName: "master",
       appId: webApp.attrAppId,
     });
-
-    new CfnBranch(this, "NextWebAppRepoBranch", {
-      branchName: "web-2.0",
-      appId: webApp.attrAppId,
-    });
   }
 }
