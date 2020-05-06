@@ -1,10 +1,9 @@
 <template>
-  <div class="p-16 w-full h-full">
-    <div class="h-full p-2 bg-gray-100 shadow-lg rounded-lg grid grid-rows-5">
-      <participant-list
-        v-bind:participants="participants"
-        v-bind:roomName="roomName"
-      />
+  <div
+    class="flex-1 w-full flex flex-col items-center bg-gray-100 lg:shadow-lg lg:rounded-lg overflow-y-visible relative"
+  >
+    <div class="h-full w-full">
+      <room-header v-bind:participants="participants" v-bind:roomName="roomName" />
       <div class="row-span-4">
         <ongoing-estimation
           v-if="isEstimationOngoing"
@@ -25,7 +24,7 @@
 <script lang="ts">
 import { Vue, Prop, Watch, Component } from 'vue-property-decorator';
 import { Route } from 'vue-router';
-import ParticipantList from '@/components/ParticipantList.vue';
+import RoomHeader from '@/components/RoomHeader.vue';
 import StartEstimationForm from '@/components/StartEstimationForm.vue';
 import OngoingEstimation from '@/components/OngoingEstimation.vue';
 import EstimationResult from '@/components/EstimationResult.vue';
@@ -36,7 +35,7 @@ import { EstimationState } from '../store/getters';
 
 @Component({
   components: {
-    ParticipantList,
+    RoomHeader,
     StartEstimationForm,
     OngoingEstimation,
     EstimationResult,

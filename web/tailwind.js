@@ -4,8 +4,11 @@ module.exports = {
     extend: {
       width: {
         '72': '18rem',
-        '96': '24rem',
+        '96': '24rem'
       },
+      minHeight: {
+        '16': '4rem'
+      }
     },
   },
   variants: {},
