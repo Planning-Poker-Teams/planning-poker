@@ -17,7 +17,7 @@
           v-for="entry in estimationResultByComplexity"
           :key="entry.value"
         >
-          <td class="p-2">{{ entry.value }}</td>
+          <td class="p-2"><span class="text-2xl font-mono font-medium">{{ entry.value }}</span></td>
           <td class="p-2">{{ entry.names.length }}</td>
           <td class="p-2 w-1/2 overflow-x-scroll">
             <div class="w-full flex justify-start">
