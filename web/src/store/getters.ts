@@ -22,7 +22,7 @@ export const getters: GetterTree<State, State> = {
   votingIsComplete: (state: State): boolean => {
     return state.participants.every(p => p.hasEstimated || p.isSpectator);
   },
-  estimationResult: (state: State): EstimationResult | undefined => {
+  resultByComplexity: (state: State): EstimationResult | undefined => {
     if (!state.estimationResult) {
       return undefined;
     }

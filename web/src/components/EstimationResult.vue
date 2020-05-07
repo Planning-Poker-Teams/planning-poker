@@ -14,7 +14,7 @@
       <tbody class="bg-gray-200">
         <tr
           class="last:rounded-b rounded"
-          v-for="entry in chartData"
+          v-for="entry in estimationResultByComplexity"
           :key="entry.value"
         >
           <td class="p-2">{{ entry.value }}</td>
@@ -55,15 +55,18 @@ export default class EstimationResult extends Vue {
   }
 
   get showConsensusCats(): boolean {
-    return this.$store.state.room?.showCats && this.chartData.length == 1;
+    return (
+      this.$store.state.room?.showCats &&
+      this.estimationResultByComplexity.length == 1
+    );
   }
 
   get catUrl(): string {
     return `https://thecatapi.com/api/images/get?format=src&type=gif&nocache=${new Date().toISOString()}`;
   }
 
-  get chartData(): { value: string; names: string[] }[] {
-    return this.$store.getters.estimationResult!;
+  get estimationResultByComplexity(): { value: string; names: string[] }[] {
+    return this.$store.getters.resultByComplexity!;
   }
 }
 </script>
