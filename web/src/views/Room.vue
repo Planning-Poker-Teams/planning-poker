@@ -2,21 +2,16 @@
   <div
     class="flex-1 w-full flex flex-col items-center bg-gray-100 lg:shadow-lg lg:rounded-lg overflow-y-visible relative"
   >
-    <div class="h-full w-full">
+    <div class="flex-1 flex flex-col w-full">
       <room-header v-bind:participants="participants" v-bind:roomName="roomName" />
-      <div class="row-span-4">
-        <ongoing-estimation
-          v-if="isEstimationOngoing"
-          v-bind:taskName="taskName"
-          v-on:send-estimation="sendEstimation"
-          v-on:request-result="requestResult"
-        />
-        <estimation-result v-if="estimationResultAvailable" />
-        <start-estimation-form
-          v-if="!isEstimationOngoing"
-          v-on:start-estimation="startEstimation"
-        />
-      </div>
+      <ongoing-estimation
+        v-if="isEstimationOngoing"
+        v-bind:taskName="taskName"
+        v-on:send-estimation="sendEstimation"
+        v-on:request-result="requestResult"
+      />
+      <estimation-result v-if="estimationResultAvailable" />
+      <start-estimation-form v-if="!isEstimationOngoing" v-on:start-estimation="startEstimation" />
     </div>
   </div>
 </template>

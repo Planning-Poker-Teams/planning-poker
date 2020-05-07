@@ -1,5 +1,5 @@
 <template>
-  <div class="w-full flex flex-col border-b">
+  <div class="sticky top-0 bg-white z-10 w-full flex flex-col border-b">
     <div class="w-full min-h-16 flex justify-center items-center relative overflow-hidden">
       <div class="absolute top-0 left-0 flex items-center m-2">
         <img
@@ -14,7 +14,7 @@
       </div>
       <h1 class="w:3/5 flex-1 text-center text-2xl m-0 font-sans font-bold">{{ roomName }}</h1>
       <button
-        class="absolute top-0 right-0 text-lg bg-gray-300 text-gray-700 m-2 p-2 border-2 hover:border-gray-400 border-gray-300 rounded"
+        class="absolute top-0 right-0 bg-gray-300 text-gray-700 m-2 p-2 border-2 hover:border-gray-400 border-gray-300 rounded"
         type="button"
         @click="leaveRoom"
       >

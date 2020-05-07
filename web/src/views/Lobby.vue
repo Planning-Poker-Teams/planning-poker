@@ -1,6 +1,6 @@
 <template>
   <div
-    class="flex-1 w-screen lg:w-1/3 flex flex-col items-center bg-gray-100 lg:shadow-lg lg:rounded-lg overflow-y-visible relative"
+    class="flex-1 lg:flex-none w-screen lg:w-1/3 flex flex-col items-center bg-gray-100 lg:shadow-lg lg:rounded-lg overflow-y-visible relative"
   >
     <img
       class="m-8 mb-4 object-contain h-24 shadow-md rounded-lg"
