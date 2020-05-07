@@ -1,21 +1,17 @@
 <template>
-  <div class="h-40 flex justify-center items-center">
-    <form @submit.prevent>
-      <input
-        class="m-2 p-2 text-2xl font-semi bg-white appearance-none border-4 rounded text-grey-darker focus:outline-none focus:border-green-300"
-        placeholder="Task name"
-        v-model="newTaskName"
-      />
-      <button
-        class="p-2 bg-gray-300 hover:bg-gray-100 text-2xl text-gray-700 py-2 px-4 border-4 border-gray-300 rounded"
-        type="submit"
-        :disabled="!taskNameIsSet"
-        @click="startEstimation()"
-      >
-        Start estimating
-      </button>
-    </form>
-  </div>
+  <form @submit.prevent class="flex-1 flex flex-col justify-center items-center p-4">
+    <input
+      class="p-2 mb-4 w-full max-w-lg text-center text-lg font-semi bg-white appearance-none border-4 rounded text-grey-darker focus:outline-none focus:border-green-300"
+      placeholder="Task name"
+      v-model="newTaskName"
+    />
+    <button
+      class="px-6 py-2 bg-gray-300 text-gray-700 p-2 border-2 hover:border-gray-400 border-gray-300 rounded"
+      type="submit"
+      :disabled="!taskNameIsSet"
+      @click="startEstimation()"
+    >Start estimating</button>
+  </form>
 </template>
 
 <script lang="ts">
@@ -26,7 +22,7 @@ export default class StartEstimationForm extends Vue {
   newTaskName = '';
 
   get taskNameIsSet() {
-    return this.newTaskName.length > 0
+    return this.newTaskName.length > 0;
   }
 
   startEstimation() {

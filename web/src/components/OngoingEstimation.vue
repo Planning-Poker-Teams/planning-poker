@@ -25,7 +25,7 @@
     </div>
 
     <button
-      class="mb-4 p-2 bg-gray-300 text-gray-700 p-2 border-2 hover:border-gray-400 border-gray-300 rounded"
+      class="mb-4 px-6 py-2 bg-gray-300 text-gray-700 p-2 border-2 hover:border-gray-400 border-gray-300 rounded"
       type="submit"
       v-if="votingIsComplete"
       @click="requestResult"
