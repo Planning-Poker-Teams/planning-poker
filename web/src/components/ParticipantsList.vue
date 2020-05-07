@@ -2,14 +2,9 @@
   <div class="w-full overflow-x-scroll">
     <div class="flex items-center p-2">
       <participant-item
-        v-for="(participant, index) in participants"
+        v-for="participant in participants"
         :key="participant.name"
-        :class="
-          `
-          ${index === 0 ? 'ml-auto' : ''}
-          ${index === participants.length - 1 ? 'mr-auto' : ''}
-        `
-        "
+        class="first:ml-auto last:mr-auto"
         :name="participant.name"
         :hasVoted="participant.hasEstimated"
       />
