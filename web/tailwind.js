@@ -7,7 +7,8 @@ module.exports = {
         '96': '24rem'
       },
       minHeight: {
-        '16': '4rem'
+        '16': '4rem',
+        '24': '6rem'
       }
     },
   },

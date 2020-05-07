@@ -1,21 +1,39 @@
 <template>
-  <div class="flex flex-col pt-4 justify-center items-center">
-    <h1 class="text-sans text-xl font-medium">
-      {{ taskName }}
-    </h1>
-    <div class="flex flex-row flex-wrap justify-center items-center">
-      <bar-chart
-        class="m-2 p-2 max-w-md rounded bg-gray-200 border"
-        v-bind:estimation-data="chartData"
-      />
-      <img
-        class="m-2 object-contain h-32 rounded"
-        alt="Consensus cats!"
-        v-if="showConsensusCats"
-        :src="catUrl"
-      />
-    </div>
-  </div>
+  <section class="flex-1 flex flex-col px-4 justify-around items-center">
+    <h1 class="text-sans text-xl font-medium my-4">{{ taskName }}</h1>
+    <table class="table-fixed bg-white text-center w-full max-w-lg rounded">
+      <thead>
+        <tr>
+          <th class="p-2">Complexity</th>
+          <th class="p-2">Votes</th>
+          <th class="p-2 w-1/2">Voters</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="entry in chartData" :key="entry.value">
+          <td class="p-2">{{ entry.value }}</td>
+          <td class="p-2">{{ entry.names.length }}</td>
+          <td class="p-2 w-1/2 overflow-x-scroll">
+            <div class="w-full flex justify-start">
+              <div
+                class="flex-none flex justify-center items-center w-16 h-16 shadow rounded-full mx-1 p-2 select-none bg-red-400"
+                v-for="name in entry.names"
+                :key="name"
+              >
+                <p class="text-center text-white font-medium text-sm overflow-x-hidden">{{ name }}</p>
+              </div>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <img
+      class="object-contain h-32 rounded"
+      alt="Consensus cats!"
+      v-if="showConsensusCats"
+      :src="catUrl"
+    />
+  </section>
 </template>
 
 <script lang="ts">
@@ -62,7 +80,12 @@ export default class EstimationResult extends Vue {
       []
     );
 
-    return data;
+    return data.sort((a, b) => {
+      const aNumberOfVotes = parseInt(a.names.length, 10)
+      const bNumberOfVotes = parseInt(b.names.length, 10)
+      
+      return aNumberOfVotes < bNumberOfVotes ? 1 : aNumberOfVotes > bNumberOfVotes ? -1 : 0
+    });
   }
 }
 </script>
