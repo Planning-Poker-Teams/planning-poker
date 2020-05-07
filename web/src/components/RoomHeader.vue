@@ -1,5 +1,5 @@
 <template>
-  <div class="sticky top-0 bg-white rounded-t-lg z-10 w-full flex flex-col border-b">
+  <div class="sticky top-0 bg-white rounded-t-lg z-10 w-full flex flex-col border-b shadow-sm">
     <div class="w-full min-h-16 flex justify-center items-center relative overflow-hidden">
       <div class="absolute top-0 left-0 flex items-center m-2">
         <img
@@ -7,7 +7,7 @@
         alt="Planning Poker App logo"
         src="../assets/planning-poker-app-icon.png"
       />
-      <h2 class="hidden lg:inline font-medium font-sans mb-2 text-center select-none">
+      <h2 class="hidden lg:inline font-medium font-sans text-center select-none">
         Planning Poker
         <br />for teams
       </h2>
