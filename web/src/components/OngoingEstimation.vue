@@ -9,14 +9,16 @@
 
     <div class="grid grid-cols-4 col-gap-2 row-gap-2 mb-4" v-if="!isSpectator">
       <div
-        class="flex flex-col justify-center w-20 h-32 rounded-lg shadow cursor-pointer select-none"
+        class="flex flex-col justify-center w-20 h-32 rounded-lg shadow cursor-pointer select-none relative"
         v-for="value in possibleEstimationValues"
         :ref="`card-${value}`"
         :key="value"
         :class="value == selectedEstimation ? 'bg-red-400' : 'bg-blue-400'"
         @click="sendEstimation(value)"
       >
+        <p class="absolute top-0 left-0 text-sm text-white px-1 font-mono">{{ value }}</p>
         <p class="text-white font-medium text-2xl text-center font-mono">{{ value }}</p>
+        <p class="absolute bottom-0 right-0 transform rotate-180 text-sm text-white px-1 font-mono">{{ value }}</p>
       </div>
     </div>
     <div class="row-span-2 flex items-center justify-center" v-if="isSpectator">
