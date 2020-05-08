@@ -4,7 +4,9 @@
       ref="taskName"
       class="min-h-24 w-full max-w-lg flex justify-center items-center rounded border-4 border-gray-300 border-dashed mb-4"
     >
-      <p class="text-2xl font-medium font-sans text-center text-gray-800 p-2">{{ taskName }}</p>
+      <p class="text-2xl font-medium font-sans text-center text-gray-800 p-2">
+        {{ taskName }}
+      </p>
     </div>
 
     <div class="grid grid-cols-4 col-gap-2 row-gap-2 mb-4" v-if="!isSpectator">
@@ -16,9 +18,17 @@
         :class="value == selectedEstimation ? 'bg-red-400' : 'bg-blue-400'"
         @click="sendEstimation(value)"
       >
-        <p class="absolute top-0 left-0 text-sm text-white px-1 font-mono">{{ value }}</p>
-        <p class="text-white font-medium text-2xl text-center font-mono">{{ value }}</p>
-        <p class="absolute bottom-0 right-0 transform rotate-180 text-sm text-white px-1 font-mono">{{ value }}</p>
+        <p class="absolute top-0 left-0 text-sm text-white px-1 font-mono">
+          {{ value }}
+        </p>
+        <p class="text-white font-medium text-2xl text-center font-mono">
+          {{ value }}
+        </p>
+        <p
+          class="absolute bottom-0 right-0 transform rotate-180 text-sm text-white px-1 font-mono"
+        >
+          {{ value }}
+        </p>
       </div>
     </div>
     <div class="row-span-2 flex items-center justify-center" v-if="isSpectator">
@@ -30,7 +40,9 @@
       type="submit"
       v-if="votingIsComplete"
       @click="requestResult"
-    >Show result</button>
+    >
+      Show result
+    </button>
   </section>
 </template>
 
@@ -68,9 +80,12 @@ export default class OngoingEstimation extends Vue {
   }
 
   sendEstimation(value: string) {
-    this.selectedEstimation = value;
+    if (this.selectedEstimation !== value) {
+      this.animateCardSelection(value);
+      this.selectedEstimation = value;
+    }
+
     this.$emit('send-estimation', value);
-    this.animateCardSelection(value);
   }
 
   animateCardSelection(value: string) {
