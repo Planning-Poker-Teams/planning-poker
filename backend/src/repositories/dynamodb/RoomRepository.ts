@@ -17,11 +17,10 @@ export interface Estimate {
 }
 
 export default class DynamoDbRoomRepository implements RoomRepository {
-  private client: DynamoDbClient;
-
-  constructor(private roomsTableName: string, enableXRay = true) {
-    this.client = new DynamoDbClient(enableXRay);
-  }
+  constructor(
+    private roomsTableName: string,
+    private client: DynamoDbClient = new DynamoDbClient()
+  ) {}
 
   async getOrCreateRoom(name: string): Promise<Room> {
     const room = await this.client.get(this.roomsTableName, { name }, true);

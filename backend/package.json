@@ -13,7 +13,7 @@
   "scripts": {
     "build": "tsc",
     "watch": "tsc -w",
-    "test": "jest",
+    "test": "DEBUG=testcontainers jest",
     "lint": "eslint src/ --ext .js,.jsx,.ts,.tsx",
     "feature": "cucumber-js --require-module ts-node/register/transpile-only --require src/__features__/support/setup.ts --require 'src/__features__/support/*Steps.ts'",
     "features": "npm run feature src/__features__/",
@@ -35,6 +35,7 @@
     "cucumber": "^6.0.5",
     "eslint": "^6.8.0",
     "jest": "^24",
+    "testcontainers": "^2.8.1",
     "ts-jest": "^24.1.0",
     "ts-node": "^8.6.2",
     "typescript": "^3.7.2"

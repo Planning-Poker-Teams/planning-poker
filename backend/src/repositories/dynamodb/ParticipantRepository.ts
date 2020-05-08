@@ -11,15 +11,12 @@ interface ParticipantRowSchema {
 
 export default class DynamoDbParticipantRepository
   implements ParticipantRepository {
-  private client: DynamoDbClient;
   private cache = new Map<string, ParticipantRowSchema>();
 
   constructor(
     private participantsTableName: string,
-    enableXRay = true
-  ) {
-    this.client = new DynamoDbClient(enableXRay);
-  }
+    private client: DynamoDbClient = new DynamoDbClient()
+  ) {}
 
   async getAllParticipants(): Promise<Participant[]> {
     const allItems = await this.client.scan(this.participantsTableName);

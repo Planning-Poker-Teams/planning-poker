@@ -46,15 +46,19 @@ type KeyInfo = { [key: string]: any };
 export class DynamoDbClient {
   private client: DocumentClient;
 
-  constructor(enableXRay = true) {
+  constructor(
+    config: DynamoDB.ClientConfiguration | undefined = undefined,
+    enableXRay = true
+  ) {
     if (enableXRay) {
       // Workaround for https://github.com/aws/aws-xray-sdk-node/issues/23
       this.client = new DynamoDB.DocumentClient({
+        ...config,
         service: new DynamoDB({ apiVersion: "2012-10-08" }),
       });
       AWSXRay.captureAWSClient((this.client as any).service);
     } else {
-      this.client = new DynamoDB.DocumentClient();
+      this.client = new DynamoDB.DocumentClient(config);
     }
   }
 

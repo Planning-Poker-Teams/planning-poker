@@ -1,8 +1,16 @@
 import ParticipantRepository from "./ParticipantRepository";
+import { DynamoDbClient } from "./DynamoDbClient";
 
-// ⚠️ DynamoDB integration test (underlying AWS client is not mocked!)
+const dynamoClientOptions = {
+  endpoint: process.env.DYNAMODB_ENDPOINT,
+  region: "localhost",
+  accessKeyId: "foo",
+  secretAccessKey: "bar",
+};
+
 describe("ParticipantRepository", () => {
-  const repository = new ParticipantRepository("participants", false);
+  const client = new DynamoDbClient(dynamoClientOptions, false);
+  const repository = new ParticipantRepository("participants", client);
 
   const exampleRoomName = "Test";
   const exampleParticipant = {
@@ -10,11 +18,6 @@ describe("ParticipantRepository", () => {
     name: "Gustavo",
     isSpectator: false,
   };
-
-  // beforeEach(async () => {
-  //     // delete all possible rows
-  //     // const client = new DynamoDB.DocumentClient();
-  // })
 
   it("returns all participants", async () => {
     await repository.putParticipant(exampleParticipant, exampleRoomName);
