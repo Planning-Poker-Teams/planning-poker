@@ -2,7 +2,7 @@
   <section class="flex-1 flex flex-col items-center p-4">
     <div
       ref="taskName"
-      class="min-h-24 w-full max-w-lg flex justify-center items-center rounded border-4 border-gray-300 border-dashed mb-4"
+      class="min-h-24 w-full max-w-lg flex justify-center items-center rounded border-4 border-gray-300 border-dashed mt-4 mb-8"
     >
       <p class="text-2xl font-medium font-sans text-center text-gray-800 p-2">
         {{ taskName }}
@@ -104,19 +104,18 @@ export default class OngoingEstimation extends Vue {
       },
     ];
 
-    const cardTiming = {
+    const cardTiming: KeyframeAnimationOptions = {
       duration: 500,
       fill: 'forwards',
       easing: 'ease-in-out',
     };
 
-    const selectedCard = this.$refs[`card-${value}`][0];
-    this.lastAnimation = selectedCard.animate(cardMoving, cardTiming);
+    this.lastAnimation = this.getSelectedCard(value).animate(cardMoving, cardTiming);
   }
 
   calculateAnimationTranslation(value: string): { x: number; y: number } {
-    const selectedCard = this.$refs[`card-${value}`][0];
-    const taskName = this.$refs.taskName as HTMLElement;
+    const selectedCard = this.getSelectedCard(value);
+    const taskName = this.getTaskName();
 
     const selectedCardRect = selectedCard.getBoundingClientRect();
     const selectedCardCentreCoordinates = {
@@ -134,6 +133,15 @@ export default class OngoingEstimation extends Vue {
       x: taskNameCentreCoordinates.x - selectedCardCentreCoordinates.x,
       y: taskNameCentreCoordinates.y - selectedCardCentreCoordinates.y,
     };
+  }
+
+  getSelectedCard(value: string): Element {
+    const selectedCardRefs = this.$refs[`card-${value}`] as Element[];
+    return selectedCardRefs[0]
+  }
+
+  getTaskName(): Element {
+    return this.$refs.taskName as Element
   }
 
   requestResult() {
