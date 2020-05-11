@@ -4,9 +4,7 @@
       ref="taskName"
       class="min-h-24 w-full max-w-lg flex justify-center items-center rounded border-4 border-gray-300 border-dashed mt-4 mb-8"
     >
-      <p class="text-2xl font-medium font-sans text-center text-gray-800 p-2">
-        {{ taskName }}
-      </p>
+      <p class="text-2xl font-medium font-sans text-center text-gray-800 p-2">{{ taskName }}</p>
     </div>
 
     <div class="grid grid-cols-4 col-gap-2 row-gap-2 mb-4" v-if="!isSpectator">
@@ -18,17 +16,11 @@
         :class="value == selectedEstimation ? 'bg-red-400' : 'bg-blue-400'"
         @click="sendEstimation(value)"
       >
-        <p class="absolute top-0 left-0 text-sm text-white px-1 font-mono">
-          {{ value }}
-        </p>
-        <p class="text-white font-medium text-2xl text-center font-mono">
-          {{ value }}
-        </p>
+        <p class="absolute top-0 left-0 text-sm text-white px-1 font-mono">{{ value }}</p>
+        <p class="text-white font-medium text-2xl text-center font-mono">{{ value }}</p>
         <p
           class="absolute bottom-0 right-0 transform rotate-180 text-sm text-white px-1 font-mono"
-        >
-          {{ value }}
-        </p>
+        >{{ value }}</p>
       </div>
     </div>
     <div class="row-span-2 flex items-center justify-center" v-if="isSpectator">
@@ -40,14 +32,18 @@
       type="submit"
       v-if="votingIsComplete"
       @click="requestResult"
-    >
-      Show result
-    </button>
+    >Show result</button>
   </section>
 </template>
 
 <script lang="ts">
 import { Vue, Component, Prop } from 'vue-property-decorator';
+
+const CARD_ANIMATION_OPTIONS: KeyframeAnimationOptions = {
+  duration: 500,
+  fill: 'forwards',
+  easing: 'ease-in-out',
+};
 
 @Component
 export default class OngoingEstimation extends Vue {
@@ -55,7 +51,9 @@ export default class OngoingEstimation extends Vue {
 
   selectedEstimation = '';
 
-  lastAnimation?: Animation;
+  lastSelectedCard?: Element;
+  lastCardTranslation?: { x: number; y: number };
+  lastCardRotation?: number;
 
   possibleEstimationValues = [
     '0',
@@ -81,36 +79,73 @@ export default class OngoingEstimation extends Vue {
 
   sendEstimation(value: string) {
     if (this.selectedEstimation !== value) {
-      this.animateCardSelection(value);
+      try {
+        this.animateCardSelection(value);
+      } catch (error) {
+        console.warn('Card selection could not be animated', error);
+      }
+
       this.selectedEstimation = value;
     }
 
     this.$emit('send-estimation', value);
   }
 
+  requestResult() {
+    this.$emit('request-result');
+  }
+
   animateCardSelection(value: string) {
-    if (this.lastAnimation) {
-      this.lastAnimation.reverse();
+    if (this.lastSelectedCard) {
+      this.animateCardMovingBackwards(
+        this.lastSelectedCard,
+        this.lastCardTranslation!,
+        this.lastCardRotation!
+      );
     }
 
-    const translation = this.calculateAnimationTranslation(value);
+    const selectedCard = this.getSelectedCard(value);
+    const cardTranslation = this.calculateAnimationTranslation(value);
+    const cardRotation = this.calculateRandomRotation();
 
-    const rotation = Math.random() * 180 - 90;
+    this.animateCardMovingForwards(selectedCard, cardTranslation, cardRotation);
 
-    const cardMoving = [
-      { transform: 'translate3D(0, 0, 0) rotate(0)' },
-      {
-        transform: `translate3D(${translation.x}px, ${translation.y}px, 0) rotate(${rotation}deg)`,
-      },
-    ];
+    this.lastSelectedCard = selectedCard;
+    this.lastCardTranslation = cardTranslation;
+    this.lastCardRotation = cardRotation;
+  }
 
-    const cardTiming: KeyframeAnimationOptions = {
-      duration: 500,
-      fill: 'forwards',
-      easing: 'ease-in-out',
-    };
+  getSelectedCard(value: string): Element {
+    const selectedCardRefs = this.$refs[`card-${value}`] as Element[];
+    return selectedCardRefs[0];
+  }
 
-    this.lastAnimation = this.getSelectedCard(value).animate(cardMoving, cardTiming);
+  getTaskName(): Element {
+    return this.$refs.taskName as Element;
+  }
+
+  animateCardMovingForwards(
+    card: Element,
+    translation: { x: number; y: number },
+    rotation: number
+  ): void {
+    const cardMovement = this.getCardMovement(translation, rotation);
+
+    card.animate(cardMovement, CARD_ANIMATION_OPTIONS);
+  }
+
+  // Unfortunately not all browsers support `animation.reverse()`, so we have to create a separate animation manually
+  animateCardMovingBackwards(
+    card: Element,
+    translation: { x: number; y: number },
+    rotation: number
+  ): void {
+    const cardMovement = this.getCardMovement(translation, rotation);
+
+    card.animate(cardMovement, {
+      ...CARD_ANIMATION_OPTIONS,
+      direction: 'reverse',
+    });
   }
 
   calculateAnimationTranslation(value: string): { x: number; y: number } {
@@ -135,17 +170,20 @@ export default class OngoingEstimation extends Vue {
     };
   }
 
-  getSelectedCard(value: string): Element {
-    const selectedCardRefs = this.$refs[`card-${value}`] as Element[];
-    return selectedCardRefs[0]
+  calculateRandomRotation(): number {
+    return Math.random() * 180 - 90;
   }
 
-  getTaskName(): Element {
-    return this.$refs.taskName as Element
-  }
-
-  requestResult() {
-    this.$emit('request-result');
+  getCardMovement(
+    { x, y }: { x: number; y: number },
+    rotation: number
+  ): { transform: string }[] {
+    return [
+      { transform: 'translate3D(0, 0, 0) rotate(0)' },
+      {
+        transform: `translate3D(${x}px, ${y}px, 0) rotate(${rotation}deg)`,
+      },
+    ];
   }
 }
 </script>
