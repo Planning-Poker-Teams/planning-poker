@@ -1,9 +1,9 @@
 <template>
   <div
-    class="flex-none flex justify-center items-center w-20 h-20 m-1 p-1 shadow rounded-full select-none"
+    class="flex-none flex justify-center items-center w-16 h-16 m-1 p-1 text-sm shadow rounded-full select-none"
     :class="hasVoted ? 'bg-red-400' : 'bg-green-400'"
   >
-    <p class="text-center text-white font-medium text-sm overflow-x-hidden">
+    <p class="text-center text-white font-medium text-xs overflow-x-hidden">
       {{ name }}
     </p>
   </div>
