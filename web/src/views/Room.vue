@@ -1,21 +1,16 @@
 <template>
   <div
-    class="flex-1 w-full flex flex-col items-center bg-gray-100 lg:shadow-lg lg:rounded-lg overflow-y-visible relative"
+    class="flex-1 w-full flex flex-col items-center bg-gray-100 lg:shadow-lg lg:rounded-lg relative overflow-y-scroll"
   >
-    <div class="flex-1 flex flex-col w-full">
-      <room-header :participants="participants" :roomName="roomName" />
-      <ongoing-estimation
-        v-if="isEstimationOngoing"
-        :taskName="taskName"
-        @send-estimation="sendEstimation"
-        @request-result="requestResult"
-      />
-      <estimation-result v-if="estimationResultAvailable" />
-      <start-estimation-form
-        v-if="!isEstimationOngoing"
-        @start-estimation="startEstimation"
-      />
-    </div>
+    <room-header :participants="participants" :roomName="roomName" />
+    <ongoing-estimation
+      v-if="isEstimationOngoing"
+      :taskName="taskName"
+      @send-estimation="sendEstimation"
+      @request-result="requestResult"
+    />
+    <estimation-result v-if="estimationResultAvailable" />
+    <start-estimation-form v-if="!isEstimationOngoing" @start-estimation="startEstimation" />
   </div>
 </template>
 

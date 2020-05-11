@@ -1,10 +1,12 @@
 <template>
   <section class="flex-1 flex flex-col items-center p-4">
-    <div
-      ref="taskName"
-      class="min-h-24 w-full max-w-lg flex justify-center items-center rounded border-4 border-gray-300 border-dashed mt-4 mb-8"
-    >
-      <p class="text-2xl font-medium font-sans text-center text-gray-800 p-2">{{ taskName }}</p>
+    <div class="w-full flex justify-center lg:pt-4 pb-4 lg:pb-8">
+      <div
+        ref="taskName"
+        class="min-h-24 w-full max-w-lg flex justify-center items-center rounded border-4 border-gray-300 border-dashed"
+      >
+        <p class="text-2xl font-medium font-sans text-center text-gray-800 p-2">{{ taskName }}</p>
+      </div>
     </div>
 
     <div class="grid grid-cols-4 col-gap-2 row-gap-2 mb-4" v-if="!isSpectator">

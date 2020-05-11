@@ -33,7 +33,7 @@
       </tbody>
     </table>
     <img
-      class="object-contain h-32 rounded"
+      class="object-contain h-32 rounded my-2"
       alt="Consensus cats!"
       v-if="showConsensusCats"
       :src="catUrl"
