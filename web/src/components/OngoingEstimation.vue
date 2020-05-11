@@ -52,8 +52,7 @@ export default class OngoingEstimation extends Vue {
   selectedEstimation = '';
 
   lastSelectedCard?: Element;
-  lastCardTranslation?: { x: number; y: number };
-  lastCardRotation?: number;
+  lastCardMovement?: { transform: string }[];
 
   possibleEstimationValues = [
     '0',
@@ -96,23 +95,23 @@ export default class OngoingEstimation extends Vue {
   }
 
   animateCardSelection(value: string) {
-    if (this.lastSelectedCard) {
+    if (this.lastSelectedCard && this.lastCardMovement) {
       this.animateCardMovingBackwards(
         this.lastSelectedCard,
-        this.lastCardTranslation!,
-        this.lastCardRotation!
+        this.lastCardMovement
       );
     }
 
     const selectedCard = this.getSelectedCard(value);
-    const cardTranslation = this.calculateAnimationTranslation(value);
-    const cardRotation = this.calculateRandomRotation();
+    const cardMovement = this.getCardMovement(
+      this.calculateAnimationTranslation(value),
+      this.calculateRandomRotation()
+    );
 
-    this.animateCardMovingForwards(selectedCard, cardTranslation, cardRotation);
+    this.animateCardMovingForwards(selectedCard, cardMovement);
 
     this.lastSelectedCard = selectedCard;
-    this.lastCardTranslation = cardTranslation;
-    this.lastCardRotation = cardRotation;
+    this.lastCardMovement = cardMovement;
   }
 
   getSelectedCard(value: string): Element {
@@ -124,24 +123,30 @@ export default class OngoingEstimation extends Vue {
     return this.$refs.taskName as Element;
   }
 
+  getCardMovement(
+    { x, y }: { x: number; y: number },
+    rotation: number
+  ): { transform: string }[] {
+    return [
+      { transform: 'translate3D(0, 0, 0) rotate(0)' },
+      {
+        transform: `translate3D(${x}px, ${y}px, 0) rotate(${rotation}deg)`,
+      },
+    ];
+  }
+
   animateCardMovingForwards(
     card: Element,
-    translation: { x: number; y: number },
-    rotation: number
+    cardMovement: { transform: string }[]
   ): void {
-    const cardMovement = this.getCardMovement(translation, rotation);
-
     card.animate(cardMovement, CARD_ANIMATION_OPTIONS);
   }
 
   // Unfortunately not all browsers support `animation.reverse()`, so we have to create a separate animation manually
   animateCardMovingBackwards(
     card: Element,
-    translation: { x: number; y: number },
-    rotation: number
+    cardMovement: { transform: string }[]
   ): void {
-    const cardMovement = this.getCardMovement(translation, rotation);
-
     card.animate(cardMovement, {
       ...CARD_ANIMATION_OPTIONS,
       direction: 'reverse',
@@ -172,18 +177,6 @@ export default class OngoingEstimation extends Vue {
 
   calculateRandomRotation(): number {
     return Math.random() * 180 - 90;
-  }
-
-  getCardMovement(
-    { x, y }: { x: number; y: number },
-    rotation: number
-  ): { transform: string }[] {
-    return [
-      { transform: 'translate3D(0, 0, 0) rotate(0)' },
-      {
-        transform: `translate3D(${x}px, ${y}px, 0) rotate(${rotation}deg)`,
-      },
-    ];
   }
 }
 </script>
