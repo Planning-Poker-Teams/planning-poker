@@ -7,7 +7,7 @@
         alt="Planning Poker App logo"
         src="../assets/planning-poker-app-icon.png"
       />
-      <h2 class="hidden lg:inline font-medium font-sans text-center select-none">
+      <h2 class="hidden lg:inline font-medium font-sans select-none">
         Planning Poker
         <br />for teams
       </h2>
