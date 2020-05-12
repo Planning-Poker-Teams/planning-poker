@@ -6,7 +6,7 @@
         :key="participant.name"
         class="first:ml-auto last:mr-auto"
         :name="participant.name"
-        :hasVoted="participant.hasEstimated"
+        :hasVoted="participant.hasEstimated || participant.isSpectator"
       />
     </div>
   </div>
