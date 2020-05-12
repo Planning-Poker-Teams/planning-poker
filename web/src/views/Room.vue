@@ -1,6 +1,6 @@
 <template>
   <div
-    class="flex-1 w-full flex flex-col items-center bg-gray-100 lg:shadow-lg lg:rounded-lg relative overflow-y-scroll"
+    class="h-full w-full flex flex-col items-center bg-gray-100 lg:shadow-lg lg:rounded-lg relative overflow-y-scroll"
   >
     <room-header :participants="participants" :roomName="roomName" />
     <ongoing-estimation
