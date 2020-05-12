@@ -2,7 +2,7 @@
   <section class="flex-1 flex flex-col px-4 justify-around items-center">
     <h1 class="text-sans text-xl font-medium my-4">{{ taskName }}</h1>
     <table
-      class="table-fixed bg-white bg-gray-300 rounded-t text-center w-full max-w-lg"
+      class="table-fixed bg-white bg-gray-300 rounded-t text-center w-full lg:w-3/4"
     >
       <thead>
         <tr>
@@ -19,15 +19,15 @@
         >
           <td class="p-2"><span class="text-2xl font-mono font-medium">{{ entry.value }}</span></td>
           <td class="p-2">{{ entry.names.length }}</td>
-          <td class="p-2 w-1/2 overflow-x-scroll">
-            <div class="w-full flex justify-start">
+          <td class="p-2 flex justify-start overflow-x-scroll">
+            <!-- <div class="min-w-0 w-full flex justify-start"> -->
               <participant-item
                 v-for="name in entry.names"
                 :key="name"
                 :name="name"
                 :hasVoted="true"
               />
-            </div>
+            <!-- </div> -->
           </td>
         </tr>
       </tbody>
