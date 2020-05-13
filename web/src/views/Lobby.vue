@@ -1,6 +1,6 @@
 <template>
   <div
-    class="h-full w-full lg:w-1/3 flex flex-col items-center bg-gray-100 lg:shadow-lg lg:rounded-lg relative overflow-y-scroll"
+    class="flex-1 lg:flex-none w-full lg:w-1/3 flex flex-col items-center bg-gray-100 lg:shadow-lg lg:rounded-lg relative overflow-y-scroll"
   >
     <img
       class="m-8 mb-4 object-contain h-24 shadow-md rounded-lg"
