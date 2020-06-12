@@ -23,16 +23,31 @@
           placeholder="Your name"
           v-model="userName"
         />
-        <toggle class="m-2" id="isSpectator" v-model="isSpectator" label="Join as spectator" />
-        <toggle class="mx-2 mb-2" id="showCats" v-model="showCats" label="Consensus cats" />
+        <toggle
+          class="m-2"
+          id="isSpectator"
+          v-model="isSpectator"
+          label="Join as spectator"
+        />
+        <toggle
+          class="mx-2 mb-2"
+          id="showCats"
+          v-model="showCats"
+          label="Consensus cats"
+        />
         <div class="flex flex-row-reverse">
           <button
             class="mt-6 my-2 bg-gray-300 hover:bg-gray-100 text-lg text-gray-700 font- py-2 px-4 border-2 border-gray-400 rounded"
             :disabled="!formIsCompleted"
             type="submit"
-          >Join room</button>
+          >
+            Join room
+          </button>
         </div>
         <div class="flex flex-col items-center">
+          <div>
+            <a class="underline text-gray-700" href="/imprint">Imprint</a>
+          </div>
           <div class="w-full my-6 rounded border border-gray-200" />
           <a
             href="https://apps.apple.com/app/planning-poker-for-teams/id1495956287"
