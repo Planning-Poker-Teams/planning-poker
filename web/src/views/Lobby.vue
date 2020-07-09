@@ -35,25 +35,30 @@
           v-model="showCats"
           label="Consensus cats"
         />
-        <div class="flex flex-row-reverse">
+        <div class="mt-2 flex flex-row-reverse items-center ">
           <button
-            class="mt-6 my-2 bg-gray-300 hover:bg-gray-100 text-lg text-gray-700 font- py-2 px-4 border-2 border-gray-400 rounded"
+            class="my-2 ml-2 bg-gray-300 hover:bg-gray-100 text-lg text-gray-700 font- py-2 px-4 border-2 border-gray-400 rounded"
             :disabled="!formIsCompleted"
             type="submit"
           >
             Join room
           </button>
+          <p class="my-2 mr-2 justify-center text-sm text-gray-700">
+            By clicking "Join room" you agree to our terms and that you have
+            read our
+            <a class="underline text-gray-700" href="/privacy">Privacy Policy</a
+            >.
+          </p>
         </div>
-        <div class="flex flex-col items-center">
-          <div>
-            <a class="underline text-gray-700" href="/imprint">Imprint</a>
-          </div>
-          <div class="w-full my-6 rounded border border-gray-200" />
+
+        <div class="my-4x flex flex-col items-center">
+          <div class="my-4 w-full rounded border border-gray-200" />
+          <a class="underline text-gray-700" href="/imprint">Imprint</a>
           <a
             href="https://apps.apple.com/app/planning-poker-for-teams/id1495956287"
             target="_blank"
           >
-            <img class="w-32" src="../assets/app-store-badge.png" />
+            <img class="mt-3 w-32" src="../assets/app-store-badge.png" />
           </a>
         </div>
       </div>

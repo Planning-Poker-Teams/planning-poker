@@ -3,6 +3,7 @@ import VueRouter, { RouteConfig } from 'vue-router';
 import Lobby from '../views/Lobby.vue';
 import Room from '../views/Room.vue';
 import Imprint from '../views/Imprint.vue';
+import PrivacyPolicy from '../views/PrivacyPolicy.vue';
 
 Vue.use(VueRouter);
 
@@ -21,6 +22,11 @@ const routes: Array<RouteConfig> = [
     path: '/imprint',
     name: 'imprint',
     component: Imprint,
+  },
+  {
+    path: '/privacy',
+    name: 'privacy',
+    component: PrivacyPolicy,
   },
 ];
 
