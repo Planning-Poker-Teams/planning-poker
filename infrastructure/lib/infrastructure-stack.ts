@@ -13,7 +13,7 @@ export class InfrastructureStack extends cdk.Stack {
 
     const webApp = new CfnApp(this, "WebApp", {
       name: `${props?.stackName}-amplify-app`,
-      repository: "https://github.com/c-st/planning-poker-web",
+      repository: "https://github.com/Planning-Poker-Teams/planning-poker-web",
       accessToken: oauthToken.toString(),
       customRules: [
         {
