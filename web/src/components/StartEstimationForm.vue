@@ -14,6 +14,7 @@
       :disabled="!taskNameIsSet"
       @click="startEstimation(newTaskName)"
     >
+      <font-awesome-icon icon="play" />
       Start estimating
     </button>
     <button
@@ -22,6 +23,7 @@
       v-if="showEstimateAgainButton"
       @click="startEstimation(previousTaskName)"
     >
+      <font-awesome-icon icon="redo" />
       Estimate again for "{{ previousTaskName }}"
     </button>
   </form>
@@ -29,8 +31,11 @@
 
 <script lang="ts">
 import { Vue, Component } from 'vue-property-decorator';
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 
-@Component
+@Component({
+  components: { FontAwesomeIcon },
+})
 export default class StartEstimationForm extends Vue {
   newTaskName = '';
 
