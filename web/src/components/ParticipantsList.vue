@@ -3,10 +3,11 @@
     <div class="flex items-center p-2">
       <participant-item
         v-for="participant in participants"
-        :key="participant.name"
         class="first:ml-auto last:mr-auto"
+        :key="participant.name"
         :name="participant.name"
         :hasVoted="participant.hasEstimated || participant.isSpectator"
+        :showCheckmark="true"
       />
     </div>
   </div>

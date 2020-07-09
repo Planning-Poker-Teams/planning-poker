@@ -17,17 +17,19 @@
           v-for="entry in estimationResultByComplexity"
           :key="entry.value"
         >
-          <td class="p-2"><span class="text-2xl font-mono font-medium">{{ entry.value }}</span></td>
+          <td class="p-2">
+            <span class="text-2xl font-mono font-medium">{{
+              entry.value
+            }}</span>
+          </td>
           <td class="p-2">{{ entry.names.length }}</td>
           <td class="p-2 flex justify-start overflow-x-scroll">
-            <!-- <div class="min-w-0 w-full flex justify-start"> -->
-              <participant-item
-                v-for="name in entry.names"
-                :key="name"
-                :name="name"
-                :hasVoted="true"
-              />
-            <!-- </div> -->
+            <participant-item
+              v-for="name in entry.names"
+              :key="name"
+              :name="name"
+              :hasVoted="true"
+            />
           </td>
         </tr>
       </tbody>
