@@ -1,0 +1,44 @@
+@startuml
+!includeurl https://raw.githubusercontent.com/RicardoNiepel/C4-PlantUML/master/C4_Container.puml
+
+LAYOUT_TOP_DOWN
+LAYOUT_WITH_LEGEND()
+
+title Container diagram for Planning Poker
+
+Person(participant, "Participant", "A planning poker player who is either actively estimating or a spectator")
+' Person(spectator, "Spectator", "A planning poker player who is not actively participating.")
+
+System_Boundary(c1, "Planning Poker") {
+  Container(web_app, "CDN", "AWS Cloudfront via Amplify", "Delivers the static content for the SPA")
+  Container(spa, "Single-Page App", "Typescript, Vue.js", "Provides planning poker functionality via web browser")
+  Container(mobile_app, "Mobile App", "Swift, iOS native", "Provides planning poker functionality via mobile app")
+
+  Container(websocket_event_handler, "WebSocket Event Handler", "Typescript, AWS Lambda", "Handles incoming and outgoing planning poker events")
+  Container(client_keepalive_handler, "KeepAlive Handler", "Typescript, AWS Lambda", "Regularly pings clients in order to prevent timeouts")
+
+  ContainerDb(database, "Database", "AWS DynamoDB", "Stores rooms, their participants, the current task and its estimations")
+}
+
+Rel(participant, web_app, "Uses", "HTTPS")
+Rel(participant, spa, "Uses", "WebSocket")
+Rel(participant, mobile_app, "Uses", "WebSocket")
+
+Rel_Neighbor(web_app, spa, "Delivers")
+Rel_Back_Neighbor(database, websocket_event_handler, "Reads from and writes to")
+
+' Lambda WebSocket event handler
+Rel(spa, websocket_event_handler, "Sends events", "JSON via WebSocket")
+Rel(mobile_app, websocket_event_handler, "Sends events", "JSON via WebSocket")
+Rel(websocket_event_handler, spa, "Broadcasts events", "JSON via WebSocket")
+Rel(websocket_event_handler, mobile_app, "Broadcasts events", "JSON via WebSocket")
+
+' Lambda keepAlive
+Rel_Back_Neighbor(database, client_keepalive_handler, "Reads participants from")
+Rel(client_keepalive_handler, spa, "Sends keepalive events", "JSON via WebSocket")
+Rel(client_keepalive_handler, mobile_app, "Sends keepalive events", "JSON via WebSocket")
+' Lay_D(database, client_keepalive_handler)
+
+Lay_R(mobile_app, spa)
+
+@enduml

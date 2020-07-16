@@ -94,6 +94,10 @@ After the estimation result is revealed, any user can send a new `startEstimatio
 
 ## Architecture
 
+[![alt](./Context-Diagram.puml.svg)](./Context-Diagram.puml.svg)
+
+[![alt](./Container-Diagram.puml.svg)](./Container-Diagram.puml.svg)
+
 ```code
 
                    API Gateway                Lambda                  DynamoDB

@@ -1,0 +1,16 @@
+@startuml
+!includeurl https://raw.githubusercontent.com/RicardoNiepel/C4-PlantUML/master/C4_Context.puml
+
+LAYOUT_WITH_LEGEND()
+
+title System Context diagram for Planning Poker
+
+Person(participant, "Participant", "A planning poker player.")
+Person(spectator, "Spectator", "A planning poker player who is not actively participating.")
+
+System(planningpoker, "Planning Poker System", "Allows teams to perform planning poker sessions.")
+
+Rel_D(participant, planningpoker, "Gives estimations")
+Rel_D(spectator, planningpoker, "Starts and ends estimation rounds")
+
+@enduml
