@@ -8,7 +8,7 @@
       />
     </a>
     <div class="text-base">
-      <h1 class="text-3xl mb-6">Imprint</h1>
+      <h1 class="text-3xl mb-6">Legal notice</h1>
       <h2 class="text-xl font-bold">Headquarters</h2>
       <p class="mb-8">
         codecentric AG<br />

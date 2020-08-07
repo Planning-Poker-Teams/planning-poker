@@ -9,7 +9,7 @@
     </a>
     <div class="text-base">
       <h1 class="text-3xl mb-6">
-        Privacy Statement for the Planning Poker Website and App
+        Privacy policy
       </h1>
       <h2 class="text-xl font-bold">1. Data protection at a glance</h2>
       <p class="mb-8">
@@ -164,16 +164,16 @@
         for AWS, that guarantees a GDPR compliant processing of your personal
         data by Amazon.
       </p>
-      <h2 class="text-xl font-bold">5. Data collection in the app store</h2>
+      <h2 class="text-xl font-bold">5. Data collection in the App Store</h2>
       <p class="mb-8">
-        The data processing operations are carried out by the app store operator
-        when you are downloading the mobile app. The required information is
-        transferred to the app store, in particular the store username, email
-        address and customer number of your account, time of download, payment
-        information and the individual device code. codecentric has no influence
-        on this data collection and is not responsible for it. We only process
-        the data as far as is necessary for downloading the mobile app to your
-        mobile device.
+        The data processing operations are carried out by the App Store operator
+        (Apple) when you are downloading the mobile app. The required
+        information is transferred to the app store, in particular the store
+        username, email address and customer number of your account, time of
+        download, payment information and the individual device code.
+        codecentric has no influence on this data collection and is not
+        responsible for it. We only process the data as far as is necessary for
+        downloading the mobile app to your mobile device.
       </p>
       <h2 class="text-xl font-bold">6. Data collection in the iOS app</h2>
       <h3 class="text-l font-bold">What data do we collect</h3>

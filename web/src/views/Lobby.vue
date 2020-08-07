@@ -44,8 +44,7 @@
             Join room
           </button>
           <p class="my-2 mr-2 justify-center text-sm text-gray-700">
-            By clicking "Join room" you agree to our terms and that you have
-            read our
+            By clicking "Join room" you agree to our
             <a class="underline text-gray-700" href="/privacy">Privacy Policy</a
             >.
           </p>
@@ -53,7 +52,9 @@
 
         <div class="my-4x flex flex-col items-center">
           <div class="my-4 w-full rounded border border-gray-200" />
-          <a class="underline text-gray-700" href="/imprint">Imprint</a>
+          <a class="underline text-gray-700" href="/legal-notice"
+            >Legal notice</a
+          >
           <a
             href="https://apps.apple.com/app/planning-poker-for-teams/id1495956287"
             target="_blank"
