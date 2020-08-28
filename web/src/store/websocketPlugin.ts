@@ -10,6 +10,7 @@ const log = (msg: string, obj?: any) => {
 
 const webSocketPlugin = (store: Store<State>) => {
   let socket: WebSocket | undefined = undefined;
+  let isUserInRoom: boolean = false;
 
   store.subscribeAction((action: ActionPayload, state: State) => {
     switch (action.type) {
@@ -19,10 +20,12 @@ const webSocketPlugin = (store: Store<State>) => {
         }
         const { name, userName, isSpectator } = state.room;
         socket = setupWebSocketConnection(name, userName, isSpectator);
+        isUserInRoom = true;
         break;
       }
       case Actions.LEAVE_ROOM: {
         socket?.close();
+        isUserInRoom = false;
         break;
       }
       case Actions.SEND_MESSAGE: {
@@ -51,10 +54,12 @@ const webSocketPlugin = (store: Store<State>) => {
     userName: string,
     isSpectator: boolean
   ): WebSocket => {
-    const socket = new WebSocket('wss://api.planningpoker.cc/dev');
+    const newSocket = new WebSocket('wss://api.planningpoker.cc/dev');
+    (window as any).socket = newSocket;
 
-    socket.onopen = () => {
-      socket.send(
+    newSocket.onopen = () => {
+      console.log('sending join room event');
+      newSocket.send(
         JSON.stringify({
           eventType: 'joinRoom',
           userName,
@@ -64,7 +69,7 @@ const webSocketPlugin = (store: Store<State>) => {
       );
     };
 
-    socket.onmessage = event => {
+    newSocket.onmessage = event => {
       try {
         const json = JSON.parse(event.data);
         handleIncomingMessage(json);
@@ -73,7 +78,18 @@ const webSocketPlugin = (store: Store<State>) => {
       }
     };
 
-    return socket;
+    newSocket.onclose = () => {
+      console.log('Web socket connection closed');
+      if (isUserInRoom) {
+        socket = setupWebSocketConnection(
+          roomName,
+          userName,
+          isSpectator
+        );
+      }
+    };
+
+    return newSocket;
   };
 };
 
