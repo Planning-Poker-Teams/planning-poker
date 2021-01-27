@@ -1,5 +1,5 @@
 <template>
-  <div class="w-full overflow-x-scroll">
+  <div class="w-full overflow-x-auto">
     <div class="flex items-center p-2">
       <participant-item
         v-for="participant in participants"

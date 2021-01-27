@@ -23,7 +23,7 @@
             }}</span>
           </td>
           <td class="p-2">{{ entry.names.length }}</td>
-          <td class="p-2 flex justify-start overflow-x-scroll">
+          <td class="p-2 flex justify-start overflow-x-auto">
             <participant-item
               v-for="name in entry.names"
               :key="name"
