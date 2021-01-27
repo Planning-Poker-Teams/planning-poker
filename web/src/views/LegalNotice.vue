@@ -23,9 +23,9 @@
       </p>
       <h2 class="text-xl font-bold">Board of Directors</h2>
       <p class="mb-8">
-        Michael Hochgürtel<br />
-        Ulrich Kühn<br />
         Rainer Vehns<br />
+        Ulrich Kühn<br />
+        Lars Rückemann<br />
       </p>
       <h2 class="text-xl font-bold">Commercial Registry</h2>
       <p class="mb-8">
