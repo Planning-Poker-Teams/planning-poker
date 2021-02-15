@@ -112,7 +112,9 @@ export class ApiStack extends cdk.Stack {
       }
     );
 
-    participantsTable.grantReadData(preventClientTimeoutLambda);
+    participantsTable.grantReadWriteData(preventClientTimeoutLambda);
+
+    // Manage connections lambda
     preventClientTimeoutLambda.addToRolePolicy(manageConnectionsPolicy);
 
     const preventClientTimeoutLambdaTrigger = new Rule(
@@ -120,7 +122,7 @@ export class ApiStack extends cdk.Stack {
       "PreventClientTimeoutLambdaTrigger",
       {
         ruleName: `${props.stackName}-prevent-client-timeout-lambda-trigger`,
-        schedule: Schedule.expression("rate(5 minutes)"),
+        schedule: Schedule.expression("rate(2 minutes)"), // 5
       }
     );
 

@@ -23,7 +23,13 @@ export const handler = async (): Promise<any> => {
   await Promise.all(
     allConnectionIds.map(async (id) => {
       try {
-        await messageSender.post(id, message);
+        const isStillAlive = await messageSender.hasConnection(id);
+        if (isStillAlive) {
+          await messageSender.post(id, message);
+        } else {
+          log.error(`Caught a 🧟‍♂️ user for ${id}`);
+          await participantRepository.removeParticipant(id);
+        }
       } catch (error) {
         log.error(error);
       }

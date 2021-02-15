@@ -32,4 +32,17 @@ export class ApiGatewayMessageSender implements MessageSender {
       return Promise.resolve();
     }
   }
+
+  async hasConnection(connectionId: string): Promise<boolean> {
+    try {
+      await this.managementApi
+        .getConnection({
+          ConnectionId: connectionId,
+        })
+        .promise();
+      return true;
+    } catch (error) {
+      return false;
+    }
+  }
 }
