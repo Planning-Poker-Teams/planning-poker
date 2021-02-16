@@ -37,7 +37,7 @@ module.exports = async () => {
 
   process.env.DYNAMODB_ENDPOINT = `http://${container.getContainerIpAddress()}:${container.getMappedPort(
     8000
-  )}}`;
+  )}`;
   const dynamoClientOptions: ServiceConfigurationOptions = {
     endpoint: process.env.DYNAMODB_ENDPOINT,
     region: "localhost",
