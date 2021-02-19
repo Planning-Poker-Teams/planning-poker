@@ -35,4 +35,5 @@ export interface RoomRepository {
 export interface MessageSender {
   broadcast(recipientIds: string[], data: string): Promise<void>;
   post(recipientId: string, data: string): Promise<void>;
+  hasConnection(connectionId: string): Promise<boolean>;
 }

@@ -6,6 +6,7 @@ import {
 } from "../repositories/types";
 import { Command, CommandType } from "../domain/commandTypes";
 import { PokerRoom } from "../domain/types";
+import { cleanUpStaleParticipants } from "./cleanUpStaleParticipants";
 
 export type handleCommand = (
   command: Command,
@@ -49,6 +50,7 @@ export const handleCommand = (
     }
 
     case CommandType.ADD_PARTICIPANT: {
+      await cleanUpStaleParticipants(command.roomName, roomRepository, participantRepository, messageSender);
       await participantRepository.putParticipant(
         command.participant,
         command.roomName

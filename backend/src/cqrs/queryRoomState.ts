@@ -23,11 +23,11 @@ export const queryRoomState = (
 ) => async (roomName: string): Promise<PokerRoom> => {
   const room = await roomRepository.getOrCreateRoom(roomName);
 
-  const participantsWithoutEstimations = await participantRepository.fetchParticipants(
+  const participants = await participantRepository.fetchParticipants(
     room.participants
   );
 
-  const participants = participantsWithoutEstimations.map((p) => ({
+  const participantsWithEstimations = participants.map((p) => ({
     ...p,
     currentEstimation: room.currentEstimates
       .sort(sortByDescendingTimestamp)
@@ -39,7 +39,7 @@ export const queryRoomState = (
       ? {
           taskName: room.currentEstimationTaskName!,
           startDate: room.currentEstimationStartDate!,
-          initiator: participants.find(
+          initiator: participantsWithEstimations.find(
             (p) => p.id === room.currentEstimationInitiator
           ),
         }
@@ -47,7 +47,7 @@ export const queryRoomState = (
 
   return {
     name: room.name,
-    participants,
+    participants: participantsWithEstimations,
     currentEstimation,
   };
 };
