@@ -16,10 +16,15 @@ export const cleanUpStaleParticipants = async (
       }));
   }));
   
-  await Promise.all(connectionData
-    .filter(({ hasConnection }) => !hasConnection)
-    .map(({ connectionId }) => participantRepository
-      .removeParticipant(connectionId)
-      .then(() => roomRepository.removeFromParticipants('Test', connectionId))
-    ));
+  await Promise.all(
+    connectionData
+      .filter(({ hasConnection }) => !hasConnection)
+      .map(({ connectionId }) =>
+        participantRepository
+          .removeParticipant(connectionId)
+          .then(() =>
+            roomRepository.removeFromParticipants(roomName, connectionId)
+          )
+      )
+  );
 };

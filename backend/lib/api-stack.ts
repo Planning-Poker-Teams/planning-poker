@@ -122,7 +122,7 @@ export class ApiStack extends cdk.Stack {
       "PreventClientTimeoutLambdaTrigger",
       {
         ruleName: `${props.stackName}-prevent-client-timeout-lambda-trigger`,
-        schedule: Schedule.expression("rate(2 minutes)"), // 5
+        schedule: Schedule.expression("rate(5 minutes)"),
       }
     );
 
