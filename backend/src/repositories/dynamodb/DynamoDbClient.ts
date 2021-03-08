@@ -1,7 +1,4 @@
-import AWSXRay from "aws-xray-sdk-core";
-import { DocumentClient } from "aws-sdk/lib/dynamodb/document_client";
-import { ScanInput } from "aws-sdk/clients/dynamodb";
-import DynamoDB = require("aws-sdk/clients/dynamodb");
+import { DocumentClient, ScanInput } from "aws-sdk/clients/dynamodb";
 import BatchGetItemInput = DocumentClient.BatchGetItemInput;
 import GetItemInput = DocumentClient.GetItemInput;
 import DeleteItemInput = DocumentClient.DeleteItemInput;
@@ -41,25 +38,22 @@ interface UpdateParameters extends BaseParameters {
   returnValues?: string;
 }
 
+const AWSXRay = require("aws-xray-sdk-core");
+const AWSNoXRay = require("aws-sdk");
+const inTestEnvironment = process.env.NODE_ENV === "test";
+const AWS = inTestEnvironment
+  ? AWSNoXRay
+  : AWSXRay.captureAWS(require("aws-sdk"));
+
 type KeyInfo = { [key: string]: any };
 
 export class DynamoDbClient {
   private client: DocumentClient;
 
   constructor(
-    config: DynamoDB.ClientConfiguration | undefined = undefined,
-    enableXRay = true
+    config: AWS.DynamoDB.ClientConfiguration | undefined = undefined
   ) {
-    if (enableXRay) {
-      // Workaround for https://github.com/aws/aws-xray-sdk-node/issues/23
-      this.client = new DynamoDB.DocumentClient({
-        ...config,
-        service: new DynamoDB({ apiVersion: "2012-10-08" }),
-      });
-      AWSXRay.captureAWSClient((this.client as any).service);
-    } else {
-      this.client = new DynamoDB.DocumentClient(config);
-    }
+    this.client = new AWS.DynamoDB.DocumentClient(config);
   }
 
   put(tableName: string, item: object): Promise<PutItemOutput> {

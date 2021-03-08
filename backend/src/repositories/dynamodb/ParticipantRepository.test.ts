@@ -9,7 +9,7 @@ const dynamoClientOptions = {
 };
 
 describe("ParticipantRepository", () => {
-  const client = new DynamoDbClient(dynamoClientOptions, false);
+  const client = new DynamoDbClient(dynamoClientOptions);
   const repository = new ParticipantRepository("participants", client);
 
   const exampleRoomName = "Test";

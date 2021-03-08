@@ -40,17 +40,17 @@
     "typescript": "^3.7.2"
   },
   "dependencies": {
-    "@aws-cdk/aws-apigatewayv2": "^1.26.0",
-    "@aws-cdk/aws-dynamodb": "^1.26.0",
-    "@aws-cdk/aws-events": "^1.32.2",
-    "@aws-cdk/aws-events-targets": "^1.32.2",
-    "@aws-cdk/aws-iam": "^1.26.0",
-    "@aws-cdk/aws-lambda-nodejs": "^1.26.0",
-    "@aws-cdk/core": "^1.26.0",
-    "aws-sdk": "^2.630.0",
-    "aws-xray-sdk": "^2.5.0",
+    "@aws-cdk/aws-apigatewayv2": "1.92.0",
+    "@aws-cdk/aws-dynamodb": "1.92.0",
+    "@aws-cdk/aws-events": "1.92.0",
+    "@aws-cdk/aws-events-targets": "1.92.0",
+    "@aws-cdk/aws-iam": "1.92.0",
+    "@aws-cdk/aws-lambda-nodejs": "1.92.0",
+    "@aws-cdk/core": "1.92.0",
+    "aws-sdk": "^2.858.0",
+    "aws-xray-sdk-core": "^3.2.0",
+    "esbuild": "0",
     "lambda-log": "^2.3.1",
-    "parcel-bundler": "^1",
     "source-map-support": "^0.5.16"
   }
 }
