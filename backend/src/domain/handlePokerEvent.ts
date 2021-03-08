@@ -1,3 +1,4 @@
+import log from "../../log";
 import { CommandType, Command } from "./commandTypes";
 import { PokerRoom, Participant } from "./types";
 
@@ -110,6 +111,9 @@ export const handlePokerEvent = (
         !room.participants.every((p) => p.currentEstimation);
 
       if (isEstimationOngoing) {
+        log.info("Ignoring input event (estimation is ongoing)", {
+          inputEvent,
+        });
         return [];
       } else {
         const startEstimation: StartEstimation = {
@@ -133,6 +137,7 @@ export const handlePokerEvent = (
 
     case "estimate": {
       if (inputEvent.taskName !== room.currentEstimation?.taskName) {
+        log.info("Ignoring input event (taskName mismatch)", { inputEvent });
         return [];
       }
       const recordEstimationCommand: Command = {
@@ -173,8 +178,13 @@ export const handlePokerEvent = (
       );
 
       if (!estimationCompleted) {
+        log.info("Ignoring input event (estimation is not completed!)", {
+          inputEvent,
+          estimatingParticipants,
+        });
         return [];
       }
+
       const payload: EstimationResult = {
         eventType: "estimationResult",
         taskName: room.currentEstimation!.taskName,
@@ -195,6 +205,9 @@ export const handlePokerEvent = (
     }
 
     default:
+      log.info("Ignoring input event (unknown event type)", {
+        inputEvent,
+      });
       return [];
   }
 };

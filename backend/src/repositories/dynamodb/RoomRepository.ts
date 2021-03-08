@@ -24,7 +24,6 @@ export default class DynamoDbRoomRepository implements RoomRepository {
 
   async getOrCreateRoom(name: string): Promise<Room> {
     const room = await this.client.get(this.roomsTableName, { name }, true);
-
     if (!room.Item) {
       await this.client.put(this.roomsTableName, {
         name,
@@ -36,7 +35,6 @@ export default class DynamoDbRoomRepository implements RoomRepository {
       );
       return this.prepareRoom(newRoom.Item);
     }
-
     return this.prepareRoom(room.Item);
   }
 

@@ -37,6 +37,8 @@ export default class PokerEventInteractor {
     const roomNameFromJoinRoomEvent =
       pokerEvent.eventType === "joinRoom" ? pokerEvent.roomName : undefined;
 
+    // probably: call cleanUpStaleConnections from here
+
     const roomName = participantInfo?.roomName || roomNameFromJoinRoomEvent;
 
     if (!roomName) {
@@ -45,7 +47,10 @@ export default class PokerEventInteractor {
 
     log.options.meta.roomName = roomName;
     log.options.meta.userName = participantInfo?.participant.name;
-    log.info("Incoming message", { message: pokerEvent, direction: "incoming" });
+    log.info("Incoming message", {
+      message: pokerEvent,
+      direction: "incoming",
+    });
 
     const room = await this.queryRoomState(roomName);
     const commands = handlePokerEvent(
