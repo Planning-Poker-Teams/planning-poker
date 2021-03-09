@@ -20,7 +20,7 @@ const createTable = async (
   await dynamoDbClient.createTable(params).promise();
 };
 
-module.exports = async () => {
+module.exports = async (): Promise<void> => {
   // See https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/DynamoDBLocal.UsageNotes.html
   const container = await new GenericContainer("amazon/dynamodb-local")
     .withCmd([

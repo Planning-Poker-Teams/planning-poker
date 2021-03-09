@@ -29,7 +29,7 @@ export default class PokerEventInteractor {
   public async handleIncomingEvent(
     pokerEvent: PokerEvent,
     connectionId: string
-  ) {
+  ): Promise<void> {
     const participantInfo = await this.participantRepository.fetchParticipantInfo(
       connectionId
     );
@@ -62,7 +62,7 @@ export default class PokerEventInteractor {
     await this.processCommandsSequentially(commands, roomName);
   }
 
-  public async handleUserLeft(participantId: string) {
+  public async handleUserLeft(participantId: string): Promise<void> {
     const participantInfo = await this.participantRepository.fetchParticipantInfo(
       participantId
     );
