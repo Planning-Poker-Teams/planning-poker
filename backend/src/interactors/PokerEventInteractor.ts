@@ -45,9 +45,9 @@ export default class PokerEventInteractor {
       throw Error(`Participant with id ${connectionId} could not be found.`);
     }
 
-    log.options.meta.roomName = roomName;
-    log.options.meta.userName = participantInfo?.participant.name;
     log.info("Incoming message", {
+      roomName,
+      userName: participantInfo?.participant.name,
       message: pokerEvent,
       direction: "incoming",
     });

@@ -18,11 +18,10 @@ export const handler = async (
   event: APIGatewayWebsocketInvocationRequest
 ): Promise<LambdaResponse> => {
   const { connectionId, eventType } = event.requestContext;
-  log.options.meta.connectionId = connectionId;
 
   switch (eventType) {
     case "CONNECT":
-      log.info("User connected");
+      log.info("User connected", { connectionId });
       break;
 
     case "MESSAGE":
