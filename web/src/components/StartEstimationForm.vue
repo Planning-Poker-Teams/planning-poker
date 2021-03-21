@@ -44,7 +44,7 @@ export default class StartEstimationForm extends Vue {
   }
 
   get showEstimateAgainButton() {
-    return this.$store.getters.resultByComplexity?.length > 1 ?? false;
+    return this.$store.getters.resultBySize?.length > 1 ?? false;
   }
 
   get previousTaskName(): string | undefined {

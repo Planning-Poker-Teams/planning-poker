@@ -6,7 +6,7 @@
     >
       <thead>
         <tr>
-          <th class="p-2">Complexity</th>
+          <th class="p-2">Size</th>
           <th class="p-2">Votes</th>
           <th class="p-2 w-1/2">Voters</th>
         </tr>
@@ -14,7 +14,7 @@
       <tbody class="bg-gray-200">
         <tr
           class="last:rounded-b rounded"
-          v-for="entry in estimationResultByComplexity"
+          v-for="entry in estimationResultBySize"
           :key="entry.value"
         >
           <td class="p-2">
@@ -44,9 +44,8 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component, Prop } from 'vue-property-decorator';
+import { Vue, Component } from 'vue-property-decorator';
 import ParticipantItem from '@/components/ParticipantItem.vue';
-import { Estimate } from '../store/types';
 
 @Component({
   components: { ParticipantItem },
@@ -59,7 +58,7 @@ export default class EstimationResult extends Vue {
   get showConsensusCats(): boolean {
     return (
       this.$store.state.room?.showCats &&
-      this.estimationResultByComplexity.length == 1
+      this.estimationResultBySize.length == 1
     );
   }
 
@@ -67,8 +66,8 @@ export default class EstimationResult extends Vue {
     return `https://thecatapi.com/api/images/get?format=src&type=gif&nocache=${new Date().toISOString()}`;
   }
 
-  get estimationResultByComplexity(): { value: string; names: string[] }[] {
-    return this.$store.getters.resultByComplexity!;
+  get estimationResultBySize(): { value: string; names: string[] }[] {
+    return this.$store.getters.resultBySize!;
   }
 }
 </script>

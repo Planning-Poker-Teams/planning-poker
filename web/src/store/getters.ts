@@ -22,7 +22,7 @@ export const getters: GetterTree<State, State> = {
   votingIsComplete: (state: State): boolean => {
     return state.participants.every(p => p.hasEstimated || p.isSpectator);
   },
-  resultByComplexity: (state: State): EstimationResult | undefined => {
+  resultBySize: (state: State): EstimationResult | undefined => {
     if (!state.estimationResult) {
       return undefined;
     }
@@ -32,13 +32,13 @@ export const getters: GetterTree<State, State> = {
         estimate: Estimate
       ) => {
         const value = estimate.estimate;
-        const existingEntry = accumulator.find(e => e.value == value);
+        const existingEntry = accumulator.find(entry => entry.value == value);
         if (existingEntry) {
-          return accumulator.map(e => {
-            if (e.value == value) {
-              return { ...e, names: [...e.names, estimate.userName] };
+          return accumulator.map(entry => {
+            if (entry.value == value) {
+              return { ...entry, names: [...entry.names, estimate.userName] };
             } else {
-              return e;
+              return entry;
             }
           });
         } else {
