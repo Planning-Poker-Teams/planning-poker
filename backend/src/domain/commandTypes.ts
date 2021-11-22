@@ -6,6 +6,7 @@ export type Command =
   | AddParticipant
   | RemoveParticipant
   | SendExistingParticipants
+  | ChangeCardDeck
   | SetTask
   | RecordEstimation
   | FinishRound;
@@ -16,6 +17,7 @@ export enum CommandType {
   ADD_PARTICIPANT = 'ADD_PARTICIPANT',
   REMOVE_PARTICIPANT = 'REMOVE_PARTICIPANT',
   SEND_EXISTING_PARTICIPANTS = 'SEND_EXISTING_PARTICIPANTS',
+  CHANGE_CARD_DECK = 'CHANGE_CARD_DECK',
   SET_TASK = 'SET_TASK',
   RECORD_ESTIMATION = 'RECORD_ESTIMATION',
   FINISH_ROUND = 'FINISH_ROUND',
@@ -48,6 +50,11 @@ export interface SendExistingParticipants {
   type: CommandType.SEND_EXISTING_PARTICIPANTS;
   recipient: Participant;
   roomName: string;
+}
+
+export interface ChangeCardDeck {
+  type: CommandType.CHANGE_CARD_DECK;
+  newCardDeck: string[];
 }
 
 export interface SetTask {

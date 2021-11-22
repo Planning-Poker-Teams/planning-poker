@@ -8,6 +8,7 @@ const {
   ADD_PARTICIPANT,
   REMOVE_PARTICIPANT,
   SEND_EXISTING_PARTICIPANTS,
+  CHANGE_CARD_DECK,
   SET_TASK,
   RECORD_ESTIMATION,
   FINISH_ROUND,
@@ -53,6 +54,16 @@ export const handlePokerEvent = (
           type: SEND_EXISTING_PARTICIPANTS,
           roomName: inputEvent.roomName,
           recipient: newParticipant,
+        },
+        {
+          type: SEND_MESSAGE,
+          recipient: newParticipant,
+          payload: [
+            {
+              eventType: 'changeCardDeck',
+              cardDeck: room.cardDeck,
+            },
+          ],
         },
       ];
 
@@ -105,6 +116,25 @@ export const handlePokerEvent = (
       ];
     }
 
+    case 'changeCardDeck': {
+      const cardsPlayed =
+        room.participants.filter(p => p.currentEstimation !== undefined).length > 0;
+
+      if (cardsPlayed) {
+        log.info('Ignoring change-card-deck event (cards have been played)', { inputEvent });
+        return [];
+      } else {
+        const changeCardDeck: ChangeCardDeck = {
+          eventType: 'changeCardDeck',
+          cardDeck: inputEvent.cardDeck,
+        };
+        return [
+          { type: CHANGE_CARD_DECK, newCardDeck: inputEvent.cardDeck },
+          { type: BROADCAST_MESSAGE, payload: changeCardDeck },
+        ];
+      }
+    }
+
     case 'startEstimation': {
       const isEstimationOngoing =
         room.currentEstimation?.taskName !== undefined &&
@@ -140,6 +170,11 @@ export const handlePokerEvent = (
         log.info('Ignoring input event (taskName mismatch)', { inputEvent });
         return [];
       }
+      if (!room.cardDeck.includes(inputEvent.estimate)) {
+        log.info('Ignoring input event (estimate not included in card-deck)', { inputEvent });
+        return [];
+      }
+
       const recordEstimationCommand: Command = {
         type: RECORD_ESTIMATION,
         roomName: room.name,

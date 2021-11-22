@@ -22,6 +22,7 @@ Given('there is a room with no ongoing estimation', function () {
     name: ROOM_NAME,
     participants,
     currentEstimation: undefined,
+    cardDeck: ['0', '1', '2', '3', '5', '8', '13', '20', '40', '100', '???'],
   };
 });
 
@@ -35,6 +36,7 @@ Given('there is a room with an ongoing estimation for {string}', function (taskN
       startDate: new Date().toISOString(),
       initiator: participants[0],
     },
+    cardDeck: ['0', '1', '2', '3', '5', '8', '13', '20', '40', '100', '???'],
   };
 });
 

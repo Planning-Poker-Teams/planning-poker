@@ -10,6 +10,7 @@ Given('there is an {word} room', function (roomStatus: 'empty' | 'occupied') {
   this.room = {
     name: ROOM_NAME,
     participants,
+    cardDeck: ['0', '1', '2', '3', '5', '8', '13', '20', '40', '100', '???'],
   };
 });
 
@@ -23,6 +24,7 @@ Given('there is a room with a few participants', function () {
   this.room = {
     name: ROOM_NAME,
     participants,
+    cardDeck: ['0', '1', '2', '3', '5', '8', '13', '20', '40', '100', '???'],
   };
 });
 

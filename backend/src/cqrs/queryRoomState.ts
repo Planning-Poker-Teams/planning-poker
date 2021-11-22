@@ -39,5 +39,6 @@ export const queryRoomState =
       name: room.name,
       participants: participantsWithEstimations,
       currentEstimation,
+      cardDeck: room.cardDeck,
     };
   };

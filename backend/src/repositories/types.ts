@@ -16,6 +16,7 @@ export interface ParticipantRepository {
 export interface RoomRepository {
   getOrCreateRoom(name: string): Promise<Room>;
   deleteRoom(name: string): Promise<void>;
+  changeCardDeck(roomName: string, cardDeck: string[]): Promise<void>;
   addToParticipants(name: string, connectionId: string): Promise<void>;
   removeFromParticipants(name: string, connectionId: string): Promise<void>;
   startNewEstimation(

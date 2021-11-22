@@ -13,14 +13,14 @@ Feature: Performing estimations
 
   Scenario: Recording an estimation
     Given there is a room with an ongoing estimation for "Buy milk"
-    When "Fred" estimates "10" for "Buy milk"
+    When "Fred" estimates "13" for "Buy milk"
     Then the estimation of "Fred" gets recorded
     And the other participants get informed that "Fred" has estimated
 
   Scenario: Participants get only informed once about estimations
     Given there is a room with an ongoing estimation for "Buy milk"
     And "Fred" estimated "1"
-    When "Fred" estimates "10" for "Buy milk"
+    When "Fred" estimates "13" for "Buy milk"
     Then the estimation of "Fred" gets recorded
     And the other participants do not get informed that "Fred" has estimated
 
@@ -32,7 +32,7 @@ Feature: Performing estimations
   Scenario: Joining an active estimation session
     Given there is a room with an ongoing estimation for "Buy milk"
     And "John" estimated "1"
-    And "Jimmy" estimated "10"
+    And "Jimmy" estimated "13"
     When a participant named "Fred" joins the room
     Then he should receive information about the task
     And he should receive information about who has already estimated
@@ -40,7 +40,7 @@ Feature: Performing estimations
   Scenario: Attempting to show results with missing estimations
     Given there is a room with an ongoing estimation for "Buy milk"
     And "John" estimated "1"
-    And "Jimmy" estimated "10"
+    And "Jimmy" estimated "13"
     When showing the result is requested
     Then no action should be performed
 
@@ -48,7 +48,7 @@ Feature: Performing estimations
     Given there is a room with an ongoing estimation for "Buy milk"
     And a participant named "Lou" has joined the room as spectator
     And "John" estimated "1"
-    And "Jimmy" estimated "10"
+    And "Jimmy" estimated "13"
     And "Fred" estimated "20"
     When showing the result is requested
     Then all participants get informed about the estimation result
@@ -57,7 +57,7 @@ Feature: Performing estimations
     Given there is a room with an ongoing estimation for "Buy milk"
     And "Fred" estimated "20"
     And "John" estimated "1"
-    And "Jimmy" estimated "10"
+    And "Jimmy" estimated "13"
     When showing the result is requested
     Then all participants get informed about the estimation result
     And the estimation round is ended

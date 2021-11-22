@@ -21,16 +21,11 @@ export const handler = async (
       log.info('User connected', { connectionId });
       break;
 
-    case 'MESSAGE':
-      try {
-        const incomingMessage = JSON.parse(event.body);
-        await pokerEventInteractor.handleIncomingEvent(incomingMessage, connectionId);
-      } catch (error) {
-        log.error('Incoming message could not be parsed. Ignoring it.', {
-          incomingMessage: event.body,
-        });
-      }
+    case 'MESSAGE': {
+      const incomingMessage = JSON.parse(event.body);
+      await pokerEventInteractor.handleIncomingEvent(incomingMessage, connectionId);
       break;
+    }
 
     case 'DISCONNECT':
       log.info('User disconnected');

@@ -70,6 +70,11 @@ export const handleCommand =
         break;
       }
 
+      case CommandType.CHANGE_CARD_DECK: {
+        await roomRepository.changeCardDeck(room.name, command.newCardDeck);
+        break;
+      }
+
       case CommandType.SET_TASK: {
         await roomRepository.startNewEstimation(
           room.name,

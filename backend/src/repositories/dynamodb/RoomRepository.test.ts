@@ -13,6 +13,7 @@ describe('RoomRepository', () => {
   const repository = new RoomRepository('rooms', client);
 
   const ROOM_ID = 'test-room';
+  const DEFAULT_CARD_DECK = ['0', '1', '2', '3', '5', '8', '13', '20', '40', '100', '???'];
   const CONNECTION_ID = 'connection-id';
   const CONNECTION_ID_2 = 'connection-id-2';
 
@@ -25,6 +26,7 @@ describe('RoomRepository', () => {
 
     expect(room.name).toEqual(ROOM_ID);
     expect(room.participants).toEqual([]);
+    expect(room.cardDeck).toEqual(DEFAULT_CARD_DECK);
     expect(room.currentEstimationInitiator).toBeUndefined();
     expect(room.currentEstimationStartDate).toBeUndefined();
     expect(room.currentEstimationTaskName).toBeUndefined();
@@ -158,5 +160,16 @@ describe('RoomRepository', () => {
     expect(room.currentEstimationInitiator).toEqual(undefined);
     expect(room.currentEstimationStartDate).toEqual(undefined);
     expect(room.currentEstimates).toEqual([]);
+  });
+
+  it('changes card deck for the current room', async () => {
+    const newCardDeck = ['S', 'M', '42'];
+
+    let room = await repository.getOrCreateRoom(ROOM_ID);
+    expect(room.cardDeck).toEqual(DEFAULT_CARD_DECK);
+
+    await repository.changeCardDeck(ROOM_ID, newCardDeck);
+    room = await repository.getOrCreateRoom(ROOM_ID);
+    expect(room.cardDeck).toEqual(newCardDeck);
   });
 });

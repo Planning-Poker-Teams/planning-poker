@@ -7,6 +7,7 @@ export interface PokerRoom {
     // can be undefined if participant leaves after starting estimation:
     initiator?: Participant;
   };
+  cardDeck: string[];
 }
 
 export interface Participant {

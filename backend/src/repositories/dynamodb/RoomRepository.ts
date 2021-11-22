@@ -8,6 +8,7 @@ export interface Room {
   currentEstimationStartDate?: string;
   currentEstimationInitiator?: string;
   currentEstimates: Estimate[];
+  cardDeck: string[];
 }
 
 export interface Estimate {
@@ -27,17 +28,31 @@ export default class DynamoDbRoomRepository implements RoomRepository {
     if (!room.Item) {
       await this.client.put(this.roomsTableName, {
         name,
+        cardDeck: ['0', '1', '2', '3', '5', '8', '13', '20', '40', '100', '???'],
       });
       const newRoom = await this.client.get(this.roomsTableName, { name }, true);
-      return this.prepareRoom(newRoom.Item);
+      return this.mapDocumentToRoom(newRoom.Item);
     }
-    return this.prepareRoom(room.Item);
+    return this.mapDocumentToRoom(room.Item);
   }
 
   async deleteRoom(name: string): Promise<void> {
     await this.client.delete({
       tableName: this.roomsTableName,
       partitionKey: { name },
+    });
+  }
+
+  async changeCardDeck(roomName: string, cardDeck: string[]): Promise<void> {
+    await this.client.update({
+      tableName: this.roomsTableName,
+      partitionKey: { name: roomName },
+      updateExpression: `
+        SET 
+          cardDeck = :cardDeck`,
+      expressionAttributeValues: {
+        ':cardDeck': cardDeck,
+      },
     });
   }
 
@@ -121,7 +136,7 @@ export default class DynamoDbRoomRepository implements RoomRepository {
     });
   }
 
-  private prepareRoom(roomItem: any): Room {
+  private mapDocumentToRoom(roomItem: any): Room {
     return {
       name: roomItem.name,
       participants: roomItem.participants?.values ?? [],
@@ -131,6 +146,7 @@ export default class DynamoDbRoomRepository implements RoomRepository {
       currentEstimates: roomItem.currentEstimates
         ? roomItem.currentEstimates.values.map(JSON.parse)
         : [],
+      cardDeck: roomItem.cardDeck,
     };
   }
 }
