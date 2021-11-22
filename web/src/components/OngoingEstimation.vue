@@ -21,7 +21,7 @@
 
     <div v-if="!isSpectator" class="grid grid-cols-4 col-gap-2 row-gap-2 mb-4">
       <div
-        v-for="(value, index) in possibleEstimationValues"
+        v-for="(value, index) in currentCardDeck"
         :ref="
           el => {
             selectedCardRefs[index] = el;
@@ -50,7 +50,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onBeforeUpdate, Ref, ref, toRef } from 'vue';
+import { defineComponent, onBeforeUpdate, PropType, Ref, ref, toRef } from 'vue';
 import { Store, useStore } from 'vuex';
 import { State } from '../store/types';
 
@@ -66,6 +66,10 @@ export default defineComponent({
       type: String,
       required: true,
     },
+    currentCardDeck: {
+      type: Array as PropType<string[]>,
+      required: true,
+    },
   },
   emits: ['send-estimation', 'request-result'],
   setup(props, context) {
@@ -73,7 +77,6 @@ export default defineComponent({
     const votingIsComplete = toRef(store.getters, 'votingIsComplete');
     const isSpectator = ref(store.state.room?.isSpectator);
     const taskNameRef: Ref<Element | undefined> = ref(undefined);
-    const possibleEstimationValues = ['0', '1', '2', '3', '5', '8', '13', '20', '40', '100', '???'];
     const selectedEstimation: Ref<number | undefined> = ref(undefined);
     const selectedCardRefs: Ref<Element[]> = ref([]);
     onBeforeUpdate(() => {
@@ -179,7 +182,6 @@ export default defineComponent({
       requestResult,
       isSpectator,
       selectedEstimation,
-      possibleEstimationValues,
       sendEstimation,
       selectedCardRefs,
       taskNameRef,

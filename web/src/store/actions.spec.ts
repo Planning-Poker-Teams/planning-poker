@@ -12,6 +12,7 @@ describe('actions', () => {
       isSpectator: false,
       showCats: true,
     },
+    cardDeck: ['0', '1', '2', '3', '5', '8'],
     participants: [
       { name: 'Foo', isSpectator: false, hasEstimated: false },
       { name: 'Bar', isSpectator: false, hasEstimated: false },
@@ -22,14 +23,18 @@ describe('actions', () => {
     },
   };
 
-  const actionContext: ActionContext<State, State> = {
-    dispatch: jest.fn(),
-    commit: jest.fn(),
-    state,
-    getters: {},
-    rootState: state,
-    rootGetters: {},
-  };
+  let actionContext: ActionContext<State, State>;
+
+  beforeEach(() => {
+    actionContext = {
+      dispatch: jest.fn(),
+      commit: jest.fn(),
+      state,
+      getters: {},
+      rootState: state,
+      rootGetters: {},
+    };
+  });
 
   it('requests start of a new estimation', () => {
     const requestStartEstimation = actions[ActionType.REQUEST_START_ESTIMATION].bind(store);
@@ -65,6 +70,19 @@ describe('actions', () => {
     expect(actionContext.dispatch).toBeCalledWith(ActionType.SEND_MESSAGE, {
       eventType: 'showResult',
       userName: 'Foo',
+    });
+  });
+
+  it('requests changing card deck', () => {
+    const newCardDeck = ['S', 'M', 'L'];
+
+    const changeCardDeck = actions[ActionType.CHANGE_CARD_DECK].bind(store);
+
+    changeCardDeck(actionContext, newCardDeck);
+
+    expect(actionContext.dispatch).toBeCalledWith(ActionType.SEND_MESSAGE, {
+      eventType: 'changeCardDeck',
+      cardDeck: newCardDeck,
     });
   });
 });

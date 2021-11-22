@@ -1,5 +1,6 @@
 export interface State {
   room?: RoomInformation;
+  cardDeck: string[];
   participants: Participant[];
   ongoingEstimation?: Estimation;
   estimationResult?: EstimationResult;

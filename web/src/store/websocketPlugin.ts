@@ -31,6 +31,7 @@ const webSocketPlugin = (store: Store<State>) => {
     switch (message.eventType) {
       case 'userJoined':
       case 'userLeft':
+      case 'changeCardDeck':
       case 'startEstimation':
       case 'userHasEstimated':
       case 'estimationResult':
@@ -44,7 +45,7 @@ const webSocketPlugin = (store: Store<State>) => {
     userName: string,
     isSpectator: boolean
   ): WebSocket => {
-    const socket = new WebSocket('wss://api.planningpoker.cc/dev');
+    const socket = new WebSocket('wss://api.planningpoker.cc');
 
     socket.onopen = () => {
       socket.send(
@@ -58,12 +59,8 @@ const webSocketPlugin = (store: Store<State>) => {
     };
 
     socket.onmessage = event => {
-      try {
-        const json = JSON.parse(event.data);
-        handleIncomingMessage(json);
-      } catch (error) {
-        console.error('Unable to parse incoming message from event:', event);
-      }
+      const json = JSON.parse(event.data);
+      handleIncomingMessage(json);
     };
 
     return socket;

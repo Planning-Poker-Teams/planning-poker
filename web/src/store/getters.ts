@@ -12,12 +12,14 @@ type EstimationResult = { value: string; names: string[] }[];
 export enum GetterType {
   ESTIMATION_STATE = 'estimationState',
   VOTING_IS_COMPLETE = 'votingIsComplete',
+  SOMEBODY_HAS_VOTED = 'somebodyHasVoted',
   RESULT_BY_SIZE = 'resultBySize',
 }
 
 export type Getters = {
   [GetterType.ESTIMATION_STATE](state: State): EstimationState;
   [GetterType.VOTING_IS_COMPLETE](state: State): boolean;
+  [GetterType.SOMEBODY_HAS_VOTED](state: State): boolean;
   [GetterType.RESULT_BY_SIZE](state: State): EstimationResult | undefined;
 };
 
@@ -33,6 +35,9 @@ export const getters: GetterTree<State, State> = {
   },
   [GetterType.VOTING_IS_COMPLETE]: (state: State): boolean => {
     return state.participants.every(p => p.hasEstimated || p.isSpectator);
+  },
+  [GetterType.SOMEBODY_HAS_VOTED]: (state: State): boolean => {
+    return state.participants.find(p => p.hasEstimated) !== undefined;
   },
   [GetterType.RESULT_BY_SIZE]: (state: State): EstimationResult | undefined => {
     if (!state.estimationResult) {

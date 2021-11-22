@@ -13,6 +13,7 @@ import webSocketPlugin from '../store/websocketPlugin';
 
 export const initialState: State = {
   room: undefined,
+  cardDeck: [],
   participants: [],
   ongoingEstimation: undefined,
   estimationResult: undefined,

@@ -2,10 +2,21 @@
   <div
     class="h-full w-full flex flex-col items-center bg-gray-100 lg:shadow-lg lg:rounded-lg relative overflow-y-scroll"
   >
-    <room-header :participants="participants" :room-name="roomName" />
+    <room-header
+      :participants="participants"
+      :room-name="roomName"
+      @show_change_deck_modal="showChangeDeckModal = true"
+    />
+    <change-card-deck-dialog
+      v-if="showChangeDeckModal"
+      :current-card-deck="cardDeck"
+      @hide_change_deck_modal="showChangeDeckModal = false"
+      @change_deck="changeCardDeck"
+    />
     <ongoing-estimation
       v-if="isEstimationOngoing"
       :task-name="taskName"
+      :current-card-deck="cardDeck"
       @send-estimation="sendEstimation"
       @request-result="requestResult"
     />
@@ -15,9 +26,10 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, onMounted, onUnmounted, toRef } from 'vue';
+import { computed, defineComponent, onMounted, onUnmounted, ref, toRef } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { Store, useStore } from 'vuex';
+import ChangeCardDeckDialog from '../components/ChangeCardDeckDialog.vue';
 import EstimationResult from '../components/EstimationResult.vue';
 import OngoingEstimation from '../components/OngoingEstimation.vue';
 import RoomHeader from '../components/RoomHeader.vue';
@@ -29,6 +41,7 @@ import { State } from '../store/types';
 export default defineComponent({
   components: {
     RoomHeader,
+    ChangeCardDeckDialog,
     StartEstimationForm,
     OngoingEstimation,
     EstimationResult,
@@ -37,6 +50,9 @@ export default defineComponent({
     const store: Store<State> = useStore();
     const route = useRoute();
     const router = useRouter();
+
+    const showChangeDeckModal = ref(false);
+    const cardDeck = toRef(store.state, 'cardDeck');
 
     const participants = toRef(store.state, 'participants');
     const taskName = computed(() => {
@@ -69,6 +85,10 @@ export default defineComponent({
       () => store.getters.estimationState == EstimationState.ONGOING
     );
     const estimationResultAvailable = computed(() => store.state.estimationResult !== undefined);
+    const changeCardDeck = async (newCardDeck: string[]) => {
+      store.dispatch(ActionType.CHANGE_CARD_DECK, newCardDeck);
+      showChangeDeckModal.value = false;
+    };
     const startEstimation = async (taskName: string) => {
       store.dispatch(ActionType.REQUEST_START_ESTIMATION, taskName);
     };
@@ -80,11 +100,14 @@ export default defineComponent({
     };
 
     return {
+      showChangeDeckModal,
+      cardDeck,
       participants,
       roomName,
       taskName,
       isEstimationOngoing,
       estimationResultAvailable,
+      changeCardDeck,
       startEstimation,
       sendEstimation,
       requestResult,

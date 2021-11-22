@@ -1,5 +1,6 @@
 import { MutationTree } from 'vuex';
 import {
+  ChangeCardDeck,
   EstimationResult,
   StartEstimation,
   UserHasEstimated,
@@ -13,6 +14,7 @@ export enum MutationsType {
   LEAVE_ROOM = 'leaveRoom',
   USER_JOINED = 'userJoined',
   USER_LEFT = 'userLeft',
+  CHANGE_CARD_DECK = 'changeCardDeck',
   START_ESTIMATION = 'startEstimation',
   USER_HAS_ESTIMATED = 'userHasEstimated',
   ESTIMATION_RESULT = 'estimationResult',
@@ -23,6 +25,7 @@ export type Mutations = {
   [MutationsType.LEAVE_ROOM](state: State): void;
   [MutationsType.USER_JOINED](state: State, event: UserJoined): void;
   [MutationsType.USER_LEFT](state: State, event: UserLeft): void;
+  [MutationsType.CHANGE_CARD_DECK](state: State, event: ChangeCardDeck): void;
   [MutationsType.START_ESTIMATION](state: State, event: StartEstimation): void;
   [MutationsType.USER_HAS_ESTIMATED](state: State, event: UserHasEstimated): void;
   [MutationsType.ESTIMATION_RESULT](state: State, event: EstimationResult): void;
@@ -37,6 +40,7 @@ export const mutations: MutationTree<State> & Mutations = {
   },
   [MutationsType.LEAVE_ROOM](state: State) {
     state.room = undefined;
+    state.cardDeck = [];
     state.participants = [];
     state.ongoingEstimation = undefined;
     state.estimationResult = undefined;
@@ -54,6 +58,9 @@ export const mutations: MutationTree<State> & Mutations = {
   },
   [MutationsType.USER_LEFT](state: State, event: UserLeft) {
     state.participants = state.participants.filter(p => p.name != event.userName);
+  },
+  [MutationsType.CHANGE_CARD_DECK](state: State, event: ChangeCardDeck) {
+    state.cardDeck = event.cardDeck;
   },
   [MutationsType.START_ESTIMATION](state: State, event: StartEstimation) {
     state.estimationResult = undefined;
