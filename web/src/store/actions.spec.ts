@@ -1,7 +1,8 @@
-import { actions, Actions } from './actions';
-import { State } from './types';
+import { actions, ActionType } from '../store/actions';
+import { State } from '../store/types';
 import { ActionContext } from 'vuex';
-import store from '.';
+import store from '../store';
+import { jest } from '@jest/globals';
 
 describe('actions', () => {
   const state: State = {
@@ -31,13 +32,12 @@ describe('actions', () => {
   };
 
   it('requests start of a new estimation', () => {
-    const requestStartEstimation = (actions[
-      Actions.REQUEST_START_ESTIMATION
-    ] as any).bind(store);
+    const requestStartEstimation =
+      actions[ActionType.REQUEST_START_ESTIMATION].bind(store);
 
     requestStartEstimation(actionContext, 'New task');
 
-    expect(actionContext.dispatch).toBeCalledWith(Actions.SEND_MESSAGE, {
+    expect(actionContext.dispatch).toBeCalledWith(ActionType.SEND_MESSAGE, {
       eventType: 'startEstimation',
       taskName: 'New task',
       userName: 'Foo',
@@ -46,13 +46,11 @@ describe('actions', () => {
   });
 
   it('sends an estimation', () => {
-    const sendEstimation = (actions[Actions.SEND_ESTIMATION] as any).bind(
-      store
-    );
+    const sendEstimation = actions[ActionType.SEND_ESTIMATION].bind(store);
 
     sendEstimation(actionContext, '10');
 
-    expect(actionContext.dispatch).toBeCalledWith(Actions.SEND_MESSAGE, {
+    expect(actionContext.dispatch).toBeCalledWith(ActionType.SEND_MESSAGE, {
       eventType: 'estimate',
       taskName: 'The task',
       userName: 'Foo',
@@ -61,11 +59,11 @@ describe('actions', () => {
   });
 
   it('requests showing estimation results', () => {
-    const requestResult = (actions[Actions.REQUEST_RESULT] as any).bind(store);
+    const requestResult = actions[ActionType.REQUEST_RESULT].bind(store);
 
     requestResult(actionContext);
 
-    expect(actionContext.dispatch).toBeCalledWith(Actions.SEND_MESSAGE, {
+    expect(actionContext.dispatch).toBeCalledWith(ActionType.SEND_MESSAGE, {
       eventType: 'showResult',
       userName: 'Foo',
     });

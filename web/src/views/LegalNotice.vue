@@ -28,25 +28,17 @@
         Lars Rückemann<br />
       </p>
       <h2 class="text-xl font-bold">Commercial Registry</h2>
-      <p class="mb-8">
-        District Court Wuppertal, HRB 25917
-      </p>
+      <p class="mb-8">District Court Wuppertal, HRB 25917</p>
       <h2 class="text-xl font-bold">VAT ID</h2>
-      <p class="mb-8">
-        DE 119437798
-      </p>
+      <p class="mb-8">DE 119437798</p>
       <h2 class="text-xl font-bold">Content Responsibility</h2>
-      <p class="mb-8">
-        Rainer Vehns, according to §6 MDStV
-      </p>
+      <p class="mb-8">Rainer Vehns, according to §6 MDStV</p>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
-import Component from 'vue-class-component';
+import { defineComponent } from 'vue';
 
-@Component
-export default class Imprint extends Vue {}
+export default defineComponent({});
 </script>

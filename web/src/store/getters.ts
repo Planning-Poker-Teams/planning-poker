@@ -1,5 +1,5 @@
 import { GetterTree } from 'vuex';
-import { State, Estimate } from './types';
+import { State, Estimate } from '../store/types';
 
 export enum EstimationState {
   NOT_STARTED = 'NOT_STARTED',
@@ -9,8 +9,20 @@ export enum EstimationState {
 
 type EstimationResult = { value: string; names: string[] }[];
 
+export enum GetterType {
+  ESTIMATION_STATE = 'estimationState',
+  VOTING_IS_COMPLETE = 'votingIsComplete',
+  RESULT_BY_SIZE = 'resultBySize',
+}
+
+export type Getters = {
+  [GetterType.ESTIMATION_STATE](state: State): EstimationState;
+  [GetterType.VOTING_IS_COMPLETE](state: State): boolean;
+  [GetterType.RESULT_BY_SIZE](state: State): EstimationResult | undefined;
+};
+
 export const getters: GetterTree<State, State> = {
-  estimationState: (state: State): EstimationState => {
+  [GetterType.ESTIMATION_STATE]: (state: State): EstimationState => {
     if (state.ongoingEstimation) {
       return EstimationState.ONGOING;
     } else if (state.estimationResult) {
@@ -19,10 +31,10 @@ export const getters: GetterTree<State, State> = {
       return EstimationState.NOT_STARTED;
     }
   },
-  votingIsComplete: (state: State): boolean => {
-    return state.participants.every(p => p.hasEstimated || p.isSpectator);
+  [GetterType.VOTING_IS_COMPLETE]: (state: State): boolean => {
+    return state.participants.every((p) => p.hasEstimated || p.isSpectator);
   },
-  resultBySize: (state: State): EstimationResult | undefined => {
+  [GetterType.RESULT_BY_SIZE]: (state: State): EstimationResult | undefined => {
     if (!state.estimationResult) {
       return undefined;
     }
@@ -32,9 +44,9 @@ export const getters: GetterTree<State, State> = {
         estimate: Estimate
       ) => {
         const value = estimate.estimate;
-        const existingEntry = accumulator.find(entry => entry.value == value);
+        const existingEntry = accumulator.find((entry) => entry.value == value);
         if (existingEntry) {
-          return accumulator.map(entry => {
+          return accumulator.map((entry) => {
             if (entry.value == value) {
               return { ...entry, names: [...entry.names, estimate.userName] };
             } else {

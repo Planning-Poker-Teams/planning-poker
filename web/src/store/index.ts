@@ -1,12 +1,15 @@
-import Vue from 'vue';
-import Vuex from 'vuex';
-import webSocketPlugin from './websocketPlugin';
-import { State } from './types';
-import { mutations } from './mutations';
-import { actions } from './actions';
-import { getters } from './getters';
-
-Vue.use(Vuex);
+import {
+  createLogger,
+  createStore,
+  CommitOptions,
+  DispatchOptions,
+  Store as VuexStore,
+} from 'vuex';
+import webSocketPlugin from '../store/websocketPlugin';
+import { State } from '../store/types';
+import { Mutations, mutations } from '../store/mutations';
+import { Actions, actions } from '../store/actions';
+import { Getters, getters } from '../store/getters';
 
 export const initialState: State = {
   room: undefined,
@@ -15,11 +18,37 @@ export const initialState: State = {
   estimationResult: undefined,
 };
 
-export default new Vuex.Store<State>({
+const plugins = [webSocketPlugin];
+if (import.meta.env.DEV === true) {
+  plugins.push(createLogger());
+}
+
+export type Store = Omit<
+  VuexStore<State>,
+  'getters' | 'commit' | 'dispatch'
+> & {
+  commit<K extends keyof Mutations, P extends Parameters<Mutations[K]>[1]>(
+    key: K,
+    payload: P,
+    options?: CommitOptions
+  ): ReturnType<Mutations[K]>;
+} & {
+  dispatch<K extends keyof Actions>(
+    key: K,
+    payload: Parameters<Actions[K]>[1],
+    options?: DispatchOptions
+  ): ReturnType<Actions[K]>;
+} & {
+  getters: {
+    [K in keyof Getters]: ReturnType<Getters[K]>;
+  };
+};
+
+export default createStore<State>({
   state: initialState,
   getters,
   actions,
   mutations,
   modules: {},
-  plugins: [webSocketPlugin],
+  plugins,
 });

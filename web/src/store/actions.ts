@@ -1,7 +1,7 @@
-import { ActionTree } from 'vuex';
-import { State } from './types';
+import { ActionTree, Dispatch } from 'vuex';
+import { State } from '../store/types';
 
-export enum Actions {
+export enum ActionType {
   ENTER_ROOM = 'enterRoom', // handled by websocketPlugin
   LEAVE_ROOM = 'leaveRoom', // handled by websocketPlugin
   SEND_MESSAGE = 'sendMessage', // handled by websocketPlugin
@@ -10,11 +10,32 @@ export enum Actions {
   REQUEST_RESULT = 'requestShowResult',
 }
 
-export const actions: ActionTree<State, State> = {
-  [Actions.ENTER_ROOM]() {},
-  [Actions.LEAVE_ROOM]() {},
-  [Actions.SEND_MESSAGE]() {},
-  [Actions.REQUEST_START_ESTIMATION]({ dispatch, state }, taskName: string) {
+export type Actions = {
+  [ActionType.ENTER_ROOM](): void;
+  [ActionType.LEAVE_ROOM](): void;
+  [ActionType.SEND_MESSAGE](): void;
+  [ActionType.REQUEST_START_ESTIMATION](
+    { dispatch, state }: { dispatch: Dispatch; state: State },
+    taskName: string
+  ): void;
+  [ActionType.SEND_ESTIMATION](
+    { dispatch, state }: { dispatch: Dispatch; state: State },
+    estimate: string
+  ): void;
+  [ActionType.REQUEST_RESULT]({
+    dispatch,
+    state,
+  }: {
+    dispatch: Dispatch;
+    state: State;
+  }): void;
+};
+
+export const actions: ActionTree<State, State> & Actions = {
+  [ActionType.ENTER_ROOM]() {},
+  [ActionType.LEAVE_ROOM]() {},
+  [ActionType.SEND_MESSAGE]() {},
+  [ActionType.REQUEST_START_ESTIMATION]({ dispatch, state }, taskName: string) {
     if (!state.room) {
       console.error('There is no room', state);
       return;
@@ -25,9 +46,9 @@ export const actions: ActionTree<State, State> = {
       taskName,
       startDate: new Date().toISOString(),
     };
-    dispatch(Actions.SEND_MESSAGE, startEstimationMessage);
+    dispatch(ActionType.SEND_MESSAGE, startEstimationMessage);
   },
-  [Actions.SEND_ESTIMATION]({ dispatch, state }, estimate: string) {
+  [ActionType.SEND_ESTIMATION]({ dispatch, state }, estimate: string) {
     if (!state.room || !state.ongoingEstimation) {
       console.error('There is no room or no ongoing estimation', state);
       return;
@@ -38,9 +59,9 @@ export const actions: ActionTree<State, State> = {
       taskName: state.ongoingEstimation?.taskName,
       estimate,
     };
-    dispatch(Actions.SEND_MESSAGE, estimationMessage);
+    dispatch(ActionType.SEND_MESSAGE, estimationMessage);
   },
-  [Actions.REQUEST_RESULT]({ dispatch, state }) {
+  [ActionType.REQUEST_RESULT]({ dispatch, state }) {
     if (!state.room) {
       console.error('There is no room', state);
       return;
@@ -49,6 +70,6 @@ export const actions: ActionTree<State, State> = {
       eventType: 'showResult',
       userName: state.room?.userName,
     };
-    dispatch(Actions.SEND_MESSAGE, showResultMessage);
+    dispatch(ActionType.SEND_MESSAGE, showResultMessage);
   },
 };

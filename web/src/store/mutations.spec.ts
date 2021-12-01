@@ -1,6 +1,6 @@
-import { initialState } from '.';
-import { mutations } from './mutations';
-import { RoomInformation, Participant, State } from './types';
+import { initialState } from '../store';
+import { mutations } from '../store/mutations';
+import { RoomInformation, Participant, State } from '../store/types';
 
 const exampleParticipant: Participant = {
   name: 'Foo',
@@ -126,7 +126,9 @@ describe('mutations', () => {
 
     mutations.startEstimation(state, startEstimation);
 
-    expect(state.participants.every(p => p.hasEstimated == false)).toBeTruthy();
+    expect(
+      state.participants.every((p) => p.hasEstimated == false)
+    ).toBeTruthy();
     expect(state.estimationResult).toBeUndefined();
     expect(state.ongoingEstimation).toEqual({
       taskName: startEstimation.taskName,
@@ -191,7 +193,9 @@ describe('mutations', () => {
     const result: EstimationResult = {
       eventType: 'estimationResult',
       taskName: 'Task',
-      startDate: state.ongoingEstimation!.startDate.toISOString(),
+      startDate:
+        state.ongoingEstimation?.startDate.toISOString() ??
+        new Date().toISOString(),
       endDate: new Date().toISOString(),
       estimates: [],
     };

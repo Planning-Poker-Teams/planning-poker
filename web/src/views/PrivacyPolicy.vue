@@ -8,9 +8,7 @@
       />
     </a>
     <div class="text-base">
-      <h1 class="text-3xl mb-6">
-        Privacy policy
-      </h1>
+      <h1 class="text-3xl mb-6">Privacy policy</h1>
       <h2 class="text-xl font-bold">1. Data protection at a glance</h2>
       <p class="mb-8">
         The following information is to provide you with an overview about what
@@ -212,9 +210,7 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
-import Component from 'vue-class-component';
+import { defineComponent } from 'vue';
 
-@Component
-export default class PrivacyPolicy extends Vue {}
+export default defineComponent({});
 </script>

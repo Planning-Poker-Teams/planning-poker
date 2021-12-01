@@ -2,83 +2,98 @@
   <div
     class="h-full w-full flex flex-col items-center bg-gray-100 lg:shadow-lg lg:rounded-lg relative overflow-y-scroll"
   >
-    <room-header :participants="participants" :roomName="roomName" />
+    <room-header :participants="participants" :room-name="roomName" />
     <ongoing-estimation
       v-if="isEstimationOngoing"
-      :taskName="taskName"
+      :task-name="taskName"
       @send-estimation="sendEstimation"
       @request-result="requestResult"
     />
     <estimation-result v-if="estimationResultAvailable" />
-    <start-estimation-form v-if="!isEstimationOngoing" @start-estimation="startEstimation" />
+    <start-estimation-form
+      v-if="!isEstimationOngoing"
+      @start-estimation="startEstimation"
+    />
   </div>
 </template>
 
 <script lang="ts">
-import { Vue, Prop, Watch, Component } from 'vue-property-decorator';
-import { Route } from 'vue-router';
-import RoomHeader from '@/components/RoomHeader.vue';
-import StartEstimationForm from '@/components/StartEstimationForm.vue';
-import OngoingEstimation from '@/components/OngoingEstimation.vue';
-import EstimationResult from '@/components/EstimationResult.vue';
-import { Participant } from '../store/types';
-import { Mutations } from '../store/mutations';
-import { Actions } from '../store/actions';
+import { computed, defineComponent, onMounted, onUnmounted, toRef } from 'vue';
+import { Store, useStore } from 'vuex';
+import { useRoute, useRouter } from 'vue-router';
+import RoomHeader from '../components/RoomHeader.vue';
+import StartEstimationForm from '../components/StartEstimationForm.vue';
+import OngoingEstimation from '../components/OngoingEstimation.vue';
+import EstimationResult from '../components/EstimationResult.vue';
+import { State } from '../store/types';
+import { ActionType } from '../store/actions';
 import { EstimationState } from '../store/getters';
 
-@Component({
+export default defineComponent({
   components: {
     RoomHeader,
     StartEstimationForm,
     OngoingEstimation,
     EstimationResult,
   },
-})
-export default class Room extends Vue {
-  mounted() {
-    const roomNameParam = this.$route.params.roomName;
-    const roomName = this.$store.state.room?.name;
+  setup() {
+    const store: Store<State> = useStore();
+    const route = useRoute();
+    const router = useRouter();
 
-    if (!this.$store.state.room || roomName !== roomNameParam) {
-      this.$router.push({ name: 'lobby', query: { room: roomNameParam } });
-    }
-    this.$store.dispatch(Actions.ENTER_ROOM);
-  }
+    const participants = toRef(store.state, 'participants');
+    const taskName = computed(() => {
+      if (typeof store.state.ongoingEstimation === 'undefined') {
+        return '';
+      }
 
-  beforeDestroy() {
-    this.$store.dispatch(Actions.LEAVE_ROOM);
-  }
+      return store.state.ongoingEstimation.taskName;
+    });
+    const roomName = computed(() => {
+      if (typeof store.state.room === 'undefined') {
+        return '';
+      }
 
-  startEstimation(taskName: string) {
-    this.$store.dispatch(Actions.REQUEST_START_ESTIMATION, taskName);
-  }
+      return store.state.room.name;
+    });
 
-  sendEstimation(value: string) {
-    this.$store.dispatch(Actions.SEND_ESTIMATION, value);
-  }
+    onMounted(() => {
+      const roomNameParam = route.params.roomName;
+      if (!store.state.room || roomName.value !== roomNameParam) {
+        router.push({ name: 'lobby', query: { room: roomNameParam } });
+      }
+      store.dispatch(ActionType.ENTER_ROOM);
+    });
+    onUnmounted(() => {
+      store.dispatch(ActionType.LEAVE_ROOM);
+    });
 
-  requestResult() {
-    this.$store.dispatch(Actions.REQUEST_RESULT);
-  }
+    const isEstimationOngoing = computed(
+      () => store.getters.estimationState == EstimationState.ONGOING
+    );
+    const estimationResultAvailable = computed(
+      () => store.state.estimationResult !== undefined
+    );
+    const startEstimation = async (taskName: string) => {
+      store.dispatch(ActionType.REQUEST_START_ESTIMATION, taskName);
+    };
+    const sendEstimation = async (value: string) => {
+      store.dispatch(ActionType.SEND_ESTIMATION, value);
+    };
+    const requestResult = async () => {
+      store.dispatch(ActionType.REQUEST_RESULT);
+    };
 
-  get participants(): Participant[] {
-    return this.$store.state.participants;
-  }
-
-  get roomName(): string | undefined {
-    return this.$store.state.room?.name;
-  }
-
-  get taskName(): string | undefined {
-    return this.$store.state.ongoingEstimation?.taskName;
-  }
-
-  get isEstimationOngoing(): boolean {
-    return this.$store.getters.estimationState == EstimationState.ONGOING;
-  }
-
-  get estimationResultAvailable() {
-    return this.$store.state.estimationResult !== undefined;
-  }
-}
+    return {
+      participants,
+      roomName,
+      taskName,
+      isEstimationOngoing,
+      estimationResultAvailable,
+      startEstimation,
+      sendEstimation,
+      requestResult,
+    };
+  },
+});
 </script>

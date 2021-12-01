@@ -1,3 +1,35 @@
-# Planning Poker Web
+# planning-poker-web
 
-Web frontend based on Vue.js
+```shell
+cd web/
+```
+
+## Project setup
+
+```shell
+yarn install
+```
+
+## Run project linting
+
+```shell
+yarn run lint
+```
+
+## Run project test
+
+```shell
+yarn run test
+```
+
+### Compiles and hot-reloads for development
+
+```shell
+yarn run dev
+```
+
+### Compiles and minifies for production
+
+```shell
+yarn run build
+```

@@ -15,25 +15,41 @@
         class="toggle__dot absolute w-6 h-6 bg-white rounded-full shadow inset-y-0 left-0"
       ></div>
     </div>
-    <div class="ml-3 text-lg font-semi select-none text-gray-700 ">
+    <div class="ml-3 text-lg font-semi select-none text-gray-700">
       {{ label }}
     </div>
   </label>
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from 'vue-property-decorator';
+import { defineComponent } from 'vue';
 
-@Component
-export default class Toggle extends Vue {
-  @Prop() private id!: string;
-  @Prop() private label!: string;
-  @Prop() private value!: boolean;
+export default defineComponent({
+  props: {
+    id: {
+      type: String,
+      required: true,
+    },
+    label: {
+      type: String,
+      required: true,
+    },
+    value: {
+      type: Boolean,
+      required: true,
+    },
+  },
+  emits: ['input'],
+  setup(props, context) {
+    const onChange = (value: boolean) => {
+      context.emit('input', value);
+    };
 
-  onChange(value: boolean) {
-    this.$emit('input', value);
-  }
-}
+    return {
+      onChange,
+    };
+  },
+});
 </script>
 
 <style scoped>
