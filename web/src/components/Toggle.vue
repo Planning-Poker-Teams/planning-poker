@@ -5,8 +5,8 @@
         :id="id"
         class="hidden"
         type="checkbox"
-        :checked="value"
-        @change="onChange($event.target.checked)"
+        :checked="modelValue"
+        @change="onChange"
       />
       <div class="toggle__line w-10 h-4 bg-gray-400 rounded-full shadow-inner"></div>
       <div class="toggle__dot absolute w-6 h-6 bg-white rounded-full shadow inset-y-0 left-0"></div>
@@ -30,15 +30,16 @@ export default defineComponent({
       type: String,
       required: true,
     },
-    value: {
+    modelValue: {
       type: Boolean,
       required: true,
     },
   },
-  emits: ['input'],
+  emits: ['update:modelValue'],
   setup(props, context) {
-    const onChange = (value: boolean) => {
-      context.emit('input', value);
+    const onChange = (event: Event) => {
+      const target = event.target as HTMLInputElement;
+      context.emit('update:modelValue', target.checked);
     };
 
     return {
