@@ -1,6 +1,10 @@
 version: 1.0
 frontend:
   phases:
+    preBuild:
+      commands:
+        - nvm install 14.17.6
+        - nvm use 14.17.6
     build:
       commands:
         - cd web
