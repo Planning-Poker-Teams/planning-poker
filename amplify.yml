@@ -9,6 +9,7 @@ frontend:
       commands:
         - cd web
         - yarn install
+        - yarn lint
         - yarn build
     test:
       commands:
