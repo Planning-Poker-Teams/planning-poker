@@ -23,15 +23,13 @@
       <div
         v-for="(value, index) in possibleEstimationValues"
         :ref="
-          (el) => {
+          el => {
             selectedCardRefs[index] = el;
           }
         "
         :key="value"
         class="flex flex-col justify-center w-16 lg:w-20 h-24 lg:h-32 rounded-lg shadow cursor-pointer select-none relative"
-        :class="
-          index == selectedEstimation ? 'bg-red-400 opacity-90' : 'bg-blue-400'
-        "
+        :class="index == selectedEstimation ? 'bg-red-400 opacity-90' : 'bg-blue-400'"
         @click="sendEstimation(value, index)"
       >
         <p class="absolute top-0 left-0 text-sm text-white px-1 font-mono">
@@ -40,9 +38,7 @@
         <p class="text-white font-medium text-2xl text-center font-mono">
           {{ value }}
         </p>
-        <p
-          class="absolute bottom-0 right-0 transform rotate-180 text-sm text-white px-1 font-mono"
-        >
+        <p class="absolute bottom-0 right-0 transform rotate-180 text-sm text-white px-1 font-mono">
           {{ value }}
         </p>
       </div>
@@ -54,9 +50,9 @@
 </template>
 
 <script lang="ts">
-import { State } from '../store/types';
 import { defineComponent, onBeforeUpdate, Ref, ref, toRef } from 'vue';
 import { Store, useStore } from 'vuex';
+import { State } from '../store/types';
 
 const CARD_ANIMATION_OPTIONS: KeyframeAnimationOptions = {
   duration: 500,
@@ -77,19 +73,7 @@ export default defineComponent({
     const votingIsComplete = toRef(store.getters, 'votingIsComplete');
     const isSpectator = ref(store.state.room?.isSpectator);
     const taskNameRef: Ref<Element | undefined> = ref(undefined);
-    const possibleEstimationValues = [
-      '0',
-      '1',
-      '2',
-      '3',
-      '5',
-      '8',
-      '13',
-      '20',
-      '40',
-      '100',
-      '???',
-    ];
+    const possibleEstimationValues = ['0', '1', '2', '3', '5', '8', '13', '20', '40', '100', '???'];
     const selectedEstimation: Ref<number | undefined> = ref(undefined);
     const selectedCardRefs: Ref<Element[]> = ref([]);
     onBeforeUpdate(() => {
@@ -99,9 +83,7 @@ export default defineComponent({
     let lastCardMovement: { transform: string }[] = [];
 
     const requestResult = () => context.emit('request-result');
-    const calculateAnimationTranslation = (
-      index: number
-    ): { x: number; y: number } => {
+    const calculateAnimationTranslation = (index: number): { x: number; y: number } => {
       const selectedCard = selectedCardRefs.value[index];
 
       const selectedCardRect = selectedCard.getBoundingClientRect();

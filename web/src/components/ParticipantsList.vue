@@ -14,9 +14,9 @@
 </template>
 
 <script lang="ts">
-import { Participant } from '../store/types';
-import ParticipantItem from '../components/ParticipantItem.vue';
 import { defineComponent, PropType, toRef } from 'vue';
+import ParticipantItem from '../components/ParticipantItem.vue';
+import { Participant } from '../store/types';
 
 export default defineComponent({
   components: {

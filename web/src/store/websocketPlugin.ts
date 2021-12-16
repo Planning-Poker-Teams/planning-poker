@@ -1,6 +1,7 @@
 import { Store, ActionPayload } from 'vuex';
-import { State } from '../store/types';
 import { ActionType } from '../store/actions';
+import { PokerEvent } from '../store/pokerEvents';
+import { State } from '../store/types';
 
 const webSocketPlugin = (store: Store<State>) => {
   let socket: WebSocket | undefined = undefined;
@@ -56,7 +57,7 @@ const webSocketPlugin = (store: Store<State>) => {
       );
     };
 
-    socket.onmessage = (event) => {
+    socket.onmessage = event => {
       try {
         const json = JSON.parse(event.data);
         handleIncomingMessage(json);

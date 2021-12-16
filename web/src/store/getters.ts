@@ -32,21 +32,18 @@ export const getters: GetterTree<State, State> = {
     }
   },
   [GetterType.VOTING_IS_COMPLETE]: (state: State): boolean => {
-    return state.participants.every((p) => p.hasEstimated || p.isSpectator);
+    return state.participants.every(p => p.hasEstimated || p.isSpectator);
   },
   [GetterType.RESULT_BY_SIZE]: (state: State): EstimationResult | undefined => {
     if (!state.estimationResult) {
       return undefined;
     }
     const data = state.estimationResult.estimates.reduce(
-      (
-        accumulator: { value: string; names: string[] }[],
-        estimate: Estimate
-      ) => {
+      (accumulator: { value: string; names: string[] }[], estimate: Estimate) => {
         const value = estimate.estimate;
-        const existingEntry = accumulator.find((entry) => entry.value == value);
+        const existingEntry = accumulator.find(entry => entry.value == value);
         if (existingEntry) {
-          return accumulator.map((entry) => {
+          return accumulator.map(entry => {
             if (entry.value == value) {
               return { ...entry, names: [...entry.names, estimate.userName] };
             } else {
@@ -63,11 +60,7 @@ export const getters: GetterTree<State, State> = {
       const aNumberOfVotes = a.names.length;
       const bNumberOfVotes = b.names.length;
 
-      return aNumberOfVotes < bNumberOfVotes
-        ? 1
-        : aNumberOfVotes > bNumberOfVotes
-        ? -1
-        : 0;
+      return aNumberOfVotes < bNumberOfVotes ? 1 : aNumberOfVotes > bNumberOfVotes ? -1 : 0;
     });
   },
 };

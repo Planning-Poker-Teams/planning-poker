@@ -17,9 +17,7 @@
         Phone: +49 (0) 212 23 36 28 0<br />
         Fax: +49 (0) 212 23 36 28 79<br />
         Email:
-        <a class="underline" href="mailto:info@codecentric.de"
-          >info@codecentric.de</a
-        ><br />
+        <a class="underline" href="mailto:info@codecentric.de">info@codecentric.de</a><br />
       </p>
       <h2 class="text-xl font-bold">Board of Directors</h2>
       <p class="mb-8">

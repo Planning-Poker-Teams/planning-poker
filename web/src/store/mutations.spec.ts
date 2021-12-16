@@ -1,5 +1,6 @@
 import { initialState } from '../store';
 import { mutations } from '../store/mutations';
+import { EstimationResult, StartEstimation, UserJoined, UserLeft } from '../store/pokerEvents';
 import { RoomInformation, Participant, State } from '../store/types';
 
 const exampleParticipant: Participant = {
@@ -32,10 +33,7 @@ describe('mutations', () => {
 
   it('resets state when leaving room', () => {
     const state: State = {
-      participants: [
-        exampleParticipant,
-        { ...exampleParticipant, name: 'Bar' },
-      ],
+      participants: [exampleParticipant, { ...exampleParticipant, name: 'Bar' }],
       room: exampleRoom,
     };
 
@@ -81,10 +79,7 @@ describe('mutations', () => {
 
   it('removes participants when they leave', () => {
     const state: State = {
-      participants: [
-        exampleParticipant,
-        { ...exampleParticipant, name: 'Bar' },
-      ],
+      participants: [exampleParticipant, { ...exampleParticipant, name: 'Bar' }],
       room: exampleRoom,
     };
     const userLeft: UserLeft = {
@@ -126,9 +121,7 @@ describe('mutations', () => {
 
     mutations.startEstimation(state, startEstimation);
 
-    expect(
-      state.participants.every((p) => p.hasEstimated == false)
-    ).toBeTruthy();
+    expect(state.participants.every(p => p.hasEstimated == false)).toBeTruthy();
     expect(state.estimationResult).toBeUndefined();
     expect(state.ongoingEstimation).toEqual({
       taskName: startEstimation.taskName,
@@ -193,9 +186,7 @@ describe('mutations', () => {
     const result: EstimationResult = {
       eventType: 'estimationResult',
       taskName: 'Task',
-      startDate:
-        state.ongoingEstimation?.startDate.toISOString() ??
-        new Date().toISOString(),
+      startDate: state.ongoingEstimation?.startDate.toISOString() ?? new Date().toISOString(),
       endDate: new Date().toISOString(),
       estimates: [],
     };

@@ -1,10 +1,11 @@
 import { ActionTree, Dispatch } from 'vuex';
+import { RequestShowEstimationResult, StartEstimation, UserEstimate } from '../store/pokerEvents';
 import { State } from '../store/types';
 
 export enum ActionType {
-  ENTER_ROOM = 'enterRoom', // handled by websocketPlugin
-  LEAVE_ROOM = 'leaveRoom', // handled by websocketPlugin
-  SEND_MESSAGE = 'sendMessage', // handled by websocketPlugin
+  ENTER_ROOM = 'enterRoom',
+  LEAVE_ROOM = 'leaveRoom',
+  SEND_MESSAGE = 'sendMessage',
   REQUEST_START_ESTIMATION = 'requestStartEstimation',
   SEND_ESTIMATION = 'sendEstimation',
   REQUEST_RESULT = 'requestShowResult',
@@ -22,19 +23,19 @@ export type Actions = {
     { dispatch, state }: { dispatch: Dispatch; state: State },
     estimate: string
   ): void;
-  [ActionType.REQUEST_RESULT]({
-    dispatch,
-    state,
-  }: {
-    dispatch: Dispatch;
-    state: State;
-  }): void;
+  [ActionType.REQUEST_RESULT]({ dispatch, state }: { dispatch: Dispatch; state: State }): void;
 };
 
 export const actions: ActionTree<State, State> & Actions = {
-  [ActionType.ENTER_ROOM]() {},
-  [ActionType.LEAVE_ROOM]() {},
-  [ActionType.SEND_MESSAGE]() {},
+  [ActionType.ENTER_ROOM]() {
+    // handled by websocketPlugin
+  },
+  [ActionType.LEAVE_ROOM]() {
+    // handled by websocketPlugin
+  },
+  [ActionType.SEND_MESSAGE]() {
+    // handled by websocketPlugin
+  },
   [ActionType.REQUEST_START_ESTIMATION]({ dispatch, state }, taskName: string) {
     if (!state.room) {
       console.error('There is no room', state);

@@ -1,10 +1,6 @@
 <template>
-  <div
-    class="sticky top-0 bg-white rounded-t-lg z-10 w-full flex flex-col border-b shadow-sm"
-  >
-    <div
-      class="w-full min-h-16 flex justify-center items-center relative overflow-hidden"
-    >
+  <div class="sticky top-0 bg-white rounded-t-lg z-10 w-full flex flex-col border-b shadow-sm">
+    <div class="w-full min-h-16 flex justify-center items-center relative overflow-hidden">
       <div class="absolute top-0 left-0 flex items-center m-2">
         <img
           class="object-contain h-12 shadow-md rounded-lg mr-2"
@@ -34,10 +30,10 @@
 
 <script lang="ts">
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+import { defineComponent, PropType, toRef } from 'vue';
+import { useRouter } from 'vue-router';
 import ParticipantsList from '../components/ParticipantsList.vue';
 import { Participant } from '../store/types';
-import { useRouter } from 'vue-router';
-import { defineComponent, PropType, toRef } from 'vue';
 
 export default defineComponent({
   components: { ParticipantsList, FontAwesomeIcon },

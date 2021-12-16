@@ -5,11 +5,11 @@ import {
   DispatchOptions,
   Store as VuexStore,
 } from 'vuex';
-import webSocketPlugin from '../store/websocketPlugin';
-import { State } from '../store/types';
-import { Mutations, mutations } from '../store/mutations';
 import { Actions, actions } from '../store/actions';
 import { Getters, getters } from '../store/getters';
+import { Mutations, mutations } from '../store/mutations';
+import { State } from '../store/types';
+import webSocketPlugin from '../store/websocketPlugin';
 
 export const initialState: State = {
   room: undefined,
@@ -23,10 +23,7 @@ if (import.meta.env.DEV === true) {
   plugins.push(createLogger());
 }
 
-export type Store = Omit<
-  VuexStore<State>,
-  'getters' | 'commit' | 'dispatch'
-> & {
+export type Store = Omit<VuexStore<State>, 'getters' | 'commit' | 'dispatch'> & {
   commit<K extends keyof Mutations, P extends Parameters<Mutations[K]>[1]>(
     key: K,
     payload: P,

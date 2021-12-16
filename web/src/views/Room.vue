@@ -10,24 +10,21 @@
       @request-result="requestResult"
     />
     <estimation-result v-if="estimationResultAvailable" />
-    <start-estimation-form
-      v-if="!isEstimationOngoing"
-      @start-estimation="startEstimation"
-    />
+    <start-estimation-form v-if="!isEstimationOngoing" @start-estimation="startEstimation" />
   </div>
 </template>
 
 <script lang="ts">
 import { computed, defineComponent, onMounted, onUnmounted, toRef } from 'vue';
-import { Store, useStore } from 'vuex';
 import { useRoute, useRouter } from 'vue-router';
+import { Store, useStore } from 'vuex';
+import EstimationResult from '../components/EstimationResult.vue';
+import OngoingEstimation from '../components/OngoingEstimation.vue';
 import RoomHeader from '../components/RoomHeader.vue';
 import StartEstimationForm from '../components/StartEstimationForm.vue';
-import OngoingEstimation from '../components/OngoingEstimation.vue';
-import EstimationResult from '../components/EstimationResult.vue';
-import { State } from '../store/types';
 import { ActionType } from '../store/actions';
 import { EstimationState } from '../store/getters';
+import { State } from '../store/types';
 
 export default defineComponent({
   components: {
@@ -71,9 +68,7 @@ export default defineComponent({
     const isEstimationOngoing = computed(
       () => store.getters.estimationState == EstimationState.ONGOING
     );
-    const estimationResultAvailable = computed(
-      () => store.state.estimationResult !== undefined
-    );
+    const estimationResultAvailable = computed(() => store.state.estimationResult !== undefined);
     const startEstimation = async (taskName: string) => {
       store.dispatch(ActionType.REQUEST_START_ESTIMATION, taskName);
     };

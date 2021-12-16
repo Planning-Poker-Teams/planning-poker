@@ -5,11 +5,7 @@
   >
     <p class="text-center text-white font-medium text-xs overflow-x-hidden">
       {{ name }}
-      <font-awesome-icon
-        v-if="refVoted && showCheckmark"
-        class="text-white"
-        icon="check"
-      />
+      <font-awesome-icon v-if="refVoted && showCheckmark" class="text-white" icon="check" />
     </p>
   </div>
 </template>

@@ -1,8 +1,5 @@
 <template>
-  <form
-    class="w-full flex-1 flex flex-col justify-center items-center p-4"
-    @submit.prevent
-  >
+  <form class="w-full flex-1 flex flex-col justify-center items-center p-4" @submit.prevent>
     <input
       v-model="newTaskName"
       class="p-2 mb-4 w-full lg:w-1/2 text-center text-lg font-semi bg-white appearance-none border-4 rounded text-grey-darker focus:outline-none focus:border-green-300"
@@ -31,8 +28,8 @@
 
 <script lang="ts">
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
-import { Store, useStore } from 'vuex';
 import { computed, defineComponent, ref } from 'vue';
+import { Store, useStore } from 'vuex';
 import { State } from '../store/types';
 
 export default defineComponent({
@@ -43,9 +40,7 @@ export default defineComponent({
     const newTaskName = ref('');
 
     const taskNameIsSet = computed(() => newTaskName.value.length > 0);
-    const showEstimateAgainButton = computed(
-      () => store.getters.resultBySize?.length > 1 ?? false
-    );
+    const showEstimateAgainButton = computed(() => store.getters.resultBySize?.length > 1 ?? false);
     const previousTaskName = computed(() => {
       if (typeof store.state.estimationResult === 'undefined') {
         return '';

@@ -1,9 +1,7 @@
 <template>
   <section class="flex-1 flex flex-col px-4 justify-around items-center">
     <h1 class="text-sans text-xl font-medium my-4">{{ taskName }}</h1>
-    <table
-      class="table-fixed bg-gray-300 rounded-t text-center w-full lg:w-3/4"
-    >
+    <table class="table-fixed bg-gray-300 rounded-t text-center w-full lg:w-3/4">
       <thead>
         <tr>
           <th class="p-2">Size</th>
@@ -18,9 +16,7 @@
           class="last:rounded-b rounded"
         >
           <td class="p-2">
-            <span class="text-2xl font-mono font-medium">{{
-              entry.value
-            }}</span>
+            <span class="text-2xl font-mono font-medium">{{ entry.value }}</span>
           </td>
           <td class="p-2">{{ entry.names.length }}</td>
           <td class="p-2 flex justify-start overflow-x-auto">
@@ -44,10 +40,10 @@
 </template>
 
 <script lang="ts">
-import { State } from '../store/types';
 import { computed, defineComponent, ref } from 'vue';
 import { Store, useStore } from 'vuex';
 import ParticipantItem from '../components/ParticipantItem.vue';
+import { State } from '../store/types';
 
 export default defineComponent({
   name: 'EstimationResult',
@@ -59,8 +55,7 @@ export default defineComponent({
       store.getters.resultBySize as { value: string; names: string[] }[]
     );
     const showConsensusCats = computed(
-      () =>
-        store.state.room?.showCats && estimationResultBySize.value.length == 1
+      () => store.state.room?.showCats && estimationResultBySize.value.length == 1
     );
 
     const catUrl = `https://thecatapi.com/api/images/get?format=src&type=gif&nocache=${new Date().toISOString()}`;

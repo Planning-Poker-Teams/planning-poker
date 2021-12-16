@@ -1,4 +1,11 @@
 import { MutationTree } from 'vuex';
+import {
+  EstimationResult,
+  StartEstimation,
+  UserHasEstimated,
+  UserJoined,
+  UserLeft,
+} from '../store/pokerEvents';
 import { State, RoomInformation } from '../store/types';
 
 export enum MutationsType {
@@ -12,29 +19,17 @@ export enum MutationsType {
 }
 
 export type Mutations = {
-  [MutationsType.SET_ROOM_INFORMATION](
-    state: State,
-    roomInformation: RoomInformation
-  ): void;
+  [MutationsType.SET_ROOM_INFORMATION](state: State, roomInformation: RoomInformation): void;
   [MutationsType.LEAVE_ROOM](state: State): void;
   [MutationsType.USER_JOINED](state: State, event: UserJoined): void;
   [MutationsType.USER_LEFT](state: State, event: UserLeft): void;
   [MutationsType.START_ESTIMATION](state: State, event: StartEstimation): void;
-  [MutationsType.USER_HAS_ESTIMATED](
-    state: State,
-    event: UserHasEstimated
-  ): void;
-  [MutationsType.ESTIMATION_RESULT](
-    state: State,
-    event: EstimationResult
-  ): void;
+  [MutationsType.USER_HAS_ESTIMATED](state: State, event: UserHasEstimated): void;
+  [MutationsType.ESTIMATION_RESULT](state: State, event: EstimationResult): void;
 };
 
 export const mutations: MutationTree<State> & Mutations = {
-  [MutationsType.SET_ROOM_INFORMATION](
-    state: State,
-    roomInformation: RoomInformation
-  ) {
+  [MutationsType.SET_ROOM_INFORMATION](state: State, roomInformation: RoomInformation) {
     state.room = roomInformation;
     state.participants = [];
     state.ongoingEstimation = undefined;
@@ -52,21 +47,17 @@ export const mutations: MutationTree<State> & Mutations = {
       isSpectator: event.isSpectator,
       hasEstimated: false,
     };
-    const alreadyHasParticipant = state.participants.find(
-      (p) => p.name == participant.name
-    );
+    const alreadyHasParticipant = state.participants.find(p => p.name == participant.name);
     if (!alreadyHasParticipant) {
       state.participants.push(participant);
     }
   },
   [MutationsType.USER_LEFT](state: State, event: UserLeft) {
-    state.participants = state.participants.filter(
-      (p) => p.name != event.userName
-    );
+    state.participants = state.participants.filter(p => p.name != event.userName);
   },
   [MutationsType.START_ESTIMATION](state: State, event: StartEstimation) {
     state.estimationResult = undefined;
-    state.participants = state.participants.map((p) => ({
+    state.participants = state.participants.map(p => ({
       ...p,
       hasEstimated: false,
     }));
@@ -79,7 +70,7 @@ export const mutations: MutationTree<State> & Mutations = {
     if (state.ongoingEstimation?.taskName !== event.taskName) {
       return;
     }
-    state.participants = state.participants.map((p) => {
+    state.participants = state.participants.map(p => {
       if (p.name == event.userName) {
         return {
           ...p,

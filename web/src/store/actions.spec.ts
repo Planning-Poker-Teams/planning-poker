@@ -1,8 +1,8 @@
-import { actions, ActionType } from '../store/actions';
-import { State } from '../store/types';
+import { jest } from '@jest/globals';
 import { ActionContext } from 'vuex';
 import store from '../store';
-import { jest } from '@jest/globals';
+import { actions, ActionType } from '../store/actions';
+import { State } from '../store/types';
 
 describe('actions', () => {
   const state: State = {
@@ -32,8 +32,7 @@ describe('actions', () => {
   };
 
   it('requests start of a new estimation', () => {
-    const requestStartEstimation =
-      actions[ActionType.REQUEST_START_ESTIMATION].bind(store);
+    const requestStartEstimation = actions[ActionType.REQUEST_START_ESTIMATION].bind(store);
 
     requestStartEstimation(actionContext, 'New task');
 

@@ -1,8 +1,8 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router';
-import Lobby from '../views/Lobby.vue';
-import Room from '../views/Room.vue';
 import LegalNotice from '../views/LegalNotice.vue';
+import Lobby from '../views/Lobby.vue';
 import PrivacyPolicy from '../views/PrivacyPolicy.vue';
+import Room from '../views/Room.vue';
 
 const routes: Array<RouteRecordRaw> = [
   {
