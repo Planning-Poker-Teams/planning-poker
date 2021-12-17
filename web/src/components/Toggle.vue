@@ -32,7 +32,7 @@ export default defineComponent({
   },
   emits: ['update:modelValue'],
   setup(props, context) {
-    const checked = useModel(props, context.emit);
+    const checked = useModel(props, context.emit, 'modelValue');
 
     return {
       checked,
