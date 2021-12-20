@@ -1,6 +1,6 @@
-import { ParticipantRepository } from "../types";
-import { DynamoDbClient } from "./DynamoDbClient";
-import { Participant } from "../../domain/types";
+import { Participant } from '../../domain/types';
+import { ParticipantRepository } from '../types';
+import { DynamoDbClient } from './DynamoDbClient';
 
 interface ParticipantRowSchema {
   connectionId: string;
@@ -9,8 +9,7 @@ interface ParticipantRowSchema {
   isSpectator: boolean;
 }
 
-export default class DynamoDbParticipantRepository
-  implements ParticipantRepository {
+export default class DynamoDbParticipantRepository implements ParticipantRepository {
   private cache = new Map<string, ParticipantRowSchema>();
 
   constructor(
@@ -21,7 +20,7 @@ export default class DynamoDbParticipantRepository
   async getAllParticipants(): Promise<Participant[]> {
     const allItems = await this.client.scan(this.participantsTableName);
 
-    return allItems.map((item) => {
+    return allItems.map(item => {
       const participant = {
         id: item.connectionId,
         name: item.name,
@@ -31,10 +30,7 @@ export default class DynamoDbParticipantRepository
     });
   }
 
-  async putParticipant(
-    participant: Participant,
-    roomName: string
-  ): Promise<void> {
+  async putParticipant(participant: Participant, roomName: string): Promise<void> {
     const row = {
       connectionId: participant.id,
       roomName,
@@ -82,27 +78,21 @@ export default class DynamoDbParticipantRepository
   }
 
   async fetchParticipants(ids: string[]): Promise<Participant[]> {
-    const idsForFetching = ids.filter((id) => !this.cache.has(id));
-    const idsFromCache = ids.filter((id) => this.cache.has(id));
+    const idsForFetching = ids.filter(id => !this.cache.has(id));
+    const idsFromCache = ids.filter(id => this.cache.has(id));
 
     const result =
       idsForFetching.length > 0
-        ? await this.client.batchGet(
-            this.participantsTableName,
-            "connectionId",
-            idsForFetching
-          )
+        ? await this.client.batchGet(this.participantsTableName, 'connectionId', idsForFetching)
         : undefined;
 
     const participants =
-      result?.Responses?.participants.map(
-        (result) => result as ParticipantRowSchema
-      ) ?? [];
+      result?.Responses?.participants.map(result => result as ParticipantRowSchema) ?? [];
 
-    const participantsFromCache = idsFromCache.map((id) => this.cache.get(id)!);
+    const participantsFromCache = idsFromCache.map(id => this.cache.get(id)!);
 
     const allParticipants = [...participants, ...participantsFromCache];
-    return allParticipants.map((p) => ({
+    return allParticipants.map(p => ({
       id: p.connectionId,
       name: p.name,
       isSpectator: p.isSpectator,

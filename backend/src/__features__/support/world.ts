@@ -1,7 +1,7 @@
-import { Command } from "../../domain/commandTypes";
-import { PokerRoom, Participant } from "../../domain/types";
+import { Command } from '../../domain/commandTypes';
+import { PokerRoom, Participant } from '../../domain/types';
 
-declare module "cucumber" {
+declare module 'cucumber' {
   interface World {
     room?: PokerRoom;
     inputEvent?: PokerEvent;
@@ -13,13 +13,10 @@ declare module "cucumber" {
   }
 }
 
-export const buildParticipant = (
-  name: string,
-  isSpectator = false
-): Participant => ({
+export const buildParticipant = (name: string, isSpectator = false): Participant => ({
   id: name,
   name,
   isSpectator,
 });
 
-export const ROOM_NAME = "Awesome room";
+export const ROOM_NAME = 'Awesome room';

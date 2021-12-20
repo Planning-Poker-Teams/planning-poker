@@ -1,7 +1,7 @@
 export interface APIGatewayWebsocketInvocationRequest {
   requestContext: {
     connectionId: string;
-    eventType: "CONNECT" | "MESSAGE" | "DISCONNECT";
+    eventType: 'CONNECT' | 'MESSAGE' | 'DISCONNECT';
     connectedAt: number;
     requestTimeEpoch: number;
     requestId: string;

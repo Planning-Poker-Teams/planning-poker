@@ -8,57 +8,53 @@ type PokerEvent =
   | RequestShowEstimationResult
   | EstimationResult;
 
-interface JoinRoom  {
-  eventType: "joinRoom";
+interface JoinRoom {
+  eventType: 'joinRoom';
   userName: string;
   roomName: string;
   isSpectator: boolean;
 }
 
 interface UserJoined {
-  eventType: "userJoined";
+  eventType: 'userJoined';
   userName: string;
   isSpectator: boolean;
 }
 
 interface UserLeft {
-  eventType: "userLeft";
+  eventType: 'userLeft';
   userName: string;
 }
 
 interface StartEstimation {
-  eventType: "startEstimation";
+  eventType: 'startEstimation';
   userName?: string;
   taskName: string;
   startDate: string;
 }
 
 interface UserEstimate {
-  eventType: "estimate";
+  eventType: 'estimate';
   userName: string;
   taskName: string;
   estimate: string;
 }
 
 interface UserHasEstimated {
-  eventType: "userHasEstimated";
+  eventType: 'userHasEstimated';
   userName: string;
   taskName: string;
 }
 
 interface RequestShowEstimationResult {
-  eventType: "showResult";
+  eventType: 'showResult';
   userName: string;
 }
 
 interface EstimationResult {
-  eventType: "estimationResult";
+  eventType: 'estimationResult';
   taskName: string;
   startDate: string;
   endDate: string;
   estimates: { userName: string; estimate: string }[];
-}
-
-interface HeartBeat {
-  eventType: "keepAlive";
 }

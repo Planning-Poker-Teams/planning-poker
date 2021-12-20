@@ -1,12 +1,9 @@
-import log from "../../log";
-import { ApiGatewayMessageSender } from "../repositories/apigw/MessageSender";
-import {
-  APIGatewayWebsocketInvocationRequest,
-  LambdaResponse,
-} from "./lambdaTypes";
-import DynamoDbRoomRepository from "../repositories/dynamodb/RoomRepository";
-import DynamoDbParticipantRepository from "../repositories/dynamodb/ParticipantRepository";
-import PokerEventInteractor from "../interactors/PokerEventInteractor";
+import log from '../../log';
+import PokerEventInteractor from '../interactors/PokerEventInteractor';
+import { ApiGatewayMessageSender } from '../repositories/apigw/MessageSender';
+import DynamoDbParticipantRepository from '../repositories/dynamodb/ParticipantRepository';
+import DynamoDbRoomRepository from '../repositories/dynamodb/RoomRepository';
+import { APIGatewayWebsocketInvocationRequest, LambdaResponse } from './lambdaTypes';
 
 const pokerEventInteractor = new PokerEventInteractor(
   new DynamoDbParticipantRepository(process.env.PARTICIPANTS_TABLENAME!),
@@ -20,26 +17,23 @@ export const handler = async (
   const { connectionId, eventType } = event.requestContext;
 
   switch (eventType) {
-    case "CONNECT":
-      log.info("User connected", { connectionId });
+    case 'CONNECT':
+      log.info('User connected', { connectionId });
       break;
 
-    case "MESSAGE":
+    case 'MESSAGE':
       try {
         const incomingMessage = JSON.parse(event.body);
-        await pokerEventInteractor.handleIncomingEvent(
-          incomingMessage,
-          connectionId
-        );
+        await pokerEventInteractor.handleIncomingEvent(incomingMessage, connectionId);
       } catch (error) {
-        log.error("Incoming message could not be parsed. Ignoring it.", {
+        log.error('Incoming message could not be parsed. Ignoring it.', {
           incomingMessage: event.body,
         });
       }
       break;
 
-    case "DISCONNECT":
-      log.info("User disconnected");
+    case 'DISCONNECT':
+      log.info('User disconnected');
       await pokerEventInteractor.handleUserLeft(connectionId);
       break;
   }
@@ -48,6 +42,6 @@ export const handler = async (
     isBase64Encoded: false,
     headers: {},
     statusCode: 200,
-    body: "",
+    body: '',
   };
 };

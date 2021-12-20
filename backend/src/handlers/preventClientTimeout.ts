@@ -1,17 +1,15 @@
-import log from "../../log";
-import DynamoDbParticipantRepository from "../repositories/dynamodb/ParticipantRepository";
-import { ApiGatewayMessageSender } from "../repositories/apigw/MessageSender";
+import log from '../../log';
+import { ApiGatewayMessageSender } from '../repositories/apigw/MessageSender';
+import DynamoDbParticipantRepository from '../repositories/dynamodb/ParticipantRepository';
 
 const participantRepository = new DynamoDbParticipantRepository(
   process.env.PARTICIPANTS_TABLENAME!
 );
-const messageSender = new ApiGatewayMessageSender(
-  process.env.API_GW_DOMAINNAME!
-);
+const messageSender = new ApiGatewayMessageSender(process.env.API_GW_DOMAINNAME!);
 
 export const handler = async (): Promise<any> => {
   const message = JSON.stringify({
-    eventType: "keepAlive",
+    eventType: 'keepAlive',
   });
 
   const participants = await participantRepository.getAllParticipants();
@@ -19,9 +17,9 @@ export const handler = async (): Promise<any> => {
     return;
   }
 
-  const allConnectionIds = participants.map((p) => p.id);
+  const allConnectionIds = participants.map(p => p.id);
   await Promise.all(
-    allConnectionIds.map(async (id) => {
+    allConnectionIds.map(async id => {
       try {
         const isStillAlive = await messageSender.hasConnection(id);
         if (isStillAlive) {
@@ -36,7 +34,5 @@ export const handler = async (): Promise<any> => {
     })
   );
 
-  log.info(
-    `Successfully sent heartbeat to ${participants.length} participants`
-  );
+  log.info(`Successfully sent heartbeat to ${participants.length} participants`);
 };

@@ -1,9 +1,5 @@
-import log from "../../log";
-import {
-  MessageSender,
-  ParticipantRepository,
-  RoomRepository,
-} from "../repositories/types";
+import log from '../../log';
+import { MessageSender, ParticipantRepository, RoomRepository } from '../repositories/types';
 
 export const cleanUpStaleParticipants = async (
   roomName: string,
@@ -12,16 +8,14 @@ export const cleanUpStaleParticipants = async (
   messageSender: MessageSender
 ): Promise<void> => {
   const room = await roomRepository.getOrCreateRoom(roomName);
-  log.info("Checking stale participants", { room });
+  log.info('Checking stale participants', { room });
 
   const connectionData = await Promise.all(
-    room.participants.map((connectionId) => {
-      return messageSender
-        .hasConnection(connectionId)
-        .then((hasConnection) => ({
-          connectionId,
-          hasConnection,
-        }));
+    room.participants.map(connectionId => {
+      return messageSender.hasConnection(connectionId).then(hasConnection => ({
+        connectionId,
+        hasConnection,
+      }));
     })
   );
 
@@ -29,7 +23,7 @@ export const cleanUpStaleParticipants = async (
     connectionData
       .filter(({ hasConnection }) => !hasConnection)
       .map(async ({ connectionId }) => {
-        log.info("Removing stale participant", { connectionId, roomName });
+        log.info('Removing stale participant', { connectionId, roomName });
         await participantRepository.removeParticipant(connectionId);
         await roomRepository.removeFromParticipants(roomName, connectionId);
       })

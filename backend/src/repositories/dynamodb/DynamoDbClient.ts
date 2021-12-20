@@ -1,4 +1,4 @@
-import { DocumentClient, ScanInput } from "aws-sdk/clients/dynamodb";
+import { DocumentClient, ScanInput } from 'aws-sdk/clients/dynamodb';
 import BatchGetItemInput = DocumentClient.BatchGetItemInput;
 import GetItemInput = DocumentClient.GetItemInput;
 import DeleteItemInput = DocumentClient.DeleteItemInput;
@@ -38,21 +38,17 @@ interface UpdateParameters extends BaseParameters {
   returnValues?: string;
 }
 
-const AWSXRay = require("aws-xray-sdk-core");
-const AWSNoXRay = require("aws-sdk");
-const inTestEnvironment = process.env.NODE_ENV === "test";
-const AWS = inTestEnvironment
-  ? AWSNoXRay
-  : AWSXRay.captureAWS(require("aws-sdk"));
+const AWSNoXRay = require('aws-sdk');
+const AWSXRay = require('aws-xray-sdk-core');
+const inTestEnvironment = process.env.NODE_ENV === 'test';
+const AWS = inTestEnvironment ? AWSNoXRay : AWSXRay.captureAWS(require('aws-sdk'));
 
 type KeyInfo = { [key: string]: any };
 
 export class DynamoDbClient {
   private client: DocumentClient;
 
-  constructor(
-    config: AWS.DynamoDB.ClientConfiguration | undefined = undefined
-  ) {
+  constructor(config: AWS.DynamoDB.ClientConfiguration | undefined = undefined) {
     this.client = new AWS.DynamoDB.DocumentClient(config);
   }
 
@@ -75,18 +71,14 @@ export class DynamoDbClient {
 
     do {
       pagedItems = await this.client.scan(args).promise();
-      pagedItems.Items?.forEach((item) => items.push(item));
+      pagedItems.Items?.forEach(item => items.push(item));
       args.ExclusiveStartKey = pagedItems.LastEvaluatedKey;
     } while (pagedItems.LastEvaluatedKey);
 
     return items;
   }
 
-  get(
-    tableName: string,
-    keyInfo: KeyInfo,
-    consistentRead = false
-  ): Promise<GetItemOutput> {
+  get(tableName: string, keyInfo: KeyInfo, consistentRead = false): Promise<GetItemOutput> {
     const args: GetItemInput = {
       TableName: tableName,
       Key: keyInfo,
@@ -96,15 +88,11 @@ export class DynamoDbClient {
     return this.client.get(args).promise();
   }
 
-  batchGet(
-    tableName: string,
-    fieldName: string,
-    ids: string[]
-  ): Promise<BatchGetItemOutput> {
+  batchGet(tableName: string, fieldName: string, ids: string[]): Promise<BatchGetItemOutput> {
     const args: BatchGetItemInput = {
       RequestItems: {
         [tableName]: {
-          Keys: ids.map((id) => ({ [fieldName]: id })),
+          Keys: ids.map(id => ({ [fieldName]: id })),
         },
       },
     };
@@ -143,9 +131,7 @@ export class DynamoDbClient {
       KeyConditionExpression: parameters.keyConditionExpression,
       ExpressionAttributeValues: parameters.keyValues,
       ScanIndexForward:
-        parameters.scanIndexForward !== undefined
-          ? parameters.scanIndexForward
-          : true,
+        parameters.scanIndexForward !== undefined ? parameters.scanIndexForward : true,
       Limit: parameters.limit,
       ExclusiveStartKey: parameters.startKeyObject,
     };

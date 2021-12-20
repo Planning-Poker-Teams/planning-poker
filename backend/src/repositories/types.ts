@@ -1,5 +1,5 @@
-import { Participant } from "../domain/types";
-import { Room } from "./dynamodb/RoomRepository";
+import { Participant } from '../domain/types';
+import { Room } from './dynamodb/RoomRepository';
 
 interface ParticipantInfo {
   participant: Participant;
@@ -24,11 +24,7 @@ export interface RoomRepository {
     initiator: string,
     startDate: string
   ): Promise<void>;
-  addToEstimations(
-    roomName: string,
-    connectionId: string,
-    value: string
-  ): Promise<void>;
+  addToEstimations(roomName: string, connectionId: string, value: string): Promise<void>;
   finishEstimation(roomName: string): Promise<void>;
 }
 

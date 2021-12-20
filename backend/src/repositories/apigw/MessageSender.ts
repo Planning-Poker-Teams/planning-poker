@@ -1,7 +1,7 @@
-import log from "../../../log";
-import AWSXRay from "aws-xray-sdk-core";
-import ApiGatewayManagementApi from "aws-sdk/clients/apigatewaymanagementapi";
-import { MessageSender } from "../types";
+import ApiGatewayManagementApi from 'aws-sdk/clients/apigatewaymanagementapi';
+import AWSXRay from 'aws-xray-sdk-core';
+import log from '../../../log';
+import { MessageSender } from '../types';
 
 export class ApiGatewayMessageSender implements MessageSender {
   private managementApi: ApiGatewayManagementApi;
@@ -9,14 +9,14 @@ export class ApiGatewayMessageSender implements MessageSender {
   constructor(endpoint: string) {
     this.managementApi = AWSXRay.captureAWSClient(
       new ApiGatewayManagementApi({
-        apiVersion: "2018-11-29",
+        apiVersion: '2018-11-29',
         endpoint,
       })
     ) as ApiGatewayManagementApi;
   }
 
   async broadcast(recipientIds: string[], data: string): Promise<void> {
-    await Promise.all(recipientIds.map((id) => this.post(id, data)));
+    await Promise.all(recipientIds.map(id => this.post(id, data)));
   }
 
   async post(recipientId: string, data: string): Promise<void> {

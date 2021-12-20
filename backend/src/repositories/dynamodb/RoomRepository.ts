@@ -1,5 +1,5 @@
-import { DynamoDbClient } from "./DynamoDbClient";
-import { RoomRepository } from "../types";
+import { RoomRepository } from '../types';
+import { DynamoDbClient } from './DynamoDbClient';
 
 export interface Room {
   name: string;
@@ -28,11 +28,7 @@ export default class DynamoDbRoomRepository implements RoomRepository {
       await this.client.put(this.roomsTableName, {
         name,
       });
-      const newRoom = await this.client.get(
-        this.roomsTableName,
-        { name },
-        true
-      );
+      const newRoom = await this.client.get(this.roomsTableName, { name }, true);
       return this.prepareRoom(newRoom.Item);
     }
     return this.prepareRoom(room.Item);
@@ -49,23 +45,20 @@ export default class DynamoDbRoomRepository implements RoomRepository {
     await this.client.update({
       tableName: this.roomsTableName,
       partitionKey: { name },
-      updateExpression: "ADD participants :newParticipant",
+      updateExpression: 'ADD participants :newParticipant',
       expressionAttributeValues: {
-        ":newParticipant": this.client.createSetExpression([connectionId]),
+        ':newParticipant': this.client.createSetExpression([connectionId]),
       },
     });
   }
 
-  async removeFromParticipants(
-    name: string,
-    connectionId: string
-  ): Promise<void> {
+  async removeFromParticipants(name: string, connectionId: string): Promise<void> {
     await this.client.update({
       tableName: this.roomsTableName,
       partitionKey: { name },
-      updateExpression: "DELETE participants :participant",
+      updateExpression: 'DELETE participants :participant',
       expressionAttributeValues: {
-        ":participant": this.client.createSetExpression([connectionId]),
+        ':participant': this.client.createSetExpression([connectionId]),
       },
     });
   }
@@ -86,9 +79,9 @@ export default class DynamoDbRoomRepository implements RoomRepository {
           currentEstimationStartDate = :startDate 
         REMOVE currentEstimates`,
       expressionAttributeValues: {
-        ":taskName": taskName,
-        ":initiator": initiator,
-        ":startDate": startDate,
+        ':taskName': taskName,
+        ':initiator': initiator,
+        ':startDate': startDate,
       },
     });
   }
@@ -102,9 +95,9 @@ export default class DynamoDbRoomRepository implements RoomRepository {
     await this.client.update({
       tableName: this.roomsTableName,
       partitionKey: { name: roomName },
-      updateExpression: "ADD currentEstimates :newEstimate",
+      updateExpression: 'ADD currentEstimates :newEstimate',
       expressionAttributeValues: {
-        ":newEstimate": this.client.createSetExpression([
+        ':newEstimate': this.client.createSetExpression([
           JSON.stringify({
             connectionId,
             timestamp,

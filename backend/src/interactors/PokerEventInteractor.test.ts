@@ -1,9 +1,9 @@
-import PokerEventInteractor from "./PokerEventInteractor";
+import PokerEventInteractor from './PokerEventInteractor';
 
-xdescribe("PokerEventInteractor", () => {
+xdescribe('PokerEventInteractor', () => {
   const participantRepositoryMock = {
     fetchParticipantInfo: jest.fn().mockReturnValue(undefined),
-    fetchParticipants: jest.fn()
+    fetchParticipants: jest.fn(),
   };
   const roomRepositoryMock = {
     getOrCreateRoom: jest.fn(),
@@ -16,12 +16,12 @@ xdescribe("PokerEventInteractor", () => {
     messageSenderMock as any
   );
 
-  it("handles joining users", async () => {
-    const connectionId = "id-1";
+  it('handles joining users', async () => {
+    const connectionId = 'id-1';
     const event: JoinRoom = {
-      eventType: "joinRoom",
-      userName: "Foo",
-      roomName: "Test",
+      eventType: 'joinRoom',
+      userName: 'Foo',
+      roomName: 'Test',
       isSpectator: false,
     };
 

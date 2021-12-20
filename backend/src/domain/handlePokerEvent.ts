@@ -1,6 +1,6 @@
-import log from "../../log";
-import { CommandType, Command } from "./commandTypes";
-import { PokerRoom, Participant } from "./types";
+import log from '../../log';
+import { CommandType, Command } from './commandTypes';
+import { PokerRoom, Participant } from './types';
 
 const {
   BROADCAST_MESSAGE,
@@ -26,7 +26,7 @@ export const handlePokerEvent = (
   participant?: Participant
 ): Command[] => {
   switch (inputEvent.eventType) {
-    case "joinRoom": {
+    case 'joinRoom': {
       const newParticipant: Participant = {
         id: participantId,
         name: inputEvent.userName,
@@ -34,7 +34,7 @@ export const handlePokerEvent = (
       };
 
       const userJoinedEvent: UserJoined = {
-        eventType: "userJoined",
+        eventType: 'userJoined',
         userName: inputEvent.userName,
         isSpectator: inputEvent.isSpectator,
       };
@@ -58,17 +58,17 @@ export const handlePokerEvent = (
 
       if (room.currentEstimation) {
         const startEstimationEvent: StartEstimation = {
-          eventType: "startEstimation",
+          eventType: 'startEstimation',
           userName: room.currentEstimation.initiator?.name,
           startDate: room.currentEstimation.startDate,
           taskName: room.currentEstimation.taskName,
         };
 
         const userHasEstimatedEvents: UserHasEstimated[] = room.participants
-          .filter((p) => p.currentEstimation !== undefined)
+          .filter(p => p.currentEstimation !== undefined)
           .sort(sortByName)
-          .map((p) => ({
-            eventType: "userHasEstimated",
+          .map(p => ({
+            eventType: 'userHasEstimated',
             userName: p.name,
             taskName: room.currentEstimation!.taskName,
           }));
@@ -91,7 +91,7 @@ export const handlePokerEvent = (
       }
     }
 
-    case "userLeft": {
+    case 'userLeft': {
       return [
         {
           type: REMOVE_PARTICIPANT,
@@ -105,19 +105,19 @@ export const handlePokerEvent = (
       ];
     }
 
-    case "startEstimation": {
+    case 'startEstimation': {
       const isEstimationOngoing =
         room.currentEstimation?.taskName !== undefined &&
-        !room.participants.every((p) => p.currentEstimation);
+        !room.participants.every(p => p.currentEstimation);
 
       if (isEstimationOngoing) {
-        log.info("Ignoring input event (estimation is ongoing)", {
+        log.info('Ignoring input event (estimation is ongoing)', {
           inputEvent,
         });
         return [];
       } else {
         const startEstimation: StartEstimation = {
-          eventType: "startEstimation",
+          eventType: 'startEstimation',
           startDate: inputEvent.startDate || new Date().toISOString(),
           taskName: inputEvent.taskName,
           userName: inputEvent.userName,
@@ -135,9 +135,9 @@ export const handlePokerEvent = (
       }
     }
 
-    case "estimate": {
+    case 'estimate': {
       if (inputEvent.taskName !== room.currentEstimation?.taskName) {
-        log.info("Ignoring input event (taskName mismatch)", { inputEvent });
+        log.info('Ignoring input event (taskName mismatch)', { inputEvent });
         return [];
       }
       const recordEstimationCommand: Command = {
@@ -148,11 +148,11 @@ export const handlePokerEvent = (
         participantId: participantId,
       };
       const previousEstimation = room.participants.find(
-        (p) => p.id === participant?.id
+        p => p.id === participant?.id
       )?.currentEstimation;
       if (!previousEstimation) {
         const userHasEstimated: UserHasEstimated = {
-          eventType: "userHasEstimated",
+          eventType: 'userHasEstimated',
           userName: inputEvent.userName,
           taskName: inputEvent.taskName,
         };
@@ -168,17 +168,13 @@ export const handlePokerEvent = (
       }
     }
 
-    case "showResult": {
-      const estimatingParticipants = room.participants.filter(
-        (p) => !p.isSpectator
-      );
+    case 'showResult': {
+      const estimatingParticipants = room.participants.filter(p => !p.isSpectator);
 
-      const estimationCompleted = estimatingParticipants.every(
-        (p) => p.currentEstimation
-      );
+      const estimationCompleted = estimatingParticipants.every(p => p.currentEstimation);
 
       if (!estimationCompleted) {
-        log.info("Ignoring input event (estimation is not completed!)", {
+        log.info('Ignoring input event (estimation is not completed!)', {
           inputEvent,
           estimatingParticipants,
         });
@@ -186,11 +182,11 @@ export const handlePokerEvent = (
       }
 
       const payload: EstimationResult = {
-        eventType: "estimationResult",
+        eventType: 'estimationResult',
         taskName: room.currentEstimation!.taskName,
         startDate: room.currentEstimation!.startDate,
         endDate: new Date().toISOString(),
-        estimates: estimatingParticipants.map((participant) => ({
+        estimates: estimatingParticipants.map(participant => ({
           userName: participant.name,
           estimate: participant.currentEstimation!,
         })),
@@ -205,7 +201,7 @@ export const handlePokerEvent = (
     }
 
     default:
-      log.info("Ignoring input event (unknown event type)", {
+      log.info('Ignoring input event (unknown event type)', {
         inputEvent,
       });
       return [];
