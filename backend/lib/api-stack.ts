@@ -66,7 +66,7 @@ export class ApiStack extends cdk.Stack {
           __dirname,
           "../src/handlers/handleWebsocketEvents.ts"
         ),
-        runtime: Runtime.NODEJS_12_X,
+        runtime: Runtime.NODEJS_14_X,
         memorySize: 512,
         tracing: Tracing.ACTIVE,
         environment: {
@@ -100,7 +100,7 @@ export class ApiStack extends cdk.Stack {
       {
         functionName: `${props.stackName}-prevent-client-timeout`,
         entry: path.join(__dirname, "../src/handlers/preventClientTimeout.ts"),
-        runtime: Runtime.NODEJS_12_X,
+        runtime: Runtime.NODEJS_14_X,
         memorySize: 128,
         timeout: Duration.seconds(20),
         tracing: Tracing.ACTIVE,

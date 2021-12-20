@@ -28,7 +28,7 @@ export class ApiGatewayMessageSender implements MessageSender {
         })
         .promise();
     } catch (error) {
-      log.error(error);
+      log.error(error as any);
       return Promise.resolve();
     }
   }

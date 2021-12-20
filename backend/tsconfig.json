@@ -1,24 +1,26 @@
 {
   "compilerOptions": {
-    "target": "ES2018",
+    "outDir": "out",
+    "target": "ES2019",
     "module": "commonjs",
-    "lib": ["es2018"],
-    "declaration": true,
     "strict": true,
-    "noImplicitAny": true,
-    "strictNullChecks": true,
-    "noImplicitThis": true,
-    "esModuleInterop": true,
-    "alwaysStrict": true,
-    "noUnusedLocals": false,
-    "noUnusedParameters": false,
-    "noImplicitReturns": true,
-    "noFallthroughCasesInSwitch": false,
-    "inlineSourceMap": true,
-    "inlineSources": true,
+    "importHelpers": true,
+    "moduleResolution": "node",
     "experimentalDecorators": true,
-    "strictPropertyInitialization": false,
-    "typeRoots": ["./node_modules/@types"]
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "sourceMap": true,
+    "baseUrl": ".",
+    "types": [
+      "node",
+      "@types/jest"
+    ],
+    "paths": {
+      "@/*": ["src/*"]
+    },
+    "lib": ["esnext"]
   },
-  "exclude": ["cdk.out"]
+  "include": ["src/**/*.ts", "lib/**/*.ts", "bin/**/*.ts"],
+  "exclude": ["node_modules", "out", "cdk.out"]
 }

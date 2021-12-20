@@ -31,7 +31,7 @@ export const handler = async (): Promise<any> => {
           await participantRepository.removeParticipant(id);
         }
       } catch (error) {
-        log.error(error);
+        log.error(error as any);
       }
     })
   );
