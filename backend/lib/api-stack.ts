@@ -1,42 +1,41 @@
 import * as path from 'path';
+import { WebSocketApi, WebSocketStage } from '@aws-cdk/aws-apigatewayv2';
+import { WebSocketLambdaIntegration } from '@aws-cdk/aws-apigatewayv2-integrations';
 import {
-  CfnApi,
-  CfnRoute,
-  CfnIntegration,
-  CfnDeployment,
-  CfnStage,
-} from '@aws-cdk/aws-apigatewayv2';
-import { Table, AttributeType, BillingMode, StreamViewType } from '@aws-cdk/aws-dynamodb';
+  AttributeType,
+  BillingMode,
+  StreamViewType,
+  Table,
+  TableEncryption,
+} from '@aws-cdk/aws-dynamodb';
 import { Rule, Schedule } from '@aws-cdk/aws-events';
 import { LambdaFunction } from '@aws-cdk/aws-events-targets';
-import { ServicePrincipal, PolicyStatement } from '@aws-cdk/aws-iam';
+import { PolicyStatement, ServicePrincipal } from '@aws-cdk/aws-iam';
 import { Runtime, Tracing } from '@aws-cdk/aws-lambda';
 import { NodejsFunction } from '@aws-cdk/aws-lambda-nodejs';
-import { CfnOutput, Duration } from '@aws-cdk/core';
-import * as cdk from '@aws-cdk/core';
+import { CfnOutput, Construct, Duration, RemovalPolicy, Stack, StackProps } from '@aws-cdk/core';
 
-interface ApiStackProps extends cdk.StackProps {
-  domainName: string;
+interface ApiStackProps extends StackProps {
   stageName: string;
 }
 
-export class ApiStack extends cdk.Stack {
-  constructor(scope: cdk.Construct, id: string, props: ApiStackProps) {
+export class ApiStack extends Stack {
+  constructor(scope: Construct, id: string, props: ApiStackProps) {
     super(scope, id, props);
 
     // API Gateway
-
-    const api = new CfnApi(this, 'Api', {
-      name: 'PlanningPoker-WebsocketApi',
-      protocolType: 'WEBSOCKET',
-      routeSelectionExpression: '$request.body.eventType',
+    const api = new WebSocketApi(this, 'PlanningPoker-WebsocketApi');
+    new WebSocketStage(this, props.stageName, {
+      webSocketApi: api,
+      stageName: 'dev',
+      autoDeploy: true,
     });
 
     // DynamoDB
-
     const defaultTableProps = {
       billingMode: BillingMode.PAY_PER_REQUEST,
-      serverSideEncryption: true,
+      encryption: TableEncryption.AWS_MANAGED,
+      removalPolicy: RemovalPolicy.DESTROY,
     };
 
     const participantsTable = new Table(this, 'ParticipantsTable', {
@@ -62,7 +61,7 @@ export class ApiStack extends cdk.Stack {
         AWS_NODEJS_CONNECTION_REUSE_ENABLED: '1',
         PARTICIPANTS_TABLENAME: participantsTable.tableName,
         ROOMS_TABLENAME: roomsTable.tableName,
-        API_GW_DOMAINNAME: `${props.domainName}/${props.stageName}`,
+        API_GW_DOMAINNAME: `${api.apiId}.execute-api.${this.region}.amazonaws.com/${props.stageName}`,
       },
     });
 
@@ -73,7 +72,9 @@ export class ApiStack extends cdk.Stack {
 
     const manageConnectionsPolicy = new PolicyStatement({
       actions: ['execute-api:ManageConnections'],
-      resources: [`arn:aws:execute-api:${this.region}:${this.account}:${api.ref}/*`],
+      resources: [
+        `arn:aws:execute-api:${this.region}:${this.account}:${api.apiId}/${props.stageName}*`,
+      ],
     });
 
     websocketEventHandlerLambda.addToRolePolicy(manageConnectionsPolicy);
@@ -88,7 +89,7 @@ export class ApiStack extends cdk.Stack {
       environment: {
         AWS_NODEJS_CONNECTION_REUSE_ENABLED: '1',
         PARTICIPANTS_TABLENAME: participantsTable.tableName,
-        API_GW_DOMAINNAME: `${props.domainName}/${props.stageName}`,
+        API_GW_DOMAINNAME: `${api.apiId}.execute-api.${this.region}.amazonaws.com/${props.stageName}`,
       },
     });
 
@@ -105,46 +106,18 @@ export class ApiStack extends cdk.Stack {
     preventClientTimeoutLambdaTrigger.addTarget(new LambdaFunction(preventClientTimeoutLambda));
 
     // API Gateway (continued)
-
-    const routesToCreate: { prefix: string; routeKey: string }[] = [
-      { prefix: 'Connect', routeKey: '$connect' },
-      { prefix: 'Default', routeKey: '$default' },
-      { prefix: 'Disconnect', routeKey: '$disconnect' },
-    ];
-
-    routesToCreate.forEach(({ prefix, routeKey }) => {
-      const integration = new CfnIntegration(this, `${prefix}Integration`, {
-        apiId: api.ref,
-        integrationType: 'AWS_PROXY',
-        integrationUri: `arn:aws:apigateway:${this.region}:lambda:path/2015-03-31/functions/${websocketEventHandlerLambda.functionArn}/invocations`,
-      });
-
-      new CfnRoute(this, `${prefix}Route`, {
-        routeKey,
-        apiId: api.ref,
-        apiKeyRequired: false,
-        authorizationType: 'NONE',
-        target: `integrations/${integration.ref}`,
-      });
-    });
-
-    new CfnDeployment(this, 'Deployment', {
-      apiId: api.ref,
-    });
-
-    const stage = new CfnStage(this, 'Stage', {
-      stageName: props.stageName,
-      apiId: api.ref,
-    });
+    ['connect', 'disconnect', 'default'].forEach(routeKey =>
+      api.addRoute(`$${routeKey}`, {
+        integration: new WebSocketLambdaIntegration(
+          `${routeKey}-LambdaIntegration`,
+          websocketEventHandlerLambda
+        ),
+      })
+    );
 
     // Outputs
-
     new CfnOutput(this, 'WebSocketURI', {
-      value: `wss://${api.ref}.execute-api.${this.region}.amazonaws.com/${stage.stageName}`,
+      value: `${api.apiEndpoint}/${props.stageName}`,
     });
-
-    // Note: When making changes to an existing stage it needs to be redeployed
-    // manually: (API GW/Routes/Actions/Deploy API)
-    // https://stackoverflow.com/questions/41423439/cloudformation-doesnt-deploy-to-api-gateway-stages-on-update
   }
 }
