@@ -94,9 +94,56 @@ After the estimation result is revealed, any user can send a new `startEstimatio
 
 ## Architecture
 
-[![alt](./Context-Diagram.puml.svg)](./Context-Diagram.puml.svg)
+```mermaid
+flowchart TD
+  subgraph Persons
+    A["Participant
+       planning poker player"]
+    C["Spectator
+       A planning poker player who is not
+       actively participating"]
+  end
 
-[![alt](./Container-Diagram.puml.svg)](./Container-Diagram.puml.svg)
+  subgraph System
+    B["Planning Poker System"]
+  end
+
+  A-->|Gives estimations|B
+  C-->|Starts and ends estimation rounds|B
+```
+
+```mermaid
+flowchart TD
+  A["Persons
+     A planning poker player who is either
+     actively estimating or a spectator"]
+
+  subgraph System
+    B[("Database
+        Stores rooms, their participants,
+        the current task and its estimations")]
+    C["KeepAlive Handler
+       Regularly pings clients in order
+       to prevent timeouts"]
+    D["CDN
+       Delivers the static content for the SPA"]
+    E["SPA
+       Provides planning poker functionality
+       via web browser"]
+    F["WebSocket Event Handler
+       Handles incoming and outgoing planning
+       poker events"]
+  end
+
+  A--->D
+  A--->E
+  C--->B
+  C--->E
+  D--->E
+  E--->F
+  F--->B
+  F--->E
+```
 
 ```code
 
@@ -104,7 +151,7 @@ After the estimation result is revealed, any user can send a new `startEstimatio
                    (Websocket)
  ┌──────┐            ┌────┐
  │Client│◀────┐      │    │             ┌─────────────────┐       ┌───────────────┐
- └──────┘     │      │    │             │                 │   ┌──▶│ Participants  │
+ └──────┘      │     │    │             │                 │   ┌──▶│ Participants  │
  ┌──────┐   Messages │    │ Invocations │ WebSocket Event │   │   └───────────────┘
  │Client│◀────┼─────▶│    │────────────▶│  LambdaHandler  │◀──┤
  └──────┘     │      │    │◀────────────│                 │   │   ┌───────────────┐
