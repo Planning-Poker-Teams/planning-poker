@@ -1,34 +1,8 @@
 {
   "name": "planning-poker-web",
+  "version": "0.1.0",
   "main": "src/main.ts",
   "description": "Planning Poker for the web browser",
-  "contributors": [
-    {
-      "name": "Christian Stangier"
-    },
-    {
-      "name": "Edward Byne"
-    },
-    {
-      "name": "Johannes Barop"
-    },
-    {
-      "name": "Andreas Ebbert-Karroum",
-      "email": "andreas@karroum.de"
-    },
-    {
-      "name": "José Stiller",
-      "email": "info@josestiller.de"
-    }
-  ],
-  "bugs": {
-    "url": "https://github.com/Planning-Poker-Teams/planning-poker-web/issues"
-  },
-  "homepage": "https://github.com/Planning-Poker-Teams/planning-poker-web",
-  "repository": {
-    "url": "https://github.com/Planning-Poker-Teams/planning-poker-web",
-    "type": "git"
-  },
   "scripts": {
     "dev": "vite",
     "test": "vite-jest --no-cache",

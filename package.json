@@ -1,0 +1,32 @@
+{
+  "name": "planning-poker",
+  "version": "0.1.0",
+  "private": true,
+  "description": "planning poker to estimate your bets",
+  "contributors": [
+    {
+      "name": "Christian Stangier"
+    },
+    {
+      "name": "Edward Byne"
+    },
+    {
+      "name": "Johannes Barop"
+    },
+    {
+      "name": "José Stiller",
+      "email": "info@josestiller.de"
+    }
+  ],
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {},
+  "devDependencies": {},
+  "engines": {
+    "yarn": ">=1.22.19",
+    "node": ">=18.7.0"
+  },
+  "dependencies": {},
+  "packageManager": "yarn@1.22.19"
+}
