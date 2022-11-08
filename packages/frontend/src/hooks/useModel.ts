@@ -1,4 +1,5 @@
 import { computed } from 'vue';
+// eslint-disable-next-line @typescript-eslint/ban-types
 export function useModel(props: { [key: string]: any }, emit: Function, name = 'modelValue') {
   return computed({
     get: () => props[name],
