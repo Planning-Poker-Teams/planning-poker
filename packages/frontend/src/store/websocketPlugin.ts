@@ -45,7 +45,7 @@ const webSocketPlugin = (store: Store<State>) => {
     userName: string,
     isSpectator: boolean
   ): WebSocket => {
-    const socket = new WebSocket('wss://api.planningpoker.cc');
+    const socket = new WebSocket(`wss://${window.planningPoker.apiUrl}`);
 
     socket.onopen = () => {
       socket.send(

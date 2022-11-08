@@ -1,0 +1,19 @@
+= Running Terraform Locally
+
+== Init
+[source]
+----
+AWS_PROFILE=planning-poker \
+  tfenv exec init \
+  -backend-config=region=eu-central-1 \
+  -backend-config=bucket=planning-poker-terraform-state \
+  -backend-config=key=terraform-based-infrastructure.tfstate \
+  -backend-config=dynamodb_table=planning-poker-terraform-state-locks
+----
+
+== Apply
+[source]
+----
+AWS_PROFILE=planning-poker \
+  tfenv exec apply
+----

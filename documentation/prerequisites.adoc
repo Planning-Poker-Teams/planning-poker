@@ -1,0 +1,39 @@
+= Prerequisites
+
+The setup is currently based on a single AWS account. All environments are deployed into that account. The deployment is done via GitHub Actions by pushing to the respective Git branch. Terraform is used to deploy the application. The Terraform state of these environments is separated by splitting them into different files (S3 keys).
+
+== Create OIDC Provider in AWS
+[source]
+----
+IAM → Identity providers → Add provider
+Provider-Type: OpenID Connect
+Provider URL: https://token.actions.githubusercontent.com
+Audience: sts.amazonaws.com
+----
+
+== Create Role for CI Pipeline
+[source]
+----
+IAM → Roles → Create Role
+Trusted entity type: Web identity
+Identity provider: token.actions.githubusercontent.com
+Audience: sts.amazonaws.com
+Add AdministratorAccess Policy (TODO: be more restrictive?)
+Name: github-oidc-role
+----
+
+== Create S3 Bucket for Terraform
+[source]
+----
+S3 → Buckets → Create bucket
+Bucket Name: planning-poker-terraform-state
+Bucket Versioning: Enable
+----
+
+== Create Dynamo Table for Terraform
+[source]
+----
+DynamoDB → Tables → Create table
+Table name: planning-poker-terraform-state-locks
+Partition key: LockID
+----
