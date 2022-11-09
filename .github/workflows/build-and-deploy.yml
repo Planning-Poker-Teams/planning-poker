@@ -102,4 +102,4 @@ jobs:
         run: |
           terraform destroy \
             -var environment="${GITHUB_REF##*/}" \
-            -auto-approve \
+            -auto-approve
