@@ -1,0 +1,144 @@
+{
+  "token": "***",
+  "job": "build-and-deploy",
+  "ref": "refs/pull/2/merge",
+  "sha": "d1067b329c8b22e0dd930383c5042f49337b80a5",
+  "repository": "Planning-Poker-Teams/planning-poker",
+  "repository_owner": "Planning-Poker-Teams",
+  "repository_owner_id": "68015226",
+  "repositoryUrl": "git://github.com/Planning-Poker-Teams/planning-poker.git",
+  "run_id": "3432447709",
+  "run_number": "15",
+  "retention_days": "90",
+  "run_attempt": "1",
+  "artifact_cache_size_limit": "10",
+  "repository_visibility": "public",
+  "repository_id": "528756375",
+  "actor_id": "1037069",
+  "actor": "jbarop",
+  "triggering_actor": "jbarop",
+  "workflow": "Build & Deploy",
+  "head_ref": "pr-deployments",
+  "base_ref": "develop",
+  "event_name": "pull_request",
+  "event": {
+    "action": "synchronize",
+    "after": "ca1f4a0281aa97c00c08fdc30aea8cf8cd4249f8",
+    "before": "52b7f6940baf375efdc116bd06ab61e262b86aab",
+    "number": 2,
+    "organization": {
+      "avatar_url": "https://avatars.githubusercontent.com/u/68015226?v=4",
+      "description": "Planning Poker for teams",
+      "events_url": "https://api.github.com/orgs/Planning-Poker-Teams/events",
+      "hooks_url": "https://api.github.com/orgs/Planning-Poker-Teams/hooks",
+      "id": 68015226,
+      "issues_url": "https://api.github.com/orgs/Planning-Poker-Teams/issues",
+      "login": "Planning-Poker-Teams",
+      "members_url": "https://api.github.com/orgs/Planning-Poker-Teams/members{/member}",
+      "node_id": "MDEyOk9yZ2FuaXphdGlvbjY4MDE1MjI2",
+      "public_members_url": "https://api.github.com/orgs/Planning-Poker-Teams/public_members{/member}",
+      "repos_url": "https://api.github.com/orgs/Planning-Poker-Teams/repos",
+      "url": "https://api.github.com/orgs/Planning-Poker-Teams"
+    },
+    "pull_request": {
+      "_links": {
+        "comments": {
+          "href": "https://api.github.com/repos/Planning-Poker-Teams/planning-poker/issues/2/comments"
+        },
+        "commits": {
+          "href": "https://api.github.com/repos/Planning-Poker-Teams/planning-poker/pulls/2/commits"
+        },
+        "html": {
+          "href": "https://github.com/Planning-Poker-Teams/planning-poker/pull/2"
+        },
+        "issue": {
+          "href": "https://api.github.com/repos/Planning-Poker-Teams/planning-poker/issues/2"
+        },
+        "review_comment": {
+          "href": "https://api.github.com/repos/Planning-Poker-Teams/planning-poker/pulls/comments{/number}"
+        },
+        "review_comments": {
+          "href": "https://api.github.com/repos/Planning-Poker-Teams/planning-poker/pulls/2/comments"
+        },
+        "self": {
+          "href": "https://api.github.com/repos/Planning-Poker-Teams/planning-poker/pulls/2"
+        },
+        "statuses": {
+          "href": "https://api.github.com/repos/Planning-Poker-Teams/planning-poker/statuses/ca1f4a0281aa97c00c08fdc30aea8cf8cd4249f8"
+        }
+      },
+      "active_lock_reason": null,
+      "additions": 11,
+      "assignee": null,
+      "assignees": [],
+      "author_association": "CONTRIBUTOR",
+      "auto_merge": null,
+      "base": {
+        "label": "Planning-Poker-Teams:develop",
+        "ref": "develop",
+        "repo": {
+          "allow_auto_merge": false,
+          "allow_forking": true,
+          "allow_merge_commit": true,
+          "allow_rebase_merge": true,
+          "allow_squash_merge": true,
+          "allow_update_branch": false,
+          "archive_url": "https://api.github.com/repos/Planning-Poker-Teams/planning-poker/{archive_format}{/ref}",
+          "archived": false,
+          "assignees_url": "https://api.github.com/repos/Planning-Poker-Teams/planning-poker/assignees{/user}",
+          "blobs_url": "https://api.github.com/repos/Planning-Poker-Teams/planning-poker/git/blobs{/sha}",
+          "subscribers_url": "https://api.github.com/repos/Planning-Poker-Teams/planning-poker/subscribers",
+          "subscription_url": "https://api.github.com/repos/Planning-Poker-Teams/planning-poker/subscription",
+          "svn_url": "https://github.com/Planning-Poker-Teams/planning-poker",
+          "tags_url": "https://api.github.com/repos/Planning-Poker-Teams/planning-poker/tags",
+          "teams_url": "https://api.github.com/repos/Planning-Poker-Teams/planning-poker/teams",
+          "topics": [],
+          "trees_url": "https://api.github.com/repos/Planning-Poker-Teams/planning-poker/git/trees{/sha}",
+          "updated_at": "2022-08-25T08:25:01Z",
+          "url": "https://api.github.com/repos/Planning-Poker-Teams/planning-poker",
+          "visibility": "public",
+          "watchers": 0,
+          "watchers_count": 0,
+          "web_commit_signoff_required": false
+        },
+        "sender": {
+          "avatar_url": "https://avatars.githubusercontent.com/u/1037069?v=4",
+          "events_url": "https://api.github.com/users/jbarop/events{/privacy}",
+          "followers_url": "https://api.github.com/users/jbarop/followers",
+          "following_url": "https://api.github.com/users/jbarop/following{/other_user}",
+          "gists_url": "https://api.github.com/users/jbarop/gists{/gist_id}",
+          "gravatar_id": "",
+          "html_url": "https://github.com/jbarop",
+          "id": 1037069,
+          "login": "jbarop",
+          "node_id": "MDQ6VXNlcjEwMzcwNjk=",
+          "organizations_url": "https://api.github.com/users/jbarop/orgs",
+          "received_events_url": "https://api.github.com/users/jbarop/received_events",
+          "repos_url": "https://api.github.com/users/jbarop/repos",
+          "site_admin": false,
+          "starred_url": "https://api.github.com/users/jbarop/starred{/owner}{/repo}",
+          "subscriptions_url": "https://api.github.com/users/jbarop/subscriptions",
+          "type": "User",
+          "url": "https://api.github.com/users/jbarop"
+        }
+      },
+      "server_url": "https://github.com",
+      "api_url": "https://api.github.com",
+      "graphql_url": "https://api.github.com/graphql",
+      "ref_name": "2/merge",
+      "ref_protected": false,
+      "ref_type": "branch",
+      "secret_source": "Actions",
+      "workspace": "/home/runner/work/planning-poker/planning-poker",
+      "action": "__run_8",
+      "event_path": "/home/runner/work/_temp/_github_workflow/event.json",
+      "action_repository": "",
+      "action_ref": "",
+      "path": "/home/runner/work/_temp/_runner_file_commands/add_path_ca07d794-2501-47d9-b2bf-db1caa12f09b",
+      "env": "/home/runner/work/_temp/_runner_file_commands/set_env_ca07d794-2501-47d9-b2bf-db1caa12f09b",
+      "step_summary": "/home/runner/work/_temp/_runner_file_commands/step_summary_ca07d794-2501-47d9-b2bf-db1caa12f09b",
+      "state": "/home/runner/work/_temp/_runner_file_commands/save_state_ca07d794-2501-47d9-b2bf-db1caa12f09b",
+      "output": "/home/runner/work/_temp/_runner_file_commands/set_output_ca07d794-2501-47d9-b2bf-db1caa12f09b"
+    }
+  }
+}

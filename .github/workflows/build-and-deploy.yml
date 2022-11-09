@@ -8,6 +8,11 @@ on:
   pull_request:
     branches:
       - develop
+    types:
+      - opened
+      - synchronize
+      - reopened
+      - closed
 
 jobs:
   build-and-deploy:
@@ -77,10 +82,17 @@ jobs:
             -auto-approve \
             plan.tfout
 
-      - name: Remove Environment
+      - name: Print debug
         working-directory: 'infrastructure'
         env:
-          GITHUB_CONTEXT2: ${{ toJson(github) }}
+          DEBUG_GITHUB_JSON: ${{ toJson(github) }}
         run: |
-          echo "$GITHUB_CONTEXT"
-          echo "$GITHUB_CONTEXT2"
+          echo "DEBUG_GITHUB_JSON"
+
+#      - name: Remove Environment
+#        if: github.event.pull_request.merged == true
+#        working-directory: 'infrastructure'
+#        env:
+#          DEBUG_GITHUB_JSON: ${{ toJson(github) }}
+#        run: |
+#          echo "DEBUG_GITHUB_JSON"
