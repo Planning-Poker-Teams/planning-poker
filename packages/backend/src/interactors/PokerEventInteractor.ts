@@ -1,8 +1,8 @@
-import log from '../../log';
 import { handleCommand } from '../cqrs/handleCommand';
 import { queryRoomState } from '../cqrs/queryRoomState';
 import { Command } from '../domain/commandTypes';
 import { handlePokerEvent } from '../domain/handlePokerEvent';
+import log from '../log';
 import { ParticipantRepository, RoomRepository, MessageSender } from '../repositories/types';
 
 export default class PokerEventInteractor {

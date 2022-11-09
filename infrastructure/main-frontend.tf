@@ -17,7 +17,7 @@ resource "aws_s3_bucket_acl" "frontend" {
 module "dist" {
   source = "hashicorp/dir/template"
 
-  base_dir = "../dist"
+  base_dir = "../packages/frontend/dist"
 }
 
 resource "aws_s3_object" "static_files" {
@@ -36,6 +36,8 @@ resource "aws_s3_object" "environment_js" {
   bucket       = aws_s3_bucket.frontend.id
   key          = "environment.js"
   content_type = "application/javascript"
-  content      = templatefile("environment.js.tftpl", { api_url = var.api_url })
-  acl          = "public-read"
+  content = templatefile("environment.js.tftpl", {
+    api_url = "${aws_apigatewayv2_api.websocket.id}.execute-api.eu-central-1.amazonaws.com/${aws_apigatewayv2_stage.prod.name}"
+  })
+  acl = "public-read"
 }

@@ -1,0 +1,133 @@
+resource "aws_dynamodb_table" "participants" {
+  name         = "planning-poker-${var.environment}-participants"
+  billing_mode = "PAY_PER_REQUEST"
+
+  hash_key = "connectionId"
+
+  attribute {
+    name = "connectionId"
+    type = "S"
+  }
+}
+
+resource "aws_dynamodb_table" "rooms" {
+  name         = "planning-poker-${var.environment}-rooms"
+  billing_mode = "PAY_PER_REQUEST"
+
+  hash_key = "name"
+
+  attribute {
+    name = "name"
+    type = "S"
+  }
+}
+
+resource "aws_apigatewayv2_api" "websocket" {
+  name                       = "planning-poker-${var.environment}-websocket-api"
+  protocol_type              = "WEBSOCKET"
+  route_selection_expression = "$request.body.action"
+}
+
+module "websocket_handler" {
+  source = "terraform-aws-modules/lambda/aws"
+
+  runtime       = "nodejs16.x"
+  function_name = "planning-poker-${var.environment}-websocket-handler"
+  handler       = "handleWebsocketEvents.handler"
+  source_path = [
+    "../packages/backend/dist/handleWebsocketEvents.js",
+  ]
+
+  environment_variables = {
+    AWS_NODEJS_CONNECTION_REUSE_ENABLED = 1,
+    PARTICIPANTS_TABLENAME              = aws_dynamodb_table.participants.name,
+    ROOMS_TABLENAME                     = aws_dynamodb_table.rooms.name,
+    API_GW_DOMAINNAME                   = "${aws_apigatewayv2_api.websocket.id}.execute-api.eu-central-1.amazonaws.com/${aws_apigatewayv2_stage.prod.name}",
+  }
+
+  publish                           = true
+  memory_size                       = 1024 # More memory means also more CPU
+  tracing_mode                      = "Active"
+  cloudwatch_logs_retention_in_days = 7
+
+  attach_policy_statements = true
+  attach_tracing_policy    = true
+  policy_statements = {
+    dynamodb = {
+      effect = "Allow",
+      actions = [
+        "dynamodb:BatchGetItem",
+        "dynamodb:GetRecords",
+        "dynamodb:GetShardIterator",
+        "dynamodb:Query",
+        "dynamodb:GetItem",
+        "dynamodb:Scan",
+        "dynamodb:ConditionCheckItem",
+        "dynamodb:BatchWriteItem",
+        "dynamodb:PutItem",
+        "dynamodb:UpdateItem",
+        "dynamodb:DeleteItem",
+      ],
+      resources = [
+        aws_dynamodb_table.participants.arn,
+        aws_dynamodb_table.rooms.arn,
+      ]
+    }
+    api-gateway = {
+      effect = "Allow",
+      actions = [
+        "execute-api:ManageConnections",
+      ],
+      resources = [
+        "arn:aws:execute-api:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:${aws_apigatewayv2_api.websocket.id}/${aws_apigatewayv2_stage.prod.name}/*",
+      ]
+    }
+  }
+
+  allowed_triggers = {
+    websocket = {
+      service    = "apigateway"
+      source_arn = "${aws_apigatewayv2_api.websocket.execution_arn}/*/*"
+    }
+  }
+}
+
+resource "aws_apigatewayv2_integration" "websocket" {
+  api_id           = aws_apigatewayv2_api.websocket.id
+  integration_type = "AWS_PROXY"
+  integration_uri  = module.websocket_handler.lambda_function_invoke_arn
+}
+
+resource "aws_apigatewayv2_route" "connect" {
+  api_id    = aws_apigatewayv2_api.websocket.id
+  route_key = "$connect"
+  target    = "integrations/${aws_apigatewayv2_integration.websocket.id}"
+}
+
+resource "aws_apigatewayv2_route" "disconnect" {
+  api_id    = aws_apigatewayv2_api.websocket.id
+  route_key = "$disconnect"
+  target    = "integrations/${aws_apigatewayv2_integration.websocket.id}"
+}
+
+resource "aws_apigatewayv2_route" "default" {
+  api_id    = aws_apigatewayv2_api.websocket.id
+  route_key = "$default"
+  target    = "integrations/${aws_apigatewayv2_integration.websocket.id}"
+}
+
+resource "aws_apigatewayv2_stage" "prod" {
+  api_id      = aws_apigatewayv2_api.websocket.id
+  name        = "prod"
+  auto_deploy = true
+
+  # nach routen und integrationen?
+
+  #  lifecycle {
+  #    ignore_changes = [deployment_id, default_route_settings]
+  #  }
+  #
+  #  stage_variables = {
+  #    name = "prod"
+  #  }
+}

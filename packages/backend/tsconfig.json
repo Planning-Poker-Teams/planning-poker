@@ -1,6 +1,5 @@
 {
   "compilerOptions": {
-    "outDir": "out",
     "target": "ES2019",
     "module": "commonjs",
     "strict": true,
@@ -21,6 +20,5 @@
     },
     "lib": ["esnext"]
   },
-  "include": ["src/**/*.ts", "lib/**/*.ts", "bin/**/*.ts"],
-  "exclude": ["node_modules", "out", "cdk.out"]
+  "include": ["src/**/*.ts"]
 }

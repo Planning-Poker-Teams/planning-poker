@@ -1,5 +1,5 @@
-import log from '../../log';
 import PokerEventInteractor from '../interactors/PokerEventInteractor';
+import log from '../log';
 import { ApiGatewayMessageSender } from '../repositories/apigw/MessageSender';
 import DynamoDbParticipantRepository from '../repositories/dynamodb/ParticipantRepository';
 import DynamoDbRoomRepository from '../repositories/dynamodb/RoomRepository';

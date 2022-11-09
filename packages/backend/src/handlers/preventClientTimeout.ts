@@ -1,4 +1,4 @@
-import log from '../../log';
+import log from '../log';
 import { ApiGatewayMessageSender } from '../repositories/apigw/MessageSender';
 import DynamoDbParticipantRepository from '../repositories/dynamodb/ParticipantRepository';
 

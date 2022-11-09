@@ -1,5 +1,5 @@
 {
-  "name": "planning-poker-web",
+  "name": "frontend",
   "version": "0.1.0",
   "main": "src/main.ts",
   "description": "Planning Poker for the web browser",

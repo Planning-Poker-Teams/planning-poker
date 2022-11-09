@@ -1,4 +1,4 @@
-import log from '../../log';
+import log from '../log';
 import { CommandType, Command } from './commandTypes';
 import { PokerRoom, Participant } from './types';
 
