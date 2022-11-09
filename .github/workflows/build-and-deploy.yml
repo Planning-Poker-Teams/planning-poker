@@ -5,6 +5,9 @@ on:
     branches:
       - production
       - develop
+  pull_request:
+    branches:
+      - develop
 
 jobs:
   build-and-deploy:
@@ -73,3 +76,8 @@ jobs:
           terraform apply \
             -auto-approve \
             plan.tfout
+
+      - name: Remove Environment
+        working-directory: 'infrastructure'
+        run: |
+          echo "$GITHUB_CONTEXT"
