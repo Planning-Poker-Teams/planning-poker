@@ -1,4 +1,4 @@
-import log from '../../log';
+import log from '../log';
 import { MessageSender, ParticipantRepository, RoomRepository } from '../repositories/types';
 
 export const cleanUpStaleParticipants = async (

@@ -1,6 +1,6 @@
 import ApiGatewayManagementApi from 'aws-sdk/clients/apigatewaymanagementapi';
 import AWSXRay from 'aws-xray-sdk-core';
-import log from '../../../log';
+import log from '../../log';
 import { MessageSender } from '../types';
 
 export class ApiGatewayMessageSender implements MessageSender {

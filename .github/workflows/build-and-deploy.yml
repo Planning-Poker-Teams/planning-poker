@@ -1,0 +1,75 @@
+name: Build & Deploy
+
+on:
+  push:
+    branches:
+      - production
+      - develop
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    # These permissions are needed to interact with GitHub's OIDC Token endpoint.
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version-file: '.nvmrc'
+
+      - name: Yarn Install
+        run: yarn install --immutable
+
+      - name: Yarn Lint
+        run: |
+          yarn workspace backend lint
+          yarn workspace frontend lint
+
+      - name: Yarn Build
+        run: |
+          yarn workspace backend build
+          yarn workspace frontend build
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          role-to-assume: arn:aws:iam::054552196453:role/github-oidc-role
+          aws-region: eu-central-1
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
+
+      - name: Terraform Init
+        working-directory: 'infrastructure'
+        run: |
+          terraform init \
+            -backend-config="region=eu-central-1" \
+            -backend-config="bucket=planning-poker-terraform-state" \
+            -backend-config="dynamodb_table=planning-poker-terraform-state-locks" \
+            -backend-config="key=${GITHUB_REF##*/}.tfstate"
+
+      - name: Terraform Lint
+        working-directory: 'infrastructure'
+        run: |
+          terraform fmt -check
+
+      - name: Terraform Plan
+        working-directory: 'infrastructure'
+        run: |
+          terraform plan \
+            -var environment="${GITHUB_REF##*/}" \
+            -out=plan.tfout
+
+      - name: Terraform Apply
+        working-directory: 'infrastructure'
+        run: |
+          terraform apply \
+            -auto-approve \
+            plan.tfout

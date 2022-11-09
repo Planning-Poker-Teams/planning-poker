@@ -1,7 +1,2 @@
-.DS_Store
-.idea
-.cache
 node_modules
-backend/out
-backend/.cdk.staging
-backend/cdk.out
+dist

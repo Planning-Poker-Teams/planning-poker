@@ -6,20 +6,12 @@
       "type": "MIT"
     }
   ],
-  "bin": {
-    "infrastructure": "bin/infrastructure.js"
-  },
   "scripts": {
-    "build": "tsc",
-    "watch": "tsc -w",
+    "build": "esbuild src/handlers/handleWebsocketEvents.ts src/handlers/preventClientTimeout.ts --outdir=dist --platform=node --loader:.ts=ts --bundle",
     "test": "DEBUG=testcontainers jest",
-    "lint": "eslint './{bin,lib,src}/**/*.ts'",
+    "lint": "eslint './src/**/*.ts'",
     "feature": "cucumber-js --require-module ts-node/register/transpile-only --require src/__features__/support/setup.ts --require 'src/__features__/support/*Steps.ts'",
-    "features": "npm run feature src/__features__/",
-    "cdk": "cdk",
-    "synth": "cdk synth --profile planning-poker",
-    "bootstrap": "cdk bootstrap --profile planning-poker",
-    "deploy": "cdk deploy --profile planning-poker"
+    "features": "npm run feature src/__features__/"
   },
   "devDependencies": {
     "@aws-cdk/assert": "^1.136.0",
@@ -32,6 +24,7 @@
     "@typescript-eslint/parser": "^5.7.0",
     "aws-cdk": "^2.2.0",
     "cucumber": "^6.0.5",
+    "esbuild": "^0.15.13",
     "eslint": "^8.5.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-import-resolver-typescript": "^2.5.0",
@@ -56,8 +49,6 @@
     "@aws-cdk/core": "^1.136.0",
     "aws-sdk": "^2.858.0",
     "aws-xray-sdk-core": "^3.2.0",
-    "esbuild": "0",
-    "lambda-log": "^2.3.1",
-    "source-map-support": "^0.5.16"
+    "lambda-log": "^2.3.1"
   }
 }
