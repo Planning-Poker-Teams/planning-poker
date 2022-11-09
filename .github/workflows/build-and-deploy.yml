@@ -79,5 +79,8 @@ jobs:
 
       - name: Remove Environment
         working-directory: 'infrastructure'
+        env:
+          GITHUB_CONTEXT2: ${{ toJson(github) }}
         run: |
           echo "$GITHUB_CONTEXT"
+          echo "$GITHUB_CONTEXT2"
