@@ -24,6 +24,15 @@ if (import.meta.env.DEV === true) {
   plugins.push(createLogger());
 }
 
+const defaultOptions = {
+  state: initialState,
+  getters,
+  actions,
+  mutations,
+  modules: {},
+  plugins,
+};
+
 export type Store = Omit<VuexStore<State>, 'getters' | 'commit' | 'dispatch'> & {
   commit<K extends keyof Mutations, P extends Parameters<Mutations[K]>[1]>(
     key: K,
@@ -42,11 +51,10 @@ export type Store = Omit<VuexStore<State>, 'getters' | 'commit' | 'dispatch'> & 
   };
 };
 
-export default createStore<State>({
-  state: initialState,
-  getters,
-  actions,
-  mutations,
-  modules: {},
-  plugins,
-});
+export const customStore = (options: { [key: string]: any }) => {
+  const customOptions = { ...defaultOptions };
+  customOptions.state = { ...customOptions.state, ...options };
+  return createStore<State>(customOptions);
+};
+
+export default createStore<State>(defaultOptions);
