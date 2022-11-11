@@ -5,24 +5,14 @@
       class="p-2 mb-4 w-full lg:w-1/2 text-center text-lg font-semi bg-white appearance-none border-4 rounded text-grey-darker focus:outline-none focus:border-green-300"
       placeholder="Task name"
     />
-    <button
-      class="m-2 px-6 py-2 bg-gray-300 text-gray-700 p-2 border-2 hover:border-gray-400 border-gray-300 rounded"
-      type="submit"
-      :disabled="!taskNameIsSet"
-      @click="startEstimation(newTaskName)"
-    >
+    <Button type="submit" :disabled="!taskNameIsSet" @click="startEstimation(newTaskName)">
       <font-awesome-icon icon="play" />
       Start estimating
-    </button>
-    <button
-      v-if="showEstimateAgainButton"
-      class="m-2 px-6 py-2 bg-gray-300 text-gray-700 p-2 border-2 hover:border-gray-400 border-gray-300 rounded"
-      type="button"
-      @click="startEstimation(previousTaskName)"
-    >
+    </Button>
+    <Button v-if="showEstimateAgainButton" type="button" @click="startEstimation(previousTaskName)">
       <font-awesome-icon icon="redo" />
       Estimate again for "{{ previousTaskName }}"
-    </button>
+    </Button>
   </form>
 </template>
 
@@ -31,6 +21,7 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { computed, ref } from 'vue';
 import { Store, useStore } from 'vuex';
 import { State } from '../store/types';
+import Button from './Button.vue';
 
 const store: Store<State> = useStore();
 const newTaskName = ref('');

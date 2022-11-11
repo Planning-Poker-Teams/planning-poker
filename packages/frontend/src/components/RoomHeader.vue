@@ -16,24 +16,17 @@
         {{ roomName }}
       </h1>
 
-      <button
-        class="absolute top-0 right-0 bg-gray-300 text-gray-700 m-2 p-2 mr-40 border-2 hover:border-gray-400 border-gray-300 rounded"
-        type="button"
-        :hidden="!canChangeCardDeck"
-        @click="showChangeDeckModal"
-      >
-        <span class="hidden lg:inline mr-2">Change Card Deck</span>
-        <font-awesome-icon icon="sliders-h" />
-      </button>
+      <div class="absolute top-0 right-0">
+        <Button type="button" :hidden="!canChangeCardDeck" @click="showChangeDeckModal">
+          <span class="hidden lg:inline mr-2">Change Card Deck</span>
+          <font-awesome-icon icon="sliders-h" />
+        </Button>
 
-      <button
-        class="absolute top-0 right-0 bg-gray-300 text-gray-700 m-2 p-2 border-2 hover:border-gray-400 border-gray-300 rounded"
-        type="button"
-        @click="leaveRoom"
-      >
-        <span class="hidden lg:inline mr-2">Leave Room</span>
-        <font-awesome-icon icon="door-open" />
-      </button>
+        <Button type="button" @click="leaveRoom">
+          <span class="hidden lg:inline mr-2">Leave Room</span>
+          <font-awesome-icon icon="door-open" />
+        </Button>
+      </div>
     </div>
     <participants-list :participants="refParticipants" />
   </div>
@@ -46,6 +39,7 @@ import { useRouter } from 'vue-router';
 import { useStore } from 'vuex';
 import ParticipantsList from '../components/ParticipantsList.vue';
 import { Participant } from '../store/types';
+import Button from './Button.vue';
 
 const store = useStore();
 const router = useRouter();
