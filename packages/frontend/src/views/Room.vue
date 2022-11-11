@@ -38,69 +38,69 @@ import { ActionType } from '../store/actions';
 import { EstimationState } from '../store/getters';
 import { State } from '../store/types';
 
-    const store: Store<State> = useStore();
-    const route = useRoute();
-    const router = useRouter();
+const store: Store<State> = useStore();
+const route = useRoute();
+const router = useRouter();
 
-    const showChangeDeckModal = ref(false);
-    const cardDeck = toRef(store.state, 'cardDeck');
+const showChangeDeckModal = ref(false);
+const cardDeck = toRef(store.state, 'cardDeck');
 
-    const participants = toRef(store.state, 'participants');
-    const taskName = computed(() => {
-      if (typeof store.state.ongoingEstimation === 'undefined') {
-        return '';
-      }
+const participants = toRef(store.state, 'participants');
+const taskName = computed(() => {
+  if (typeof store.state.ongoingEstimation === 'undefined') {
+    return '';
+  }
 
-      return store.state.ongoingEstimation.taskName;
-    });
-    const roomName = computed(() => {
-      if (typeof store.state.room === 'undefined') {
-        return '';
-      }
+  return store.state.ongoingEstimation.taskName;
+});
+const roomName = computed(() => {
+  if (typeof store.state.room === 'undefined') {
+    return '';
+  }
 
-      return store.state.room.name;
-    });
+  return store.state.room.name;
+});
 
-    onMounted(() => {
-      const roomNameParam = route.params.roomName;
-      if (!store.state.room || roomName.value !== roomNameParam) {
-        router.push({ name: 'lobby', query: { room: roomNameParam } });
-      }
-      store.dispatch(ActionType.ENTER_ROOM);
-    });
-    onUnmounted(() => {
-      store.dispatch(ActionType.LEAVE_ROOM);
-    });
+onMounted(() => {
+  const roomNameParam = route.params.roomName;
+  if (!store.state.room || roomName.value !== roomNameParam) {
+    router.push({ name: 'lobby', query: { room: roomNameParam } });
+  }
+  store.dispatch(ActionType.ENTER_ROOM);
+});
+onUnmounted(() => {
+  store.dispatch(ActionType.LEAVE_ROOM);
+});
 
-    const isEstimationOngoing = computed(
-      () => store.getters.estimationState == EstimationState.ONGOING
-    );
-    const estimationResultAvailable = computed(() => store.state.estimationResult !== undefined);
-    const changeCardDeck = async (newCardDeck: string[]) => {
-      store.dispatch(ActionType.CHANGE_CARD_DECK, newCardDeck);
-      showChangeDeckModal.value = false;
-    };
-    const startEstimation = async (taskName: string) => {
-      store.dispatch(ActionType.REQUEST_START_ESTIMATION, taskName);
-    };
-    const sendEstimation = async (value: string) => {
-      store.dispatch(ActionType.SEND_ESTIMATION, value);
-    };
-    const requestResult = async () => {
-      store.dispatch(ActionType.REQUEST_RESULT);
-    };
+const isEstimationOngoing = computed(
+  () => store.getters.estimationState == EstimationState.ONGOING
+);
+const estimationResultAvailable = computed(() => store.state.estimationResult !== undefined);
+const changeCardDeck = async (newCardDeck: string[]) => {
+  store.dispatch(ActionType.CHANGE_CARD_DECK, newCardDeck);
+  showChangeDeckModal.value = false;
+};
+const startEstimation = async (taskName: string) => {
+  store.dispatch(ActionType.REQUEST_START_ESTIMATION, taskName);
+};
+const sendEstimation = async (value: string) => {
+  store.dispatch(ActionType.SEND_ESTIMATION, value);
+};
+const requestResult = async () => {
+  store.dispatch(ActionType.REQUEST_RESULT);
+};
 
 defineExpose({
-      showChangeDeckModal,
-      cardDeck,
-      participants,
-      roomName,
-      taskName,
-      isEstimationOngoing,
-      estimationResultAvailable,
-      changeCardDeck,
-      startEstimation,
-      sendEstimation,
-      requestResult,
+  showChangeDeckModal,
+  cardDeck,
+  participants,
+  roomName,
+  taskName,
+  isEstimationOngoing,
+  estimationResultAvailable,
+  changeCardDeck,
+  startEstimation,
+  sendEstimation,
+  requestResult,
 });
 </script>
