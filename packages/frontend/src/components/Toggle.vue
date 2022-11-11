@@ -11,33 +11,28 @@
   </label>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
+<script setup lang="ts">
 import { useModel } from '../hooks/useModel';
 
-export default defineComponent({
-  props: {
-    id: {
-      type: String,
-      required: true,
-    },
-    label: {
-      type: String,
-      required: true,
-    },
-    modelValue: {
-      type: Boolean,
-      required: true,
-    },
+const props = defineProps({
+  id: {
+    type: String,
+    required: true,
   },
-  emits: ['update:modelValue'],
-  setup(props, context) {
-    const checked = useModel(props, context.emit, 'modelValue');
+  label: {
+    type: String,
+    required: true,
+  },
+  modelValue: {
+    type: Boolean,
+    required: true,
+  },
+});
+const emit = defineEmits(['update:modelValue']);
+const checked = useModel(props, emit, 'modelValue');
 
-    return {
-      checked,
-    };
-  },
+defineExpose({
+  checked,
 });
 </script>
 

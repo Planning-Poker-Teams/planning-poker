@@ -10,34 +10,27 @@
   </div>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
-import { defineComponent, toRef } from 'vue';
+import { toRef } from 'vue';
+const props = defineProps({
+  name: {
+    type: String,
+    required: true,
+  },
+  hasVoted: {
+    type: Boolean,
+    required: true,
+  },
+  showCheckmark: {
+    type: Boolean,
+    default: false,
+  },
+});
 
-export default defineComponent({
-  components: {
-    FontAwesomeIcon,
-  },
-  props: {
-    name: {
-      type: String,
-      required: true,
-    },
-    hasVoted: {
-      type: Boolean,
-      required: true,
-    },
-    showCheckmark: {
-      type: Boolean,
-      default: false,
-    },
-  },
-  setup(props) {
-    const refVoted = toRef(props, 'hasVoted');
+const refVoted = toRef(props, 'hasVoted');
 
-    return {
-      refVoted,
-    };
-  },
+defineExpose({
+  refVoted,
 });
 </script>

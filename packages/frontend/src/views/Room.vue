@@ -9,14 +9,14 @@
     />
     <change-card-deck-dialog
       v-if="showChangeDeckModal"
-      :current-card-deck="cardDeck"
+      :currentCardDeck="cardDeck"
       @hide_change_deck_modal="showChangeDeckModal = false"
       @change_deck="changeCardDeck"
     />
     <ongoing-estimation
       v-if="isEstimationOngoing"
       :task-name="taskName"
-      :current-card-deck="cardDeck"
+      :currentCardDeck="cardDeck"
       @send-estimation="sendEstimation"
       @request-result="requestResult"
     />
@@ -25,8 +25,8 @@
   </div>
 </template>
 
-<script lang="ts">
-import { computed, defineComponent, onMounted, onUnmounted, ref, toRef } from 'vue';
+<script setup lang="ts">
+import { computed, onMounted, onUnmounted, ref, toRef } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { Store, useStore } from 'vuex';
 import ChangeCardDeckDialog from '../components/ChangeCardDeckDialog.vue';
@@ -38,15 +38,6 @@ import { ActionType } from '../store/actions';
 import { EstimationState } from '../store/getters';
 import { State } from '../store/types';
 
-export default defineComponent({
-  components: {
-    RoomHeader,
-    ChangeCardDeckDialog,
-    StartEstimationForm,
-    OngoingEstimation,
-    EstimationResult,
-  },
-  setup() {
     const store: Store<State> = useStore();
     const route = useRoute();
     const router = useRouter();
@@ -99,7 +90,7 @@ export default defineComponent({
       store.dispatch(ActionType.REQUEST_RESULT);
     };
 
-    return {
+defineExpose({
       showChangeDeckModal,
       cardDeck,
       participants,
@@ -111,7 +102,5 @@ export default defineComponent({
       startEstimation,
       sendEstimation,
       requestResult,
-    };
-  },
 });
 </script>

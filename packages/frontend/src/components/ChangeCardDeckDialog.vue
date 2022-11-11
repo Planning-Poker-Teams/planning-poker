@@ -62,33 +62,29 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent, PropType, ref } from 'vue';
+<script setup lang="ts">
+import { PropType, ref } from 'vue';
 
-export default defineComponent({
-  props: {
-    currentCardDeck: {
-      type: Array as PropType<string[]>,
-      required: true,
-    },
+const props = defineProps({
+  currentCardDeck: {
+    type: Array as PropType<string[]>,
+    required: true,
   },
-  emits: ['hide_change_deck_modal', 'change_deck'],
-  setup(props, context) {
-    const cardDeckString = ref(props.currentCardDeck.join(', '));
+});
+const cardDeckString = ref(props.currentCardDeck.join(', '));
 
-    const hideChangeDeckModal = () => {
-      context.emit('hide_change_deck_modal');
-    };
+const emits = defineEmits(['hide_change_deck_modal', 'change_deck']);
+const hideChangeDeckModal = () => {
+  emits('hide_change_deck_modal');
+};
 
-    const changeCardDeck = () => {
-      context.emit('change_deck', cardDeckString.value.split(/[ ,]+/));
-    };
+const changeCardDeck = () => {
+  emits('change_deck', cardDeckString.value.split(/[ ,]+/));
+};
 
-    return {
-      cardDeckString,
-      hideChangeDeckModal,
-      changeCardDeck,
-    };
-  },
+defineExpose({
+  cardDeckString,
+  hideChangeDeckModal,
+  changeCardDeck,
 });
 </script>

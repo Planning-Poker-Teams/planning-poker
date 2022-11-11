@@ -39,48 +39,46 @@
   </div>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
-import { computed, defineComponent, PropType, toRef } from 'vue';
+import { computed, PropType, toRef } from 'vue';
 import { useRouter } from 'vue-router';
 import { useStore } from 'vuex';
 import ParticipantsList from '../components/ParticipantsList.vue';
 import { Participant } from '../store/types';
 
-export default defineComponent({
-  components: { ParticipantsList, FontAwesomeIcon },
-  props: {
-    roomName: {
-      type: String,
-      required: true,
-    },
-    participants: {
-      type: Array as PropType<Participant[]>,
-      required: true,
-    },
-  },
-  emits: ['show_change_deck_modal'],
-  setup: function (props, context) {
-    const store = useStore();
-    const router = useRouter();
-    const refParticipants = toRef(props, 'participants');
-    const canChangeCardDeck = computed<boolean>(
-      () => !store.getters.somebodyHasVoted || !store.state.ongoingEstimation
-    );
-    const showChangeDeckModal = () => {
-      context.emit('show_change_deck_modal');
-    };
+const store = useStore();
+const router = useRouter();
 
-    const leaveRoom = () => {
-      router.push({ name: 'lobby', query: { room: props.roomName } });
-    };
-
-    return {
-      refParticipants,
-      canChangeCardDeck,
-      showChangeDeckModal,
-      leaveRoom,
-    };
+const props = defineProps({
+  roomName: {
+    type: String,
+    required: true,
   },
+  participants: {
+    type: Array as PropType<Participant[]>,
+    required: true,
+  },
+});
+const refParticipants = toRef(props, 'participants');
+const canChangeCardDeck = computed<boolean>(
+  () => !store.getters.somebodyHasVoted || !store.state.ongoingEstimation
+);
+
+const emits = defineEmits(['show_change_deck_modal']);
+
+const showChangeDeckModal = () => {
+  emits('show_change_deck_modal');
+};
+
+const leaveRoom = () => {
+  router.push({ name: 'lobby', query: { room: props.roomName } });
+};
+
+defineExpose({
+  refParticipants,
+  canChangeCardDeck,
+  showChangeDeckModal,
+  leaveRoom,
 });
 </script>
