@@ -1,5 +1,5 @@
 <template>
-  <div class="w-full lg:w-2/3 h-full flex-none text-white p-6">
+  <div class="w-full lg:w-2/3 h-full flex-none text-white p-6 overflow-y-auto">
     <a href="/">
       <img
         class="m-5 ml-0 object-contain h-24 shadow-md rounded-lg"
