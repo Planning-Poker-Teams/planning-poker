@@ -64,7 +64,7 @@ jobs:
       - name: Set Environment Name (Push)
         if: github.event_name == 'push'
         env:
-          ENVIRONMENT_NAME: ${{ github.event.number }}-${{ github.head_ref }}
+          ENVIRONMENT_NAME: ${{ github.ref_name }}
         run: |
           echo "ENVIRONMENT_NAME=$ENVIRONMENT_NAME" >> $GITHUB_ENV
 
