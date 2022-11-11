@@ -1,6 +1,6 @@
 <template>
   <div class="w-full overflow-x-auto">
-    <div class="flex items-center p-2">
+    <div class="flex justify-center p-2">
       <participant-item
         v-for="participant in refParticipants"
         :key="participant.name"
