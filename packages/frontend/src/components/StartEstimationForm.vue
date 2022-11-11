@@ -26,39 +26,34 @@
   </form>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
-import { computed, defineComponent, ref } from 'vue';
+import { computed, ref } from 'vue';
 import { Store, useStore } from 'vuex';
 import { State } from '../store/types';
 
-export default defineComponent({
-  components: { FontAwesomeIcon },
-  emits: ['start-estimation'],
-  setup(props, context) {
-    const store: Store<State> = useStore();
-    const newTaskName = ref('');
+const store: Store<State> = useStore();
+const newTaskName = ref('');
 
-    const taskNameIsSet = computed(() => newTaskName.value.length > 0);
-    const showEstimateAgainButton = computed(() => store.getters.resultBySize?.length > 1 ?? false);
-    const previousTaskName = computed(() => {
-      if (typeof store.state.estimationResult === 'undefined') {
-        return '';
-      }
+const taskNameIsSet = computed(() => newTaskName.value.length > 0);
+const showEstimateAgainButton = computed(() => store.getters.resultBySize?.length > 1 ?? false);
+const previousTaskName = computed(() => {
+  if (typeof store.state.estimationResult === 'undefined') {
+    return '';
+  }
 
-      return store.state.estimationResult.taskName;
-    });
-    const startEstimation = (taskName: string) => {
-      context.emit('start-estimation', taskName);
-    };
+  return store.state.estimationResult.taskName;
+});
+const emits = defineEmits(['start-estimation']);
+const startEstimation = (taskName: string) => {
+  emits('start-estimation', taskName);
+};
 
-    return {
-      newTaskName,
-      taskNameIsSet,
-      showEstimateAgainButton,
-      previousTaskName,
-      startEstimation,
-    };
-  },
+defineExpose({
+  newTaskName,
+  taskNameIsSet,
+  showEstimateAgainButton,
+  previousTaskName,
+  startEstimation,
 });
 </script>

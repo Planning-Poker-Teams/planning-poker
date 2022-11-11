@@ -49,8 +49,8 @@
   </section>
 </template>
 
-<script lang="ts">
-import { defineComponent, onBeforeUpdate, PropType, Ref, ref, toRef } from 'vue';
+<script setup lang="ts">
+import { onBeforeUpdate, PropType, Ref, ref, toRef } from 'vue';
 import { Store, useStore } from 'vuex';
 import { State } from '../store/types';
 
@@ -60,132 +60,122 @@ const CARD_ANIMATION_OPTIONS: KeyframeAnimationOptions = {
   easing: 'ease-in-out',
 };
 
-export default defineComponent({
-  props: {
-    taskName: {
-      type: String,
-      required: true,
-    },
-    currentCardDeck: {
-      type: Array as PropType<string[]>,
-      required: true,
-    },
+defineProps({
+  taskName: {
+    type: String,
+    required: true,
   },
-  emits: ['send-estimation', 'request-result'],
-  setup(props, context) {
-    const store: Store<State> = useStore();
-    const votingIsComplete = toRef(store.getters, 'votingIsComplete');
-    const isSpectator = ref(store.state.room?.isSpectator);
-    const taskNameRef: Ref<Element | undefined> = ref(undefined);
-    const selectedEstimation: Ref<number | undefined> = ref(undefined);
-    const selectedCardRefs: Ref<Element[]> = ref([]);
-    onBeforeUpdate(() => {
-      selectedCardRefs.value = [];
-    });
+  currentCardDeck: {
+    type: Array as PropType<string[]>,
+    required: true,
+  },
+});
+const emits = defineEmits(['send-estimation', 'request-result']);
+const store: Store<State> = useStore();
+const votingIsComplete = toRef(store.getters, 'votingIsComplete');
+const isSpectator = ref(store.state.room?.isSpectator);
+const taskNameRef: Ref<Element | undefined> = ref(undefined);
+const selectedEstimation: Ref<number | undefined> = ref(undefined);
+const selectedCardRefs: Ref<Element[]> = ref([]);
+onBeforeUpdate(() => {
+  selectedCardRefs.value = [];
+});
 
-    let lastCardMovement: { transform: string }[] = [];
+let lastCardMovement: { transform: string }[] = [];
 
-    const requestResult = () => context.emit('request-result');
-    const calculateAnimationTranslation = (index: number): { x: number; y: number } => {
-      const selectedCard = selectedCardRefs.value[index];
+const requestResult = () => emits('request-result');
+const calculateAnimationTranslation = (index: number): { x: number; y: number } => {
+  const selectedCard = selectedCardRefs.value[index];
 
-      const selectedCardRect = selectedCard.getBoundingClientRect();
-      const selectedCardCentreCoordinates = {
-        x: selectedCardRect.x + selectedCardRect.width / 2,
-        y: selectedCardRect.y + selectedCardRect.height / 2,
-      };
+  const selectedCardRect = selectedCard.getBoundingClientRect();
+  const selectedCardCentreCoordinates = {
+    x: selectedCardRect.x + selectedCardRect.width / 2,
+    y: selectedCardRect.y + selectedCardRect.height / 2,
+  };
 
-      if (typeof taskNameRef.value !== 'undefined') {
-        const taskNameRect = taskNameRef.value.getBoundingClientRect();
-        const taskNameCentreCoordinates = {
-          x: taskNameRect.x + taskNameRect.width / 2,
-          y: taskNameRect.y + taskNameRect.height / 2,
-        };
-
-        return {
-          x: taskNameCentreCoordinates.x - selectedCardCentreCoordinates.x,
-          y: taskNameCentreCoordinates.y - selectedCardCentreCoordinates.y,
-        };
-      }
-
-      return { x: 0, y: 0 };
-    };
-
-    const calculateRandomRotation = (): number => {
-      return Math.random() * 180 - 90;
-    };
-
-    const getCardMovement = (
-      { x, y }: { x: number; y: number },
-      rotation: number
-    ): { transform: string }[] => {
-      return [
-        { transform: 'translate3D(0, 0, 0) rotate(0)' },
-        {
-          transform: `translate3D(${x}px, ${y}px, 0) rotate(${rotation}deg)`,
-        },
-      ];
-    };
-
-    const animateCardMovingForwards = (
-      card: Element,
-      cardMovement: { transform: string }[]
-    ): void => {
-      card.animate(cardMovement, CARD_ANIMATION_OPTIONS);
-    };
-
-    // Unfortunately not all browsers support `animation.reverse()`, so we have to create a separate animation manually
-    const animateCardMovingBackwards = (
-      card: Element,
-      cardMovement: { transform: string }[]
-    ): void => {
-      card.animate(cardMovement, {
-        ...CARD_ANIMATION_OPTIONS,
-        direction: 'reverse',
-      });
-    };
-
-    let lastSelectedCard: Element;
-    const animateCardSelection = (index: number) => {
-      if (lastSelectedCard && lastCardMovement) {
-        animateCardMovingBackwards(lastSelectedCard, lastCardMovement);
-      }
-
-      const selectedCard = selectedCardRefs.value[index];
-      const cardMovement = getCardMovement(
-        calculateAnimationTranslation(index),
-        calculateRandomRotation()
-      );
-
-      animateCardMovingForwards(selectedCard, cardMovement);
-
-      lastSelectedCard = selectedCard;
-      lastCardMovement = cardMovement;
-    };
-
-    const sendEstimation = (value: string, index: number) => {
-      if (selectedEstimation.value !== index) {
-        try {
-          animateCardSelection(index);
-        } catch (error) {
-          console.warn('Card selection could not be animated', error);
-        }
-
-        selectedEstimation.value = index;
-      }
-
-      context.emit('send-estimation', value);
+  if (typeof taskNameRef.value !== 'undefined') {
+    const taskNameRect = taskNameRef.value.getBoundingClientRect();
+    const taskNameCentreCoordinates = {
+      x: taskNameRect.x + taskNameRect.width / 2,
+      y: taskNameRect.y + taskNameRect.height / 2,
     };
 
     return {
-      votingIsComplete,
-      requestResult,
-      isSpectator,
-      selectedEstimation,
-      sendEstimation,
-      selectedCardRefs,
-      taskNameRef,
+      x: taskNameCentreCoordinates.x - selectedCardCentreCoordinates.x,
+      y: taskNameCentreCoordinates.y - selectedCardCentreCoordinates.y,
     };
-  },
+  }
+
+  return { x: 0, y: 0 };
+};
+
+const calculateRandomRotation = (): number => {
+  return Math.random() * 180 - 90;
+};
+
+const getCardMovement = (
+  { x, y }: { x: number; y: number },
+  rotation: number
+): { transform: string }[] => {
+  return [
+    { transform: 'translate3D(0, 0, 0) rotate(0)' },
+    {
+      transform: `translate3D(${x}px, ${y}px, 0) rotate(${rotation}deg)`,
+    },
+  ];
+};
+
+const animateCardMovingForwards = (card: Element, cardMovement: { transform: string }[]): void => {
+  card.animate(cardMovement, CARD_ANIMATION_OPTIONS);
+};
+
+// Unfortunately not all browsers support `animation.reverse()`, so we have to create a separate animation manually
+const animateCardMovingBackwards = (card: Element, cardMovement: { transform: string }[]): void => {
+  card.animate(cardMovement, {
+    ...CARD_ANIMATION_OPTIONS,
+    direction: 'reverse',
+  });
+};
+
+let lastSelectedCard: Element;
+const animateCardSelection = (index: number) => {
+  if (lastSelectedCard && lastCardMovement) {
+    animateCardMovingBackwards(lastSelectedCard, lastCardMovement);
+  }
+
+  const selectedCard = selectedCardRefs.value[index];
+  const cardMovement = getCardMovement(
+    calculateAnimationTranslation(index),
+    calculateRandomRotation()
+  );
+
+  animateCardMovingForwards(selectedCard, cardMovement);
+
+  lastSelectedCard = selectedCard;
+  lastCardMovement = cardMovement;
+};
+
+const sendEstimation = (value: string, index: number) => {
+  if (selectedEstimation.value !== index) {
+    try {
+      animateCardSelection(index);
+    } catch (error) {
+      console.warn('Card selection could not be animated', error);
+    }
+
+    selectedEstimation.value = index;
+  }
+
+  emits('send-estimation', value);
+};
+
+defineExpose({
+  votingIsComplete,
+  requestResult,
+  isSpectator,
+  selectedEstimation,
+  sendEstimation,
+  selectedCardRefs,
+  taskNameRef,
 });
 </script>

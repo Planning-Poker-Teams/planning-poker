@@ -13,27 +13,20 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent, PropType, toRef } from 'vue';
+<script setup lang="ts">
+import { PropType, toRef } from 'vue';
 import ParticipantItem from '../components/ParticipantItem.vue';
 import { Participant } from '../store/types';
 
-export default defineComponent({
-  components: {
-    ParticipantItem,
+const props = defineProps({
+  participants: {
+    type: Array as PropType<Participant[]>,
+    required: true,
   },
-  props: {
-    participants: {
-      type: Array as PropType<Participant[]>,
-      required: true,
-    },
-  },
-  setup(props) {
-    const refParticipants = toRef(props, 'participants');
+});
+const refParticipants = toRef(props, 'participants');
 
-    return {
-      refParticipants,
-    };
-  },
+defineExpose({
+  refParticipants,
 });
 </script>

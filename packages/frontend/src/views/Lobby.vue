@@ -60,54 +60,46 @@
   </div>
 </template>
 
-<script lang="ts">
-import { computed, defineComponent, ref } from 'vue';
+<script setup lang="ts">
+import { computed, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { Store, useStore } from 'vuex';
-import Toggle from '../components/Toggle.vue';
 import { MutationsType } from '../store/mutations';
 import { State } from '../store/types';
 
-export default defineComponent({
-  components: {
-    Toggle,
-  },
-  setup() {
-    const router = useRouter();
-    const route = useRoute();
-    const store: Store<State> = useStore();
+const router = useRouter();
+const route = useRoute();
+const store: Store<State> = useStore();
 
-    const userName = ref('');
-    const isSpectator = ref(false);
-    const showCats = ref(true);
-    const roomName = ref('');
-    const roomNameQuery = route.query.room as string;
-    if (typeof roomNameQuery === 'string' && roomNameQuery.length > 0) {
-      roomName.value = roomNameQuery;
-    }
+const userName = ref('');
+const isSpectator = ref(false);
+const showCats = ref(true);
+const roomName = ref('');
+const roomNameQuery = route.query.room as string;
+if (typeof roomNameQuery === 'string' && roomNameQuery.length > 0) {
+  roomName.value = roomNameQuery;
+}
 
-    const joinRoom = () => {
-      store.commit(MutationsType.SET_ROOM_INFORMATION, {
-        name: roomName,
-        userName: userName,
-        isSpectator: isSpectator,
-        showCats: showCats,
-      });
-      router.push({ name: 'room', params: { roomName: roomName.value } });
-    };
+const joinRoom = () => {
+  store.commit(MutationsType.SET_ROOM_INFORMATION, {
+    name: roomName,
+    userName: userName,
+    isSpectator: isSpectator,
+    showCats: showCats,
+  });
+  router.push({ name: 'room', params: { roomName: roomName.value } });
+};
 
-    const formIsCompleted = computed((): boolean => {
-      return typeof roomName.value !== 'undefined' && userName.value.length > 0;
-    });
+const formIsCompleted = computed((): boolean => {
+  return typeof roomName.value !== 'undefined' && userName.value.length > 0;
+});
 
-    return {
-      userName,
-      roomName,
-      isSpectator,
-      showCats,
-      formIsCompleted,
-      joinRoom,
-    };
-  },
+defineExpose({
+  userName,
+  roomName,
+  isSpectator,
+  showCats,
+  formIsCompleted,
+  joinRoom,
 });
 </script>

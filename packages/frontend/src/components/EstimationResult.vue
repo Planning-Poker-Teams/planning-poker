@@ -39,34 +39,27 @@
   </section>
 </template>
 
-<script lang="ts">
-import { computed, defineComponent, ref } from 'vue';
+<script setup lang="ts">
+import { computed, ref } from 'vue';
 import { Store, useStore } from 'vuex';
 import ParticipantItem from '../components/ParticipantItem.vue';
 import { State } from '../store/types';
 
-export default defineComponent({
-  name: 'EstimationResult',
-  components: { ParticipantItem },
-  setup() {
-    const store: Store<State> = useStore();
-    const taskName = ref(store.state.estimationResult?.taskName);
-    const estimationResultBySize = ref(
-      store.getters.resultBySize as { value: string; names: string[] }[]
-    );
-    const showConsensusCats = computed(
-      () => store.state.room?.showCats && estimationResultBySize.value.length == 1
-    );
+const store: Store<State> = useStore();
+const taskName = ref(store.state.estimationResult?.taskName);
+const estimationResultBySize = ref(
+  store.getters.resultBySize as { value: string; names: string[] }[]
+);
+const showConsensusCats = computed(
+  () => store.state.room?.showCats && estimationResultBySize.value.length == 1
+);
 
-    const catUrl = `https://thecatapi.com/api/images/get?format=src&type=gif&nocache=${new Date().toISOString()}`;
+const catUrl = `https://thecatapi.com/api/images/get?format=src&type=gif&nocache=${new Date().toISOString()}`;
 
-    return {
-      store,
-      taskName,
-      showConsensusCats,
-      catUrl,
-      estimationResultBySize,
-    };
-  },
+defineExpose({
+  taskName,
+  showConsensusCats,
+  catUrl,
+  estimationResultBySize,
 });
 </script>
