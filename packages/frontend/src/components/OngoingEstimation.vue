@@ -2,7 +2,7 @@
   <section class="flex-1 flex flex-col items-center p-4">
     <div class="w-full flex justify-center lg:pt-4 pb-4 lg:pb-8">
       <div
-        ref="taskNameRef"
+        ref="cardTargetField"
         class="min-h-24 w-full max-w-lg flex justify-center items-center rounded border-4 border-gray-300 border-dashed"
       >
         <p class="text-2xl font-medium font-sans text-center text-gray-800 p-2">
@@ -20,45 +20,32 @@
     </div>
 
     <div v-if="!isSpectator" class="grid grid-cols-4 col-gap-2 row-gap-2 mb-4">
-      <div
+      <card
         v-for="(value, index) in currentCardDeck"
         :ref="
           el => {
-            selectedCardRefs[index] = el;
+            cardRefList[index] = el;
           }
         "
         :key="value"
-        class="flex flex-col justify-center w-16 lg:w-20 h-24 lg:h-32 rounded-lg shadow cursor-pointer select-none relative"
-        :class="index == selectedEstimation ? 'bg-red-400 opacity-90' : 'bg-blue-400'"
+        :value="value"
+        :selected="index == selectedEstimation"
         @click="sendEstimation(value, index)"
       >
-        <p class="absolute top-0 left-0 text-sm text-white px-1 font-mono">
-          {{ value }}
-        </p>
-        <p class="text-white font-medium text-2xl text-center font-mono">
-          {{ value }}
-        </p>
-        <p class="absolute bottom-0 right-0 transform rotate-180 text-sm text-white px-1 font-mono">
-          {{ value }}
-        </p>
-      </div>
+      </card>
     </div>
-    <div v-if="isSpectator" class="row-span-2 flex items-center justify-center">
+    <div v-else class="row-span-2 flex items-center justify-center">
       <p class="font-medium text-4xl text-gray-500">Participants are voting</p>
     </div>
   </section>
 </template>
 
 <script setup lang="ts">
-import { onBeforeUpdate, PropType, Ref, ref, toRef } from 'vue';
+import { onBeforeUpdate, PropType, Ref, ref, toRef, VueElement } from 'vue';
 import { Store, useStore } from 'vuex';
 import { State } from '../store/types';
-
-const CARD_ANIMATION_OPTIONS: KeyframeAnimationOptions = {
-  duration: 500,
-  fill: 'forwards',
-  easing: 'ease-in-out',
-};
+import Card from './Card.vue';
+import useCardAnimation, { translates } from './CardAnimation';
 
 defineProps({
   taskName: {
@@ -72,93 +59,26 @@ defineProps({
 });
 const emits = defineEmits(['send-estimation', 'request-result']);
 const store: Store<State> = useStore();
-const votingIsComplete = toRef(store.getters, 'votingIsComplete');
+const votingIsComplete: Ref<boolean> = toRef(store.getters, 'votingIsComplete');
 const isSpectator = ref(store.state.room?.isSpectator);
-const taskNameRef: Ref<Element | undefined> = ref(undefined);
+const cardTargetField: Ref<Element | undefined> = ref(undefined);
 const selectedEstimation: Ref<number | undefined> = ref(undefined);
-const selectedCardRefs: Ref<Element[]> = ref([]);
+const cardRefList: Ref<VueElement[]> = ref([]);
 onBeforeUpdate(() => {
-  selectedCardRefs.value = [];
+  cardRefList.value = [];
 });
 
-let lastCardMovement: { transform: string }[] = [];
-
 const requestResult = () => emits('request-result');
-const calculateAnimationTranslation = (index: number): { x: number; y: number } => {
-  const selectedCard = selectedCardRefs.value[index];
 
-  const selectedCardRect = selectedCard.getBoundingClientRect();
-  const selectedCardCentreCoordinates = {
-    x: selectedCardRect.x + selectedCardRect.width / 2,
-    y: selectedCardRect.y + selectedCardRect.height / 2,
-  };
-
-  if (typeof taskNameRef.value !== 'undefined') {
-    const taskNameRect = taskNameRef.value.getBoundingClientRect();
-    const taskNameCentreCoordinates = {
-      x: taskNameRect.x + taskNameRect.width / 2,
-      y: taskNameRect.y + taskNameRect.height / 2,
-    };
-
-    return {
-      x: taskNameCentreCoordinates.x - selectedCardCentreCoordinates.x,
-      y: taskNameCentreCoordinates.y - selectedCardCentreCoordinates.y,
-    };
-  }
-
-  return { x: 0, y: 0 };
-};
-
-const calculateRandomRotation = (): number => {
-  return Math.random() * 180 - 90;
-};
-
-const getCardMovement = (
-  { x, y }: { x: number; y: number },
-  rotation: number
-): { transform: string }[] => {
-  return [
-    { transform: 'translate3D(0, 0, 0) rotate(0)' },
-    {
-      transform: `translate3D(${x}px, ${y}px, 0) rotate(${rotation}deg)`,
-    },
-  ];
-};
-
-const animateCardMovingForwards = (card: Element, cardMovement: { transform: string }[]): void => {
-  card.animate(cardMovement, CARD_ANIMATION_OPTIONS);
-};
-
-// Unfortunately not all browsers support `animation.reverse()`, so we have to create a separate animation manually
-const animateCardMovingBackwards = (card: Element, cardMovement: { transform: string }[]): void => {
-  card.animate(cardMovement, {
-    ...CARD_ANIMATION_OPTIONS,
-    direction: 'reverse',
-  });
-};
-
-let lastSelectedCard: Element;
-const animateCardSelection = (index: number) => {
-  if (lastSelectedCard && lastCardMovement) {
-    animateCardMovingBackwards(lastSelectedCard, lastCardMovement);
-  }
-
-  const selectedCard = selectedCardRefs.value[index];
-  const cardMovement = getCardMovement(
-    calculateAnimationTranslation(index),
-    calculateRandomRotation()
-  );
-
-  animateCardMovingForwards(selectedCard, cardMovement);
-
-  lastSelectedCard = selectedCard;
-  lastCardMovement = cardMovement;
-};
-
+let lastSelectedCard: VueElement | undefined;
+let lastCardMovement: translates;
 const sendEstimation = (value: string, index: number) => {
   if (selectedEstimation.value !== index) {
     try {
-      animateCardSelection(index);
+      const { animateCardSelection } = useCardAnimation(cardRefList.value[index], cardTargetField);
+
+      lastCardMovement = animateCardSelection(lastSelectedCard, lastCardMovement);
+      lastSelectedCard = cardRefList.value[index];
     } catch (error) {
       console.warn('Card selection could not be animated', error);
     }
@@ -175,7 +95,7 @@ defineExpose({
   isSpectator,
   selectedEstimation,
   sendEstimation,
-  selectedCardRefs,
-  taskNameRef,
+  cardRefList,
+  cardTargetField,
 });
 </script>
