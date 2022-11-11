@@ -54,12 +54,6 @@
         <div class="my-4x flex flex-col items-center">
           <div class="my-4 w-full rounded border border-gray-200" />
           <a class="underline text-gray-700" href="/legal-notice">Legal notice</a>
-          <a
-            href="https://apps.apple.com/app/planning-poker-for-teams/id1495956287"
-            target="_blank"
-          >
-            <img class="mt-3 w-32" src="../assets/app-store-badge.png" />
-          </a>
         </div>
       </div>
     </form>
