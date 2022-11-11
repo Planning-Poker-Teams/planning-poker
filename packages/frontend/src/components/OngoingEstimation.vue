@@ -19,7 +19,7 @@
       </button>
     </div>
 
-    <div v-if="!isSpectator" class="grid grid-cols-4 col-gap-2 row-gap-2 mb-4">
+    <div v-if="!isSpectator" class="grid grid-cols-4 gap-x-2 gap-y-2 mb-4">
       <card
         v-for="(value, index) in currentCardDeck"
         :ref="

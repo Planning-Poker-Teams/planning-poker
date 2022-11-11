@@ -9,7 +9,7 @@
     <p class="text-white font-medium text-2xl text-center font-mono">
       {{ value }}
     </p>
-    <p class="absolute bottom-0 right-0 transform rotate-180 text-sm text-white px-1 font-mono">
+    <p class="absolute bottom-0 right-0 rotate-180 text-sm text-white px-1 font-mono">
       {{ value }}
     </p>
   </div>
