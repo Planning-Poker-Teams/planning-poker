@@ -17,20 +17,22 @@
           v-model="roomName"
           class="mb-2 py-2 px-3 text-lg font-semi bg-white appearance-none border-2 rounded text-grey-darker focus:outline-none focus:border-green-300"
           placeholder="Room name"
+          @input="onRoomName"
         />
         <input
           v-model="userName"
           class="mb-2 py-2 px-3 text-lg font-semi bg-white appearance-none border-2 rounded text-grey-darker focus:outline-none focus:border-green-300"
           placeholder="Your name"
+          @input="onUserName"
         />
-        <toggle
+        <Toggle
           id="isSpectator"
           v-model="isSpectator"
           class="m-2"
           label="Join as spectator"
           :value="isSpectator"
         />
-        <toggle
+        <Toggle
           id="showCats"
           v-model="showCats"
           class="mx-2 mb-2"
@@ -64,6 +66,8 @@
 import { computed, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { Store, useStore } from 'vuex';
+import Toggle from '../components/Toggle.vue';
+import { useStorage } from '../hooks/useStorage';
 import { MutationsType } from '../store/mutations';
 import { State } from '../store/types';
 
@@ -71,10 +75,20 @@ const router = useRouter();
 const route = useRoute();
 const store: Store<State> = useStore();
 
-const userName = ref('');
+const storageUserName = useStorage('userName');
+const userName = ref(storageUserName.value);
+const onUserName = (event: Event) => {
+  storageUserName.value = event.target?.value;
+};
+
+const storageRoomName = useStorage('roomName');
+const roomName = ref(storageRoomName.value);
+const onRoomName = (event: Event) => {
+  storageRoomName.value = event.target?.value;
+};
+
 const isSpectator = ref(false);
 const showCats = ref(true);
-const roomName = ref('');
 const roomNameQuery = route.query.room as string;
 if (typeof roomNameQuery === 'string' && roomNameQuery.length > 0) {
   roomName.value = roomNameQuery;
