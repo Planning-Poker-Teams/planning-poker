@@ -19,6 +19,8 @@ a|image::https://github.com/Planning-Poker-Teams/planning-poker/actions/workflow
 
 == Getting started
 
+- Install node: `nvm install`
+- Activate yarn: `nvm exec corepack enable`
 - Install the dependencies: `nvm exec yarn install`
 - Build the backend: `nvm exec yarn workspace backend build`
 - Build the frontend: `nvm exec yarn workspace frontend build`
