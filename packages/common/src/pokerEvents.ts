@@ -1,4 +1,4 @@
-type PokerEvent =
+export type PokerEvent =
   | JoinRoom
   | UserJoined
   | UserLeft
@@ -9,55 +9,55 @@ type PokerEvent =
   | RequestShowEstimationResult
   | EstimationResult;
 
-interface JoinRoom {
+export interface JoinRoom {
   eventType: 'joinRoom';
   userName: string;
   roomName: string;
   isSpectator: boolean;
 }
 
-interface UserJoined {
+export interface UserJoined {
   eventType: 'userJoined';
   userName: string;
   isSpectator: boolean;
 }
 
-interface UserLeft {
+export interface UserLeft {
   eventType: 'userLeft';
   userName: string;
 }
 
-interface ChangeCardDeck {
+export interface ChangeCardDeck {
   eventType: 'changeCardDeck';
   cardDeck: string[];
 }
 
-interface StartEstimation {
+export interface StartEstimation {
   eventType: 'startEstimation';
   userName?: string;
   taskName: string;
   startDate: string;
 }
 
-interface UserEstimate {
+export interface UserEstimate {
   eventType: 'estimate';
   userName: string;
   taskName: string;
   estimate: string;
 }
 
-interface UserHasEstimated {
+export interface UserHasEstimated {
   eventType: 'userHasEstimated';
   userName: string;
   taskName: string;
 }
 
-interface RequestShowEstimationResult {
+export interface RequestShowEstimationResult {
   eventType: 'showResult';
   userName: string;
 }
 
-interface EstimationResult {
+export interface EstimationResult {
   eventType: 'estimationResult';
   taskName: string;
   startDate: string;

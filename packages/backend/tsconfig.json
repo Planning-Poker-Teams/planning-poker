@@ -20,5 +20,6 @@
     },
     "lib": ["esnext"]
   },
-  "include": ["src/**/*.ts"]
+  "include": ["src/**/*.ts"],
+  "references": [{ "path": "../common" }]
 }
