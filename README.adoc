@@ -1,0 +1,24 @@
+= Planning Poker
+
+Planning Poker is an application for conducting estimation sessions in agile teams that collaborate remotely. Users can join planning rooms where they meet with the other participants. Users can start estimates for tasks, submit their estimates, and mutually reveal the results.
+
+== Environments / Branches
+
+
+|===
+|Branch |Build Status |URL
+
+|`production`
+a|image::https://github.com/Planning-Poker-Teams/planning-poker/actions/workflows/build-and-deploy.yml/badge.svg?branch=production[Production Build Status, link="https://github.com/Planning-Poker-Teams/planning-poker/actions/workflows/build-and-deploy.yml?query=branch%3Aproduction"]
+|https://planningpoker.cc/
+
+|`develop`
+a|image::https://github.com/Planning-Poker-Teams/planning-poker/actions/workflows/build-and-deploy.yml/badge.svg?branch=develop[Develop Build Status, link="https://github.com/Planning-Poker-Teams/planning-poker/actions/workflows/build-and-deploy.yml?query=branch%3Adevelop"]
+|http://planning-poker-develop-frontend.s3-website.eu-central-1.amazonaws.com
+|===
+
+== Getting started
+
+- Install the dependencies: `nvm exec yarn install`
+- Build the backend: `nvm exec yarn workspace backend build`
+- Build the frontend: `nvm exec yarn workspace frontend build`
