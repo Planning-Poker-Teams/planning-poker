@@ -120,6 +120,7 @@ jobs:
           # Workaround: Terraform checks if the files are there, but does not use them.
           mkdir ../packages/backend/dist
           touch ../packages/backend/dist/handleWebsocketEvents.js
+          touch ../packages/backend/dist/preventClientTimeout.js
           terraform destroy \
             -var environment="${ENVIRONMENT_NAME}" \
             -auto-approve
