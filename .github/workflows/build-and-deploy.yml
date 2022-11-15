@@ -111,7 +111,7 @@ jobs:
         uses: marocchino/sticky-pull-request-comment@v2
         with:
           message: |
-            Pull Request is deployed at <http://planning-poker-${{ env.ENVIRONMENT_NAME }}-frontend.s3-website.eu-central-1.amazonaws.com>
+            Pull Request is deployed at <https://${{ env.ENVIRONMENT_NAME }}.planningpoker.cc/>
 
       - name: Terraform Destroy
         if: github.event_name == 'pull_request' && github.event.action == 'closed'

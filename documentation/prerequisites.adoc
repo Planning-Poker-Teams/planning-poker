@@ -1,3 +1,5 @@
+:important-caption: ⚠️
+
 = Prerequisites
 
 The setup is currently based on a single AWS account. All environments are deployed into that account. The deployment is done via GitHub Actions by pushing to the respective Git branch. Terraform is used to deploy the application. The Terraform state of these environments is separated by splitting them into different files (S3 keys).
@@ -36,4 +38,51 @@ Bucket Versioning: Enable
 DynamoDB → Tables → Create table
 Table name: planning-poker-terraform-state-locks
 Partition key: LockID
+----
+
+== Domain & DNS
+[source]
+----
+Route 53 -> Registered domains -> Register Domain
+Route 53 -> Hosted zones -> Create hosted zone
+----
+
+== TLS Certificate
+
+[IMPORTANT]
+The certificate must be created twice in different regions. This is because Cloudfront requires its certificates in `us-east-1`, while the API Gateway V2 expects a "local" certificate in `eu-central-1`.
+
+=== Request Certificate in `us-east-1`
+[source]
+----
+Switch region to `eu-east-1`
+Certificate Manager -> Request certificate
+Certificate type: Request a public certificate
+Fully qualified domain names:
+    *.planningpoker.cc
+    planningpoker.cc
+Validation method: DNS validation
+----
+=== Validate Certificate in `us-east-1`
+[source]
+----
+Certificate Manager -> List certificates -> *.planningpoker.cc -> Create records in Route 53
+Wait for the validation to complete (Status "Issued")
+----
+=== Request Certificate in `eu-central-1`
+[source]
+----
+Switch region to `eu-east-1`
+Certificate Manager -> Request certificate
+Certificate type: Request a public certificate
+Fully qualified domain names:
+    *.planningpoker.cc
+    planningpoker.cc
+Validation method: DNS validation
+----
+=== Validate Certificate in `eu-central-1`
+[source]
+----
+No new Route 53/DNS records are needed.
+Wait for the validation to complete (Status "Issued")
 ----
