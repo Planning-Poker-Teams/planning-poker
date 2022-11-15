@@ -195,14 +195,32 @@ resource "aws_apigatewayv2_stage" "prod" {
   api_id      = aws_apigatewayv2_api.websocket.id
   name        = "prod"
   auto_deploy = true
+}
 
-  # nach routen und integrationen?
+resource "aws_apigatewayv2_domain_name" "api" {
+  domain_name = local.backendDomain
 
-  #  lifecycle {
-  #    ignore_changes = [deployment_id, default_route_settings]
-  #  }
-  #
-  #  stage_variables = {
-  #    name = "prod"
-  #  }
+  domain_name_configuration {
+    certificate_arn = data.aws_acm_certificate.backend.arn
+    endpoint_type   = "REGIONAL"
+    security_policy = "TLS_1_2"
+  }
+}
+
+resource "aws_route53_record" "api" {
+  name    = aws_apigatewayv2_domain_name.api.domain_name
+  type    = "A"
+  zone_id = data.aws_route53_zone.main.id
+
+  alias {
+    name                   = aws_apigatewayv2_domain_name.api.domain_name_configuration[0].target_domain_name
+    zone_id                = aws_apigatewayv2_domain_name.api.domain_name_configuration[0].hosted_zone_id
+    evaluate_target_health = false
+  }
+}
+
+resource "aws_apigatewayv2_api_mapping" "api" {
+  api_id      = aws_apigatewayv2_api.websocket.id
+  domain_name = aws_apigatewayv2_domain_name.api.id
+  stage       = aws_apigatewayv2_stage.prod.id
 }

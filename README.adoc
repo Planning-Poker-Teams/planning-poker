@@ -14,7 +14,7 @@ a|image::https://github.com/Planning-Poker-Teams/planning-poker/actions/workflow
 
 |`develop`
 a|image::https://github.com/Planning-Poker-Teams/planning-poker/actions/workflows/build-and-deploy.yml/badge.svg?branch=develop[Develop Build Status, link="https://github.com/Planning-Poker-Teams/planning-poker/actions/workflows/build-and-deploy.yml?query=branch%3Adevelop"]
-|http://planning-poker-develop-frontend.s3-website.eu-central-1.amazonaws.com
+|https://develop.planningpoker.cc/
 |===
 
 == Getting started
