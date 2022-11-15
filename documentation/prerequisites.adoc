@@ -55,7 +55,7 @@ The certificate must be created twice in different regions. This is because Clou
 === Request Certificate in `us-east-1`
 [source]
 ----
-Switch region to `eu-east-1`
+Switch region to `us-east-1`
 Certificate Manager -> Request certificate
 Certificate type: Request a public certificate
 Fully qualified domain names:
@@ -72,7 +72,7 @@ Wait for the validation to complete (Status "Issued")
 === Request Certificate in `eu-central-1`
 [source]
 ----
-Switch region to `eu-east-1`
+Switch back to region `eu-central-1`
 Certificate Manager -> Request certificate
 Certificate type: Request a public certificate
 Fully qualified domain names:
