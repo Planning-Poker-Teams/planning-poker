@@ -75,6 +75,7 @@ export const handlePokerEvent = (
           taskName: room.currentEstimation.taskName,
         };
 
+        // todo
         const userHasEstimatedEvents: UserHasEstimated[] = room.participants
           .filter(p => p.currentEstimation !== undefined)
           .sort(sortByName)
@@ -117,6 +118,7 @@ export const handlePokerEvent = (
     }
 
     case 'changeCardDeck': {
+      // todo
       const cardsPlayed =
         room.participants.filter(p => p.currentEstimation !== undefined).length > 0;
 
@@ -136,6 +138,7 @@ export const handlePokerEvent = (
     }
 
     case 'startEstimation': {
+      // todo
       const isEstimationOngoing =
         room.currentEstimation?.taskName !== undefined &&
         !room.participants.every(p => p.currentEstimation);
@@ -182,6 +185,7 @@ export const handlePokerEvent = (
         estimate: inputEvent.estimate,
         participantId: participantId,
       };
+      // todo
       const previousEstimation = room.participants.find(
         p => p.id === participant?.id
       )?.currentEstimation;
@@ -204,6 +208,7 @@ export const handlePokerEvent = (
     }
 
     case 'showResult': {
+      // todo
       const estimatingParticipants = room.participants.filter(p => !p.isSpectator);
 
       const estimationCompleted = estimatingParticipants.every(p => p.currentEstimation);

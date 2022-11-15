@@ -15,7 +15,8 @@ export const handleCommand =
   async (command: Command, room: PokerRoom): Promise<void> => {
     switch (command.type) {
       case CommandType.BROADCAST_MESSAGE: {
-        const allConnectionIds = room.participants.map(p => p.id);
+        const allParticipants = await participantRepository.fetchParticipants(room.name);
+        const allConnectionIds = allParticipants.map(p => p.id);
         log.info('Outgoing message (broadcast)', {
           message: command.payload,
           direction: 'outgoing',
@@ -46,18 +47,17 @@ export const handleCommand =
           messageSender
         );
         await participantRepository.putParticipant(command.participant, command.roomName);
-        await roomRepository.addToParticipants(command.roomName, command.participant.id);
         break;
       }
 
       case CommandType.REMOVE_PARTICIPANT: {
         await participantRepository.removeParticipant(command.participant.id);
-        await roomRepository.removeFromParticipants(command.roomName, command.participant.id);
         break;
       }
 
       case CommandType.SEND_EXISTING_PARTICIPANTS: {
-        const userJoinedEvents: UserJoined[] = room.participants.map(participant => ({
+        const allParticipants = await participantRepository.fetchParticipants(room.name);
+        const userJoinedEvents: UserJoined[] = allParticipants.map(participant => ({
           eventType: 'userJoined',
           userName: participant.name,
           isSpectator: participant.isSpectator,

@@ -77,22 +77,24 @@ export default class DynamoDbParticipantRepository implements ParticipantReposit
     };
   }
 
-  async fetchParticipants(ids: string[]): Promise<Participant[]> {
-    const idsForFetching = ids.filter(id => !this.cache.has(id));
-    const idsFromCache = ids.filter(id => this.cache.has(id));
+  async fetchParticipants(roomName: string): Promise<Participant[]> {
+    if (roomName.length === 0) {
+      return [];
+    }
 
-    const result =
-      idsForFetching.length > 0
-        ? await this.client.batchGet(this.participantsTableName, 'connectionId', idsForFetching)
-        : undefined;
+    const result = await this.client.queryIndex({
+      tableName: this.participantsTableName,
+      indexName: 'roomName',
+      keyConditionExpression: 'roomName = :roomName',
+      keyValues: ['connectionId', 'isSpectator', 'name'],
+      limit: 100,
+    });
 
-    const participants =
-      result?.Responses?.participants.map(result => result as ParticipantRowSchema) ?? [];
+    if (typeof result.Items !== 'object') {
+      return [];
+    }
 
-    const participantsFromCache = idsFromCache.map(id => this.cache.get(id)!);
-
-    const allParticipants = [...participants, ...participantsFromCache];
-    return allParticipants.map(p => ({
+    return result.Items.map(p => ({
       id: p.connectionId,
       name: p.name,
       isSpectator: p.isSpectator,

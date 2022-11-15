@@ -56,28 +56,6 @@ export default class DynamoDbRoomRepository implements RoomRepository {
     });
   }
 
-  async addToParticipants(name: string, connectionId: string): Promise<void> {
-    await this.client.update({
-      tableName: this.roomsTableName,
-      partitionKey: { name },
-      updateExpression: 'ADD participants :newParticipant',
-      expressionAttributeValues: {
-        ':newParticipant': this.client.createSetExpression([connectionId]),
-      },
-    });
-  }
-
-  async removeFromParticipants(name: string, connectionId: string): Promise<void> {
-    await this.client.update({
-      tableName: this.roomsTableName,
-      partitionKey: { name },
-      updateExpression: 'DELETE participants :participant',
-      expressionAttributeValues: {
-        ':participant': this.client.createSetExpression([connectionId]),
-      },
-    });
-  }
-
   async startNewEstimation(
     roomName: string,
     taskName: string,

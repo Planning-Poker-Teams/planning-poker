@@ -7,25 +7,25 @@ export const cleanUpStaleParticipants = async (
   participantRepository: ParticipantRepository,
   messageSender: MessageSender
 ): Promise<void> => {
-  const room = await roomRepository.getOrCreateRoom(roomName);
-  log.info('Checking stale participants', { room });
+  const participants = await participantRepository.fetchParticipants(roomName);
+  log.info('Checking stale participants', { room: participants });
 
   const connectionData = await Promise.all(
-    room.participants.map(connectionId => {
-      return messageSender.hasConnection(connectionId).then(hasConnection => ({
-        connectionId,
+    participants.map(async ({ id }) => {
+      const hasConnection = await messageSender.hasConnection(id);
+      return {
+        id,
         hasConnection,
-      }));
+      };
     })
   );
 
   await Promise.all(
     connectionData
       .filter(({ hasConnection }) => !hasConnection)
-      .map(async ({ connectionId }) => {
-        log.info('Removing stale participant', { connectionId, roomName });
-        await participantRepository.removeParticipant(connectionId);
-        await roomRepository.removeFromParticipants(roomName, connectionId);
+      .map(async ({ id }) => {
+        log.info('Removing stale participant', { id, roomName });
+        await participantRepository.removeParticipant(id);
       })
   );
 };

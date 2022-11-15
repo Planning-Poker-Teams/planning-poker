@@ -41,7 +41,7 @@ describe('ParticipantRepository', () => {
   });
 
   it('can handle existing and non-existing entries in a batchGet', async () => {
-    const participants = await repository.fetchParticipants(['connection-id1', 'unknown']);
+    const participants = await repository.fetchParticipants(exampleRoomName);
 
     expect(participants).toEqual([exampleParticipant]);
   });
@@ -54,7 +54,7 @@ describe('ParticipantRepository', () => {
     };
     await repository.putParticipant(otherParticipant, exampleRoomName);
 
-    const participants = await repository.fetchParticipants(['connection-id1', 'connection-id2']);
+    const participants = await repository.fetchParticipants(exampleRoomName);
 
     expect(participants.length).toBe(2);
     expect(participants).toContainEqual(exampleParticipant);
@@ -65,7 +65,7 @@ describe('ParticipantRepository', () => {
     await repository.removeParticipant('connection-id1');
     await repository.removeParticipant('connection-id2');
 
-    const participants = await repository.fetchParticipants(['connection-id1', 'connection-id2']);
+    const participants = await repository.fetchParticipants(exampleRoomName);
 
     expect(participants.length).toBe(0);
   });

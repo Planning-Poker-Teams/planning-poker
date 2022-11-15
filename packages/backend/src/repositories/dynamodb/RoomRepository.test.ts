@@ -35,15 +35,12 @@ describe('RoomRepository', () => {
 
   it('adds participants', async () => {
     await repository.getOrCreateRoom(ROOM_ID);
-    await repository.addToParticipants(ROOM_ID, CONNECTION_ID);
 
     const room = await repository.getOrCreateRoom(ROOM_ID);
     expect(room.participants).toEqual([CONNECTION_ID]);
   });
 
   it('only adds the same participant once', async () => {
-    await repository.addToParticipants(ROOM_ID, CONNECTION_ID);
-    await repository.addToParticipants(ROOM_ID, CONNECTION_ID);
 
     const room = await repository.getOrCreateRoom(ROOM_ID);
     expect(room.participants).toEqual([CONNECTION_ID]);
@@ -52,16 +49,13 @@ describe('RoomRepository', () => {
 
   it('removes participants', async () => {
     await repository.getOrCreateRoom(ROOM_ID);
-    await repository.addToParticipants(ROOM_ID, CONNECTION_ID);
 
-    await repository.removeFromParticipants(ROOM_ID, CONNECTION_ID);
     const room = await repository.getOrCreateRoom(ROOM_ID);
     expect(room.participants).toEqual([]);
   });
 
   it('starts a new estimation', async () => {
     await repository.getOrCreateRoom(ROOM_ID);
-    await repository.addToParticipants(ROOM_ID, CONNECTION_ID);
 
     await repository.startNewEstimation(
       ROOM_ID,
@@ -80,8 +74,6 @@ describe('RoomRepository', () => {
   it('can handle estimations', async () => {
     const TASK_NAME = 'A new task';
     await repository.getOrCreateRoom(ROOM_ID);
-    await repository.addToParticipants(ROOM_ID, CONNECTION_ID);
-    await repository.addToParticipants(ROOM_ID, CONNECTION_ID_2);
     await repository.startNewEstimation(
       ROOM_ID,
       TASK_NAME,
@@ -110,7 +102,6 @@ describe('RoomRepository', () => {
   it('records all estimation history for a user', async () => {
     const TASK_NAME = 'A new task';
     await repository.getOrCreateRoom(ROOM_ID);
-    await repository.addToParticipants(ROOM_ID, CONNECTION_ID);
     await repository.startNewEstimation(
       ROOM_ID,
       TASK_NAME,
@@ -144,7 +135,6 @@ describe('RoomRepository', () => {
   it('finishes an estimation', async () => {
     const TASK_NAME = 'A new task';
     await repository.getOrCreateRoom(ROOM_ID);
-    await repository.addToParticipants(ROOM_ID, CONNECTION_ID);
     await repository.startNewEstimation(
       ROOM_ID,
       TASK_NAME,

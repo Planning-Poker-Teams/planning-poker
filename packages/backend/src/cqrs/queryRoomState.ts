@@ -15,7 +15,7 @@ export const queryRoomState =
   async (roomName: string): Promise<PokerRoom> => {
     const room = await roomRepository.getOrCreateRoom(roomName);
 
-    const participants = await participantRepository.fetchParticipants(room.participants);
+    const participants = await participantRepository.fetchParticipants(roomName);
 
     const participantsWithEstimations = participants.map(p => ({
       ...p,
