@@ -150,12 +150,8 @@ resource "aws_cloudfront_distribution" "frontend" {
   ]
 }
 
-data "aws_route53_zone" "selected" {
-  name = "planningpoker.cc"
-}
-
 resource "aws_route53_record" "frontend" {
-  zone_id = data.aws_route53_zone.selected.zone_id
+  zone_id = data.aws_route53_zone.main.zone_id
   name    = local.frontendDomain
   type    = "A"
 
