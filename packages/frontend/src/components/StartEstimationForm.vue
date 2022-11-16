@@ -27,7 +27,6 @@
 </template>
 
 <script setup lang="ts">
-import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { computed, ref } from 'vue';
 import { Store, useStore } from 'vuex';
 import { State } from '../store/types';

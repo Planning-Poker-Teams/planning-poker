@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest';
 import { initialState } from '../store';
 import { mutations } from '../store/mutations';
 import { EstimationResult, StartEstimation, UserJoined, UserLeft } from '../store/pokerEvents';
