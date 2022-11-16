@@ -1,11 +1,11 @@
-import { createApp, VueElement } from 'vue';
+import { library } from '@fortawesome/fontawesome-svg-core';
+import { faDoorOpen, faCheck, faPlay, faRedo, faSlidersH } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+import { createApp } from 'vue';
 import App from './App.vue';
 import router from './router';
 import store from './store';
 import './assets/tailwind.css';
-import { library } from '@fortawesome/fontawesome-svg-core';
-import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
-import { faDoorOpen, faCheck, faPlay, faRedo, faSlidersH } from '@fortawesome/free-solid-svg-icons';
 
 library.add(faDoorOpen);
 library.add(faCheck);

@@ -1,8 +1,8 @@
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { ActionContext } from 'vuex';
 import store from '../store';
 import { actions, ActionType } from '../store/actions';
 import { State } from '../store/types';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 describe('actions', () => {
   const state: State = {
