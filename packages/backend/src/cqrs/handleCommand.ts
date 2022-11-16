@@ -51,12 +51,24 @@ export const handleCommand =
       }
 
       case CommandType.REMOVE_PARTICIPANT: {
+        await cleanUpStaleParticipants(
+          command.roomName,
+          roomRepository,
+          participantRepository,
+          messageSender
+        );
         await participantRepository.removeParticipant(command.participant.id);
         await roomRepository.removeFromParticipants(command.roomName, command.participant.id);
         break;
       }
 
       case CommandType.SEND_EXISTING_PARTICIPANTS: {
+        await cleanUpStaleParticipants(
+          command.roomName,
+          roomRepository,
+          participantRepository,
+          messageSender
+        );
         const userJoinedEvents: UserJoined[] = room.participants.map(participant => ({
           eventType: 'userJoined',
           userName: participant.name,
@@ -86,6 +98,12 @@ export const handleCommand =
       }
 
       case CommandType.RECORD_ESTIMATION: {
+        await cleanUpStaleParticipants(
+          command.roomName,
+          roomRepository,
+          participantRepository,
+          messageSender
+        );
         await roomRepository.addToEstimations(room.name, command.participantId, command.estimate);
         break;
       }
