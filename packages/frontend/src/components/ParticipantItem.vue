@@ -11,7 +11,6 @@
 </template>
 
 <script setup lang="ts">
-import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { toRef } from 'vue';
 const props = defineProps({
   name: {

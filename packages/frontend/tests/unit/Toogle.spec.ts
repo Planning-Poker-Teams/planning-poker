@@ -1,5 +1,6 @@
 import { mount } from '@vue/test-utils';
 import Toggle from '../../src/components/Toggle.vue';
+import { describe, expect, it } from 'vitest';
 
 describe('Toggle', () => {
   it('should use the property "id" in label and input', () => {
@@ -8,7 +9,7 @@ describe('Toggle', () => {
         id: 'test-id',
         label: 'Label Text',
         modelValue: false,
-      }
+      },
     });
 
     expect(wrapper.find('label').attributes('for')).toEqual('test-id');
@@ -20,7 +21,7 @@ describe('Toggle', () => {
         id: 'test-id',
         label: 'Label Text',
         modelValue: false,
-      }
+      },
     });
 
     expect(wrapper.text()).toContain('Label Text');
@@ -31,7 +32,7 @@ describe('Toggle', () => {
         id: 'test-id',
         label: 'Label Text',
         modelValue: false,
-      }
+      },
     });
 
     const input = wrapper.find('input');
@@ -43,7 +44,7 @@ describe('Toggle', () => {
         id: 'test-id',
         label: 'Label Text',
         modelValue: false,
-      }
+      },
     });
 
     wrapper.find('input').element.checked = true;

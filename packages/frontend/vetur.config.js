@@ -8,14 +8,14 @@ module.exports = {
   },
   settings: {
     'vetur.useWorkspaceDependencies': true,
-    'vetur.experimental.templateInterpolationService': true
+    'vetur.experimental.templateInterpolationService': true,
   },
-  projects: [{
-    root: './web',
-    package: './package.json',
-    tsconfig: './tsconfig.json',
-    globalComponents: [
-      './src/**/*.vue'
-    ]
-  }]
+  projects: [
+    {
+      root: './web',
+      package: './package.json',
+      tsconfig: './tsconfig.json',
+      globalComponents: ['./src/**/*.vue'],
+    },
+  ],
 };

@@ -1,17 +1,20 @@
-import { defineConfig } from 'vite';
-import vue from '@vitejs/plugin-vue';
-import legacy from '@vitejs/plugin-legacy';
-import html from 'vite-plugin-html';
-import path from 'path';
 import fs from 'fs';
+import path from 'path';
+import legacy from '@vitejs/plugin-legacy';
+import vue from '@vitejs/plugin-vue';
+import { defineConfig } from 'vite';
+import { createHtmlPlugin } from 'vite-plugin-html';
 
-// https://vitejs.dev/config/
 export default defineConfig({
+  test: {
+    test: 'vitest',
+    environment: 'jsdom',
+  },
   plugins: [
     vue(),
-    html({
-    inject: {
-      data: {
+    createHtmlPlugin({
+      inject: {
+        data: {
           TITLE: 'Planning Poker',
           BASE_URL: process.env.BASE_URL,
         },

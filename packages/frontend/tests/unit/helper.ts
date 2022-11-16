@@ -6,7 +6,7 @@ import { State } from '../../src/store/types';
 export default (
   component: any,
   componentOptions = {},
-  storeState: State = { participants: [] }
+  storeState: State = { participants: [], cardDeck: ['0, 1, 2, 3, 5, 8, 13'] }
 ) => {
   const store = customStore(storeState);
   return {

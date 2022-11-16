@@ -40,7 +40,6 @@
 </template>
 
 <script setup lang="ts">
-import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { computed, PropType, toRef } from 'vue';
 import { useRouter } from 'vue-router';
 import { useStore } from 'vuex';
