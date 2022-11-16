@@ -51,6 +51,12 @@ export const handleCommand =
       }
 
       case CommandType.REMOVE_PARTICIPANT: {
+        await cleanUpStaleParticipants(
+          command.roomName,
+          roomRepository,
+          participantRepository,
+          messageSender
+        );
         await participantRepository.removeParticipant(command.participant.id);
         await roomRepository.removeFromParticipants(command.roomName, command.participant.id);
         break;
