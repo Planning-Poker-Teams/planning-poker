@@ -5,7 +5,7 @@
   "description": "Planning Poker for the web browser",
   "scripts": {
     "dev": "vite",
-    "test": "vite-jest --no-cache",
+    "test": "vitest",
     "lint": "eslint --ext .ts,.tsx,.vue src",
     "build": "vite build",
     "serve": "vite preview"
@@ -39,12 +39,7 @@
     "jest-environment-jsdom": "^27.4.4",
     "prettier": "^2.5.1",
     "prettier-airbnb-config": "^1.0.0",
-    "postcss": "^8.4.5",
-    "typescript": "4.4.4",
-    "vite": "^2.6.4",
-    "vite-jest": "^0.1.4",
-    "vite-plugin-html": "^2.1.1",
-    "vue-eslint-parser": "^8.0.1"
+    "vitest": "^0.25.2",
   },
   "lint-staged": {
     "*.{js,jsx,vue,ts,tsx}": [

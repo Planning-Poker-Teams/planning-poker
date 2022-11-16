@@ -2,6 +2,7 @@ import { initialState } from '../store';
 import { mutations } from '../store/mutations';
 import { EstimationResult, StartEstimation, UserJoined, UserLeft } from '../store/pokerEvents';
 import { RoomInformation, Participant, State } from '../store/types';
+import { describe, expect, it } from 'vitest';
 
 const exampleParticipant: Participant = {
   name: 'Foo',

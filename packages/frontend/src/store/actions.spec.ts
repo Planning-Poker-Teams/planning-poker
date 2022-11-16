@@ -1,8 +1,8 @@
-import { jest } from '@jest/globals';
 import { ActionContext } from 'vuex';
 import store from '../store';
 import { actions, ActionType } from '../store/actions';
 import { State } from '../store/types';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 describe('actions', () => {
   const state: State = {
@@ -27,8 +27,8 @@ describe('actions', () => {
 
   beforeEach(() => {
     actionContext = {
-      dispatch: jest.fn(),
-      commit: jest.fn(),
+      dispatch: vi.fn(),
+      commit: vi.fn(),
       state,
       getters: {},
       rootState: state,

@@ -1,5 +1,6 @@
 import OngoingEstimation from '../../src/components/OngoingEstimation.vue';
 import createWrapper from './helper';
+import { describe, expect, it } from 'vitest';
 
 describe('ongoing estimation', () => {
   it('should use the property "task" to show the task name', () => {
