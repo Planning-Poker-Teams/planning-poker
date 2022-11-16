@@ -87,7 +87,9 @@ export default class DynamoDbParticipantRepository implements ParticipantReposit
         : undefined;
 
     const participants =
-      result?.Responses?.participants.map(result => result as ParticipantRowSchema) ?? [];
+      (result?.Responses?.[this.participantsTableName] as ParticipantRowSchema[])?.map(
+        result => result as ParticipantRowSchema
+      ) ?? [];
 
     const participantsFromCache = idsFromCache.map(id => this.cache.get(id)!);
 
