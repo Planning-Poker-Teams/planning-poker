@@ -1,8 +1,8 @@
 {
-  "name": "planning-poker",
+  "name": "@planning-poker/planning-poker",
   "version": "0.1.0",
   "private": true,
-  "description": "planning poker to estimate your bets",
+  "description": "Planning-Poker to estimate your bets",
   "contributors": [
     {
       "name": "Christian Stangier"
