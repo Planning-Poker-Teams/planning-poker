@@ -31,11 +31,5 @@ module.exports = {
         'no-undef': 'off',
       },
     },
-    {
-      files: ['**/*.spec.{j,t}s?(x)'],
-      env: {
-        jest: true,
-      },
-    },
   ],
 };
