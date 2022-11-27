@@ -43,14 +43,14 @@ jobs:
       - name: Yarn Lint
         if: github.event.action != 'closed'
         run: |
-          yarn workspace backend lint
-          yarn workspace frontend lint
+          yarn workspace @planning-poker/backend lint
+          yarn workspace @planning-poker/frontend lint
 
       - name: Yarn Build
         if: github.event.action != 'closed'
         run: |
-          yarn workspace backend build
-          yarn workspace frontend build
+          yarn workspace @planning-poker/backend build
+          yarn workspace @planning-poker/frontend build
 
       - name: Yarn Test
         if: github.event.action != 'closed'
