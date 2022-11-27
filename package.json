@@ -22,7 +22,15 @@
     "packages/*"
   ],
   "scripts": {},
-  "devDependencies": {},
+  "devDependencies": {
+    "eslint": "8.28.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-import-resolver-typescript": "^3.5.2",
+    "eslint-plugin-import": "^2.26.0",
+    "eslint-plugin-prettier": "^4.2.1",
+    "prettier": "^2.7.1",
+    "prettier-airbnb-config": "^1.0.0"
+  },
   "engines": {
     "yarn": ">=1.22.19",
     "node": ">=18.7.0"

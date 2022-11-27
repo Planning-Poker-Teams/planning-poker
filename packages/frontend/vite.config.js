@@ -25,6 +25,17 @@ export default defineConfig({
     }),
     removeDevelopmentEnvironment(),
   ],
+  resolve: {
+    alias: {
+      '@': path.resolve(__dirname, 'src/'),
+      '@assets': path.resolve(__dirname, 'src/asset/'),
+      '@components': path.resolve(__dirname, 'src/components/'),
+      '@hooks': path.resolve(__dirname, 'src/hooks/'),
+      '@router': path.resolve(__dirname, 'src/router/'),
+      '@store': path.resolve(__dirname, 'src/store/'),
+      '@views': path.resolve(__dirname, 'src/views/'),
+    },
+  },
 });
 
 /**
