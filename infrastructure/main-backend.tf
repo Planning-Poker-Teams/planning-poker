@@ -31,7 +31,7 @@ resource "aws_apigatewayv2_api" "websocket" {
 module "websocket_handler" {
   source = "terraform-aws-modules/lambda/aws"
 
-  runtime       = "nodejs16.x"
+  runtime       = "nodejs18.x"
   function_name = "planning-poker-${var.environment}-websocket-handler"
   handler       = "handleWebsocketEvents.handler"
   source_path = [
@@ -95,7 +95,7 @@ module "websocket_handler" {
 module "prevent_client_timeout" {
   source = "terraform-aws-modules/lambda/aws"
 
-  runtime       = "nodejs16.x"
+  runtime       = "nodejs18.x"
   function_name = "planning-poker-${var.environment}-prevent-client-timeout"
   handler       = "preventClientTimeout.handler"
   source_path = [
