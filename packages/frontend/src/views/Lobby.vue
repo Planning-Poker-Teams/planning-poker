@@ -40,13 +40,13 @@
           :value="showCats"
         />
         <div class="mt-2 flex flex-row-reverse items-center">
-          <button
+          <Button
             class="my-2 ml-2 bg-gray-300 hover:bg-gray-100 text-lg text-gray-700 font- py-2 px-4 border-2 border-gray-400 rounded"
             :disabled="!formIsCompleted"
             type="submit"
           >
             Join room
-          </button>
+          </Button>
           <p class="my-2 mr-2 justify-center text-sm text-gray-700">
             By clicking "Join room" you agree to our
             <a class="underline text-gray-700" href="/privacy">Privacy Policy</a>.
@@ -66,6 +66,7 @@
 import { computed, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { Store, useStore } from 'vuex';
+import Button from '../components/Button.vue';
 import Toggle from '../components/Toggle.vue';
 import { useStorage } from '../hooks/useStorage';
 import { MutationsType } from '../store/mutations';
