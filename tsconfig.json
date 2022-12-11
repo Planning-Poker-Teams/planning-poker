@@ -1,0 +1,31 @@
+{
+  "compilerOptions": {
+    "composite": true,
+    "declaration": true,
+    "declarationMap": true,
+    "incremental": true,
+    "target": "esnext",
+    "module": "esnext",
+    "strict": true,
+    "importHelpers": true,
+    "moduleResolution": "node",
+    "noUnusedParameters": true,
+    "noUnusedLocals": true,
+    "preserveConstEnums": true,
+    "experimentalDecorators": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "forceConsistentCasingInFileNames": true,
+    "sourceMap": true,
+    "allowJs": false,
+    "resolveJsonModule": true
+  },
+  "exclude": ["node_modules"],
+  "files": [],
+  "references": [
+    { "path": "packages/backend" },
+    { "path": "packages/frontend" },
+    { "path": "packages/designsystem" }
+  ]
+}

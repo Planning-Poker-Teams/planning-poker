@@ -1,23 +1,22 @@
 {
+  "extends": "../../tsconfig.json",
   "compilerOptions": {
+    "rootDir": ".",
+    "outDir": "dist",
     "target": "esnext",
     "module": "esnext",
-    "strict": true,
+    "lib": ["esnext", "dom", "dom.iterable", "scripthost"],
     "jsx": "preserve",
-    "importHelpers": true,
-    "moduleResolution": "node",
-    "experimentalDecorators": true,
-    "skipLibCheck": true,
-    "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
-    "sourceMap": true,
+    "types": ["vite/client"],
     "baseUrl": ".",
-    "types": ["vite/client", "@types/jest"],
     "paths": {
-      "@/*": ["src/*"]
+      "@assets/*": ["src/asset/*"],
+      "@components/*": ["src/components/*"],
+      "@hooks/*": ["src/hooks/*"],
+      "@router/*": ["src/router/*"],
+      "@store/*": ["src/store/*"],
+      "@views/*": ["src/views/*"],
     },
-    "lib": ["esnext", "dom", "dom.iterable", "scripthost"]
   },
-  "include": ["src/**/*.ts", "src/**/*.vue", "tests/**/*.ts"],
-  "exclude": ["node_modules"]
+  "include": ["src/**/*.ts", "src/**/*.vue", "tests/**/*.ts"]
 }

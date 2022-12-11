@@ -1,22 +1,21 @@
 {
+  "extends": "../../tsconfig.json",
   "compilerOptions": {
+    "rootDir": "src",
+    "outDir": "dist",
     "target": "ES2019",
     "module": "commonjs",
-    "strict": true,
-    "importHelpers": true,
-    "moduleResolution": "node",
-    "experimentalDecorators": true,
-    "skipLibCheck": true,
-    "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
-    "sourceMap": true,
-    "baseUrl": ".",
     "types": [
       "node",
       "@types/jest"
     ],
+    "baseUrl": ".",
     "paths": {
-      "@/*": ["src/*"]
+      "@cqrs/*": ["src/cqrs/*"],
+      "@domain/*": ["src/domain/*"],
+      "@handlers/*": ["src/handlers/*"],
+      "@interactors/*": ["src/interactors/*"],
+      "@repositories/*": ["src/repositories/*"],
     },
     "lib": ["esnext"]
   },
