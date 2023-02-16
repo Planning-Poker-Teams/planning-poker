@@ -1,5 +1,5 @@
 resource "aws_s3_bucket" "frontend" {
-  bucket = "planning-poker-${var.environment}-frontend"
+  bucket = "planning-poker-${local.shortenedEnvironment}-frontend"
 }
 
 resource "aws_s3_bucket_website_configuration" "registration-frontend" {
@@ -51,7 +51,7 @@ locals {
 }
 
 resource "aws_cloudfront_response_headers_policy" "no_browser_caching" {
-  name = "${var.environment}-no-client-cache"
+  name = "${local.shortenedEnvironment}-no-client-cache"
 
   custom_headers_config {
     items {

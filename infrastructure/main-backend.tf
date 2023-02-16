@@ -1,5 +1,5 @@
 resource "aws_dynamodb_table" "participants" {
-  name         = "planning-poker-${var.environment}-participants"
+  name         = "planning-poker-${local.shortenedEnvironment}-participants"
   billing_mode = "PAY_PER_REQUEST"
 
   hash_key = "connectionId"
@@ -11,7 +11,7 @@ resource "aws_dynamodb_table" "participants" {
 }
 
 resource "aws_dynamodb_table" "rooms" {
-  name         = "planning-poker-${var.environment}-rooms"
+  name         = "planning-poker-${local.shortenedEnvironment}-rooms"
   billing_mode = "PAY_PER_REQUEST"
 
   hash_key = "name"
@@ -23,7 +23,7 @@ resource "aws_dynamodb_table" "rooms" {
 }
 
 resource "aws_apigatewayv2_api" "websocket" {
-  name                       = "planning-poker-${var.environment}-websocket-api"
+  name                       = "planning-poker-${local.shortenedEnvironment}-websocket-api"
   protocol_type              = "WEBSOCKET"
   route_selection_expression = "$request.body.action"
 }
@@ -32,7 +32,7 @@ module "websocket_handler" {
   source = "terraform-aws-modules/lambda/aws"
 
   runtime       = "nodejs18.x"
-  function_name = "planning-poker-${var.environment}-websocket-handler"
+  function_name = "planning-poker-${local.shortenedEnvironment}-websocket-handler"
   handler       = "handleWebsocketEvents.handler"
   source_path = [
     "../packages/backend/dist/handleWebsocketEvents.js",
@@ -96,7 +96,7 @@ module "prevent_client_timeout" {
   source = "terraform-aws-modules/lambda/aws"
 
   runtime       = "nodejs18.x"
-  function_name = "planning-poker-${var.environment}-prevent-client-timeout"
+  function_name = "planning-poker-${local.shortenedEnvironment}-prevent-client-timeout"
   handler       = "preventClientTimeout.handler"
   source_path = [
     "../packages/backend/dist/preventClientTimeout.js",
@@ -157,12 +157,12 @@ module "prevent_client_timeout" {
 }
 
 resource "aws_cloudwatch_event_rule" "prevent_client_timeout" {
-  name                = "${var.environment}-prevent-timeout-event"
+  name                = "${local.shortenedEnvironment}-prevent-timeout-event"
   schedule_expression = "rate(5 minutes)"
 }
 
 resource "aws_cloudwatch_event_target" "prevent_client_timeout" {
-  target_id = "${var.environment}-prevent-timeout-event-target"
+  target_id = "${local.shortenedEnvironment}-prevent-timeout-event-target"
   rule      = aws_cloudwatch_event_rule.prevent_client_timeout.name
   arn       = module.prevent_client_timeout.lambda_function_arn
 }
