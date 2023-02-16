@@ -10,7 +10,6 @@
         </p>
       </div>
       <button
-        v-if="votingIsComplete"
         class="mx-2 px-6 py-2 bg-gray-300 text-gray-700 p-2 border-2 hover:border-gray-400 border-gray-300 rounded"
         type="submit"
         @click="requestResult"
