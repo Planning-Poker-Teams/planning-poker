@@ -206,16 +206,6 @@ export const handlePokerEvent = (
     case 'showResult': {
       const estimatingParticipants = room.participants.filter(p => !p.isSpectator);
 
-      const estimationCompleted = estimatingParticipants.every(p => p.currentEstimation);
-
-      if (!estimationCompleted) {
-        log.info('Ignoring input event (estimation is not completed!)', {
-          inputEvent,
-          estimatingParticipants,
-        });
-        return [];
-      }
-
       const payload: EstimationResult = {
         eventType: 'estimationResult',
         taskName: room.currentEstimation!.taskName,
