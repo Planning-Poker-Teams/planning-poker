@@ -1,5 +1,5 @@
 resource "aws_s3_bucket" "frontend" {
-  bucket = "planning-poker-${var.environment}-frontend"
+  bucket = format("%.63s", "planning-poker-${var.environment}-frontend")
 }
 
 resource "aws_s3_bucket_website_configuration" "registration-frontend" {

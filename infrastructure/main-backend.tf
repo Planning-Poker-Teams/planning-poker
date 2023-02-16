@@ -32,7 +32,7 @@ module "websocket_handler" {
   source = "terraform-aws-modules/lambda/aws"
 
   runtime       = "nodejs18.x"
-  function_name = "planning-poker-${var.environment}-websocket-handler"
+  function_name = format("%.64s", "planning-poker-${var.environment}-websocket-handler")
   handler       = "handleWebsocketEvents.handler"
   source_path = [
     "../packages/backend/dist/handleWebsocketEvents.js",
@@ -96,7 +96,7 @@ module "prevent_client_timeout" {
   source = "terraform-aws-modules/lambda/aws"
 
   runtime       = "nodejs18.x"
-  function_name = "planning-poker-${var.environment}-prevent-client-timeout"
+  function_name = format("%.64s", "planning-poker-${var.environment}-prevent-client-timeout")
   handler       = "preventClientTimeout.handler"
   source_path = [
     "../packages/backend/dist/preventClientTimeout.js",
@@ -157,12 +157,12 @@ module "prevent_client_timeout" {
 }
 
 resource "aws_cloudwatch_event_rule" "prevent_client_timeout" {
-  name                = "${var.environment}-prevent-timeout-event"
+  name                = format("%.64s", "${var.environment}-prevent-timeout-event")
   schedule_expression = "rate(5 minutes)"
 }
 
 resource "aws_cloudwatch_event_target" "prevent_client_timeout" {
-  target_id = "${var.environment}-prevent-timeout-event-target"
+  target_id = format("%.64s", "${var.environment}-prevent-timeout-event-target")
   rule      = aws_cloudwatch_event_rule.prevent_client_timeout.name
   arn       = module.prevent_client_timeout.lambda_function_arn
 }
