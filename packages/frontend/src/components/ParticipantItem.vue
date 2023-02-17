@@ -1,7 +1,7 @@
 <template>
   <div
     class="flex-none flex justify-center items-center w-16 h-16 m-1 p-1 text-sm shadow rounded-full select-none"
-    :class="refVoted ? 'bg-red-400' : 'bg-green-400'"
+    :class="refVoted ? 'bg-green-400' : 'bg-red-400'"
   >
     <p class="text-center text-white font-medium text-xs overflow-x-hidden">
       {{ name }}
