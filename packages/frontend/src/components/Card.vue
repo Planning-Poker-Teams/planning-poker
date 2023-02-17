@@ -1,7 +1,7 @@
 <template>
   <div
-    class="flex flex-col justify-center w-16 lg:w-20 h-24 lg:h-32 rounded-lg shadow cursor-pointer select-none"
-    :class="selected ? 'bg-red-400 opacity-90' : 'bg-blue-400'"
+    class="bg-blue-400 flex flex-col justify-center w-16 lg:w-20 h-24 lg:h-32 rounded-lg shadow cursor-pointer select-none"
+    :class="selected ? 'opacity-90' : ''"
   >
     <p class="absolute top-0 left-0 text-sm text-white px-1 font-mono">
       {{ value }}
