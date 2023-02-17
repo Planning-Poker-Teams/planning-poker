@@ -9,14 +9,14 @@
     />
     <change-card-deck-dialog
       v-if="showChangeDeckModal"
-      :currentCardDeck="cardDeck"
+      :current-card-deck="cardDeck"
       @hide_change_deck_modal="showChangeDeckModal = false"
       @change_deck="changeCardDeck"
     />
     <ongoing-estimation
       v-if="isEstimationOngoing"
       :task-name="taskName"
-      :currentCardDeck="cardDeck"
+      :current-card-deck="cardDeck"
       @send-estimation="sendEstimation"
       @request-result="requestResult"
     />
