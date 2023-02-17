@@ -1,8 +1,8 @@
 <template>
   <confirm-show-results-dialog
-      v-if="showConfirmDialog"
-      @on_confirm="requestResult"
-      @on_cancel="closeConfirmDialog"
+    v-if="showConfirmDialog"
+    @on_confirm="requestResult"
+    @on_cancel="closeConfirmDialog"
   />
   <section class="flex-1 flex flex-col items-center p-4">
     <div class="w-full flex justify-center lg:pt-4 pb-4 lg:pb-8">
@@ -49,8 +49,8 @@ import { onBeforeUpdate, PropType, Ref, ref, toRef, VueElement } from 'vue';
 import { Store, useStore } from 'vuex';
 import { State } from '../store/types';
 import Card from './Card.vue';
-import ConfirmShowResultsDialog from './ConfirmShowResultsDialog.vue';
 import useCardAnimation, { translates } from './CardAnimation';
+import ConfirmShowResultsDialog from './ConfirmShowResultsDialog.vue';
 
 defineProps({
   taskName: {
@@ -76,7 +76,7 @@ onBeforeUpdate(() => {
 
 const closeConfirmDialog = () => {
   showConfirmDialog.value = false;
-}
+};
 
 const handleSubmitResult = () => {
   if (votingIsComplete.value) {
@@ -84,12 +84,12 @@ const handleSubmitResult = () => {
   }
 
   showConfirmDialog.value = true;
-}
+};
 
 const requestResult = () => {
   showConfirmDialog.value = false;
   emits('request-result');
-}
+};
 
 let lastSelectedCard: VueElement | undefined;
 let lastCardMovement: translates;
