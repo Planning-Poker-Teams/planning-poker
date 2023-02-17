@@ -24,3 +24,4 @@ a|image::https://github.com/Planning-Poker-Teams/planning-poker/actions/workflow
 - Install the dependencies: `nvm exec yarn install`
 - Build the backend: `nvm exec yarn workspace backend build`
 - Build the frontend: `nvm exec yarn workspace frontend build`
+- Start the frontend with hot reload enabled: `nvm exec yarn workspace frontend dev`
