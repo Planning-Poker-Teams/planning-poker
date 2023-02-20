@@ -59,7 +59,9 @@ describe('ongoing estimation', () => {
     );
 
     await wrapper.find('button[type=submit]').trigger('click');
-    expect(wrapper.find('[data-testid=confirm-show-results-dialog]').exists()).toBeTruthy();
+    const confirmDialog = wrapper.find('[data-testid=confirm-show-results-dialog]');
+    expect(confirmDialog.exists()).toBeTruthy();
+    expect(confirmDialog.text()).include('test-user-b');
   });
 
   it('should show hint if user is spectator', () => {
