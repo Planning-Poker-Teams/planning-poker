@@ -8,6 +8,14 @@
         <p class="text-lg leading-6 font-medium text-gray-900">
           Not everyone has voted yet. Are you sure?
         </p>
+
+        <ul class="list-none list-outside my-2 text-left inline-block">
+          <li v-for="{ name } in pendingParticipants" :key="name">
+            <font-awesome-icon icon="xmark" class="text-red-500" />
+            {{ name }}
+          </li>
+        </ul>
+
         <div class="w-5/6 mx-auto items-center px-4 py-3">
           <button
             class="mr-1 px-4 py-2 bg-green-500 text-white text-base font-medium rounded-md w-5/12 shadow-sm hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-300"
@@ -28,7 +36,13 @@
 </template>
 
 <script setup lang="ts">
+import { Ref, toRef } from 'vue';
+import { Store, useStore } from 'vuex';
+import { State } from '../store/types';
+
 const emits = defineEmits(['on_confirm', 'on_cancel']);
+const store: Store<State> = useStore();
+const pendingParticipants: Ref<boolean> = toRef(store.getters, 'pendingParticipants');
 
 const confirm = () => emits('on_confirm');
 const cancel = () => emits('on_cancel');
