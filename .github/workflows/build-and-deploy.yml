@@ -52,6 +52,12 @@ jobs:
           yarn workspace backend build
           yarn workspace frontend build
 
+      - name: Yarn Test
+        if: github.event.action != 'closed'
+        run: |
+          # TODO: Re-enable/fix backend test suite
+          yarn workspace frontend test
+
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
