@@ -1,6 +1,7 @@
 <template>
   <div
     class="fixed z-10 inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full flex h-screen justify-center items-center"
+    data-testid="confirm-show-results-dialog"
   >
     <div class="mx-auto p-5 border w-2/4 shadow-lg rounded-md bg-white">
       <div class="mt-3 text-center">
