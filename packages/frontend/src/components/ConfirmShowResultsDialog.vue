@@ -6,7 +6,7 @@
     <div class="mx-auto p-5 border w-2/4 shadow-lg rounded-md bg-white">
       <div class="mt-3 text-center">
         <p class="text-lg leading-6 font-medium text-gray-900">
-          Not everyone has has voted yet. Are you sure?
+          Not everyone has voted yet. Are you sure?
         </p>
         <div class="w-5/6 mx-auto items-center px-4 py-3">
           <button
