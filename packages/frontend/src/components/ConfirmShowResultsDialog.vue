@@ -9,7 +9,8 @@
           Not everyone has voted yet. Are you sure?
         </p>
 
-        <ul class="list-none list-outside my-2 text-left inline-block">
+        <h4 class="mt-3 mb-1">Pending participants:</h4>
+        <ul class="list-none list-outside mb-2 text-left inline-block">
           <li v-for="{ name } in pendingParticipants" :key="name">
             <font-awesome-icon icon="xmark" class="text-red-500" />
             {{ name }}
