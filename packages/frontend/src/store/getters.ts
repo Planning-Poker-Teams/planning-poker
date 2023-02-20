@@ -1,5 +1,5 @@
 import { GetterTree } from 'vuex';
-import { State, Estimate } from '../store/types';
+import { State, Estimate, Participant } from '../store/types';
 
 export enum EstimationState {
   NOT_STARTED = 'NOT_STARTED',
@@ -14,6 +14,7 @@ export enum GetterType {
   VOTING_IS_COMPLETE = 'votingIsComplete',
   SOMEBODY_HAS_VOTED = 'somebodyHasVoted',
   RESULT_BY_SIZE = 'resultBySize',
+  PENDING_PARTICIPANTS = 'pendingParticipants',
 }
 
 export type Getters = {
@@ -35,6 +36,9 @@ export const getters: GetterTree<State, State> = {
   },
   [GetterType.VOTING_IS_COMPLETE]: (state: State): boolean => {
     return state.participants.every(p => p.hasEstimated || p.isSpectator);
+  },
+  [GetterType.PENDING_PARTICIPANTS]: (state: State): Participant[] => {
+    return state.participants.filter(p => !p.hasEstimated && !p.isSpectator);
   },
   [GetterType.SOMEBODY_HAS_VOTED]: (state: State): boolean => {
     return state.participants.find(p => p.hasEstimated) !== undefined;
