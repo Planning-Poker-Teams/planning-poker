@@ -13,6 +13,7 @@ export default (
     wrapper: mount(component, {
       global: {
         plugins: [store, router],
+        stubs: ['FontAwesomeIcon'],
       },
       ...componentOptions,
     }),
