@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest';
 import OngoingEstimation from '../../src/components/OngoingEstimation.vue';
 import createWrapper from './helper';
 
@@ -12,7 +13,8 @@ describe('ongoing estimation', () => {
     expect(wrapper.findAll('div')[1].exists()).toBeTruthy();
     expect(wrapper.findAll('div')[1].text()).toContain('test-task');
   });
-  it('should show result button', () => {
+
+  it('should show result button and no warning dialog', async () => {
     const { wrapper } = createWrapper(
       OngoingEstimation,
       {
@@ -30,9 +32,14 @@ describe('ongoing estimation', () => {
         cardDeck: ['0, 1, 2, 3, 5, 8, 13'],
       }
     );
-    expect(wrapper.find('button[type=submit]').exists()).toBeTruthy();
+
+    const resultButton = wrapper.find('button[type=submit]');
+    expect(resultButton.exists()).toBeTruthy();
+    await resultButton.trigger('click');
+    expect(wrapper.find('[data-testid=confirm-show-results-dialog]').exists()).toBeFalsy();
   });
-  it('should not show result button', () => {
+
+  it('should show warning dialog when not all users have voted yet', async () => {
     const { wrapper } = createWrapper(
       OngoingEstimation,
       {
@@ -50,8 +57,13 @@ describe('ongoing estimation', () => {
         cardDeck: ['0, 1, 2, 3, 5, 8, 13'],
       }
     );
-    expect(wrapper.find('button[type=submit]').exists()).toBeFalsy();
+
+    await wrapper.find('button[type=submit]').trigger('click');
+    const confirmDialog = wrapper.find('[data-testid=confirm-show-results-dialog]');
+    expect(confirmDialog.exists()).toBeTruthy();
+    expect(confirmDialog.text()).include('test-user-b');
   });
+
   it('should show hint if user is spectator', () => {
     const { wrapper } = createWrapper(
       OngoingEstimation,

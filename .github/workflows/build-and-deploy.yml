@@ -52,6 +52,12 @@ jobs:
           yarn workspace backend build
           yarn workspace frontend build
 
+      - name: Yarn Test
+        if: github.event.action != 'closed'
+        run: |
+          # TODO: Re-enable/fix backend test suite
+          yarn workspace frontend test
+
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
@@ -66,14 +72,14 @@ jobs:
         env:
           ENVIRONMENT_NAME: ${{ github.ref_name }}
         run: |
-          echo "ENVIRONMENT_NAME=$ENVIRONMENT_NAME" >> $GITHUB_ENV
+          echo ENVIRONMENT_NAME=`echo $ENVIRONMENT_NAME | cut -c1-20` >> $GITHUB_ENV
 
       - name: Set Environment Name (Pull Request)
         if: github.event_name == 'pull_request'
         env:
           ENVIRONMENT_NAME: ${{ github.event.number }}-${{ github.head_ref }}
         run: |
-          echo "ENVIRONMENT_NAME=$ENVIRONMENT_NAME" >> $GITHUB_ENV
+          echo ENVIRONMENT_NAME=`echo $ENVIRONMENT_NAME | cut -c1-20` >> $GITHUB_ENV
 
       - name: Terraform Init
         working-directory: 'infrastructure'
