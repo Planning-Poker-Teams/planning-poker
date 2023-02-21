@@ -24,7 +24,7 @@
               v-for="name in entry.names"
               :key="name"
               :name="name"
-              :has-voted="true"
+              :has-voted="hasVoted(entry.value)"
             />
           </td>
         </tr>
@@ -48,11 +48,13 @@ import { State } from '../store/types';
 const store: Store<State> = useStore();
 const taskName = ref(store.state.estimationResult?.taskName);
 const estimationResultBySize = ref(
-  store.getters.resultBySize as { value: string; names: string[] }[]
+  store.getters.resultBySize as { value?: string; names: string[] }[]
 );
 const showConsensusCats = computed(
   () => store.state.room?.showCats && estimationResultBySize.value.length == 1
 );
+
+const hasVoted = (vote?: string): boolean => typeof vote !== 'undefined';
 
 const catUrl = `https://thecatapi.com/api/images/get?format=src&type=gif&nocache=${new Date().toISOString()}`;
 
