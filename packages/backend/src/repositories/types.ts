@@ -9,6 +9,7 @@ interface ParticipantInfo {
 export interface ParticipantRepository {
   putParticipant(participant: Participant, roomName: string): Promise<void>;
   fetchParticipantInfo(id: string): Promise<ParticipantInfo | undefined>;
+  fetchParticipantInfoByName(name: string): Promise<ParticipantInfo | undefined>;
   fetchParticipants(ids: string[]): Promise<Participant[]>;
   removeParticipant(id: string): Promise<void>;
 }

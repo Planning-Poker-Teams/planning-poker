@@ -102,6 +102,7 @@ export const handlePokerEvent = (
       }
     }
 
+    case 'removeUser':
     case 'userLeft': {
       return [
         {

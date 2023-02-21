@@ -19,7 +19,13 @@ export default class PokerEventInteractor {
   }
 
   public async handleIncomingEvent(pokerEvent: PokerEvent, connectionId: string): Promise<void> {
-    const participantInfo = await this.participantRepository.fetchParticipantInfo(connectionId);
+    let participantInfo = await this.participantRepository.fetchParticipantInfo(connectionId);
+
+    if (pokerEvent.eventType === 'removeUser') {
+      participantInfo = await this.participantRepository.fetchParticipantInfoByName(
+        pokerEvent.userName
+      );
+    }
 
     const roomNameFromJoinRoomEvent =
       pokerEvent.eventType === 'joinRoom' ? pokerEvent.roomName : undefined;

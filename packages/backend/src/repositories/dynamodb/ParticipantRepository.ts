@@ -77,6 +77,26 @@ export default class DynamoDbParticipantRepository implements ParticipantReposit
     };
   }
 
+  async fetchParticipantInfoByName(
+    name: string
+  ): Promise<{ participant: Participant; roomName: string } | undefined> {
+    const result = await this.client.get(this.participantsTableName, { name });
+    if (!result || !result.Item) {
+      return undefined;
+    }
+    const row = result.Item;
+    const participant = {
+      id: row.connectionId,
+      name: row.name,
+      isSpectator: row.isSpectator,
+    };
+
+    return {
+      participant,
+      roomName: row.roomName,
+    };
+  }
+
   async fetchParticipants(ids: string[]): Promise<Participant[]> {
     const idsForFetching = ids.filter(id => !this.cache.has(id));
     const idsFromCache = ids.filter(id => this.cache.has(id));
