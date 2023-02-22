@@ -62,6 +62,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
 import { Store, useStore } from 'vuex';
+import { useStorage } from '../hooks/useStorage';
 import { State } from '../store/types';
 import ParticipantItem from './ParticipantItem.vue';
 import SortableTableHeader from './SortableTableHeader.vue';
@@ -74,8 +75,11 @@ type Entries = Entry[];
 const store: Store<State> = useStore();
 const taskName = ref(store.state.estimationResult?.taskName);
 const cardDeck = ref(store.state.cardDeck);
-const sortDir = ref<SortDir>('up');
-const sortCol = ref<SortCol>('size');
+
+const storedSortDir = useStorage('sortDir');
+const storedSortCol = useStorage('sortCol');
+const sortDir = ref<SortDir>(storedSortDir.value || 'up');
+const sortCol = ref<SortCol>(storedSortCol.value || 'size');
 
 const sortFunctions = {
   size: (e1: Entry, e2: Entry): number =>
@@ -105,6 +109,9 @@ const sortColumn = (column: SortCol) => {
   } else {
     sortCol.value = column;
   }
+
+  storedSortDir.value = sortDir.value;
+  storedSortCol.value = sortCol.value;
 };
 
 const catUrl = `https://thecatapi.com/api/images/get?format=src&type=gif&nocache=${new Date().toISOString()}`;
