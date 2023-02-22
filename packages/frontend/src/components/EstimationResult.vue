@@ -22,15 +22,7 @@
               >Votes</sortable-table-header
             >
           </th>
-          <th class="p-2 w-1/2">
-            <sortable-table-header
-              column="votes"
-              :active-dir="sortDir"
-              :active-col="sortCol"
-              @on-click="sortColumn('votes')"
-              >Voters</sortable-table-header
-            >
-          </th>
+          <th class="p-2 w-1/2">Voters</th>
         </tr>
       </thead>
       <tbody class="bg-gray-200">
