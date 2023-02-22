@@ -75,6 +75,7 @@ type Entries = Entry[];
 const store: Store<State> = useStore();
 const taskName = ref(store.state.estimationResult?.taskName);
 const cardDeck = ref(store.state.cardDeck);
+const estimationResultBySize = ref<Entries>(store.getters.resultBySize);
 
 const storedSortDir = useStorage('sortDir');
 const storedSortCol = useStorage('sortCol');
@@ -87,16 +88,13 @@ const sortFunctions = {
   votes: (e1: Entry, e2: Entry): number => (e1.names.length < e2.names.length ? -1 : 1),
 };
 
-const estimationResultBySize = ref(
-  store.getters.resultBySize as { value?: string; names: string[] }[]
-);
-
 const sortedEntries = computed((): Entries => {
   return [...estimationResultBySize.value].sort((e1, e2): number => {
     const dirModifier = sortDir.value === 'down' ? 1 : -1;
     return sortFunctions[sortCol.value](e1, e2) * dirModifier;
   });
 });
+
 const showConsensusCats = computed(
   () => store.state.room?.showCats && estimationResultBySize.value.length == 1
 );
