@@ -1,5 +1,5 @@
 import { VueWrapper, DOMWrapper } from '@vue/test-utils';
-import { describe, expect, it, beforeEach } from 'vitest';
+import { describe, expect, it, beforeEach, afterEach } from 'vitest';
 import EstimationResult from '../../src/components/EstimationResult.vue';
 import {
   EstimationResult as IEstimationResult,
@@ -42,6 +42,10 @@ describe('estimation result with numerical job-sizes', () => {
     ).wrapper;
 
     tableHeaders = wrapper.findAll('thead a');
+  });
+
+  afterEach(() => {
+    localStorage.clear();
   });
 
   it('should sort estimations according to their job-size', async () => {
