@@ -73,14 +73,13 @@ type Entries = Entry[];
 
 const store: Store<State> = useStore();
 const taskName = ref(store.state.estimationResult?.taskName);
+const cardDeck = ref(store.state.cardDeck);
 const sortDir = ref<SortDir>('up');
 const sortCol = ref<SortCol>('size');
+
 const sortFunctions = {
   size: (e1: Entry, e2: Entry): number =>
-    e1.value.localeCompare(e2.value, undefined, {
-      numeric: true,
-      sensitivity: 'base',
-    }),
+    cardDeck.value.indexOf(e1.value) - cardDeck.value.indexOf(e2.value),
   votes: (e1: Entry, e2: Entry): number => (e1.names.length < e2.names.length ? -1 : 1),
 };
 
