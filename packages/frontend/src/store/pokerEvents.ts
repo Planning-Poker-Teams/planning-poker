@@ -8,6 +8,7 @@ export type PokerEvent =
   | JoinRoom
   | UserJoined
   | UserLeft
+  | RemoveUser
   | ChangeCardDeck
   | StartEstimation
   | UserEstimate
@@ -31,6 +32,12 @@ export interface UserJoined {
 export interface UserLeft {
   eventType: 'userLeft';
   userName: string;
+}
+
+export interface RemoveUser {
+  eventType: 'removeUser';
+  userName: string;
+  roomName: string;
 }
 
 export interface ChangeCardDeck {

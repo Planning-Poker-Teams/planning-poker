@@ -14,6 +14,15 @@
           <li v-for="{ name } in pendingParticipants" :key="name">
             <font-awesome-icon icon="xmark" class="text-red-500" />
             {{ name }}
+
+            <a
+              v-if="userName !== name"
+              class="cursor-pointer"
+              :title="`Remove ${name} from the room`"
+              @click="removeUser(name)"
+            >
+              <small class="pl-2 text-red-500 underline">remove</small>
+            </a>
           </li>
         </ul>
 
@@ -37,8 +46,9 @@
 </template>
 
 <script setup lang="ts">
-import { Ref, toRef } from 'vue';
+import { Ref, toRef, computed } from 'vue';
 import { Store, useStore } from 'vuex';
+import { ActionType } from '../store/actions';
 import { State } from '../store/types';
 
 const emits = defineEmits(['on_confirm', 'on_cancel']);
@@ -47,4 +57,12 @@ const pendingParticipants: Ref<boolean> = toRef(store.getters, 'pendingParticipa
 
 const confirm = () => emits('on_confirm');
 const cancel = () => emits('on_cancel');
+
+const userName = computed(() => {
+  return store.state.room?.userName;
+});
+
+const removeUser = (userName: string) => {
+  store.dispatch(ActionType.REMOVE_USER, userName);
+};
 </script>

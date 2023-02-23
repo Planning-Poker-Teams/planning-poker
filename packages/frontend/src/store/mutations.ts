@@ -6,6 +6,7 @@ import {
   UserHasEstimated,
   UserJoined,
   UserLeft,
+  RemoveUser,
 } from '../store/pokerEvents';
 import { State, RoomInformation } from '../store/types';
 
@@ -13,6 +14,7 @@ export enum MutationsType {
   SET_ROOM_INFORMATION = 'setRoomInformation',
   LEAVE_ROOM = 'leaveRoom',
   USER_JOINED = 'userJoined',
+  REMOVE_USER = 'removeUser',
   USER_LEFT = 'userLeft',
   CHANGE_CARD_DECK = 'changeCardDeck',
   START_ESTIMATION = 'startEstimation',
@@ -24,6 +26,7 @@ export type Mutations = {
   [MutationsType.SET_ROOM_INFORMATION](state: State, roomInformation: RoomInformation): void;
   [MutationsType.LEAVE_ROOM](state: State): void;
   [MutationsType.USER_JOINED](state: State, event: UserJoined): void;
+  [MutationsType.REMOVE_USER](state: State, event: RemoveUser): void;
   [MutationsType.USER_LEFT](state: State, event: UserLeft): void;
   [MutationsType.CHANGE_CARD_DECK](state: State, event: ChangeCardDeck): void;
   [MutationsType.START_ESTIMATION](state: State, event: StartEstimation): void;
@@ -57,6 +60,9 @@ export const mutations: MutationTree<State> & Mutations = {
     }
   },
   [MutationsType.USER_LEFT](state: State, event: UserLeft) {
+    state.participants = state.participants.filter(p => p.name != event.userName);
+  },
+  [MutationsType.REMOVE_USER](state: State, event: RemoveUser) {
     state.participants = state.participants.filter(p => p.name != event.userName);
   },
   [MutationsType.CHANGE_CARD_DECK](state: State, event: ChangeCardDeck) {
