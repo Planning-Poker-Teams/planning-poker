@@ -36,7 +36,10 @@ describe('ParticipantRepository', () => {
   });
 
   it('fetches a participant by name', async () => {
-    const participantInfo = await repository.fetchParticipantInfoByNameAndRoom('Gustavo', exampleRoomName);
+    const participantInfo = await repository.fetchParticipantInfoByNameAndRoom(
+      'Gustavo',
+      exampleRoomName
+    );
     expect(participantInfo!.participant).toEqual(exampleParticipant);
     expect(participantInfo!.roomName).toEqual(exampleRoomName);
   });

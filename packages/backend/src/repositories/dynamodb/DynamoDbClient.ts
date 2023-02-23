@@ -49,6 +49,7 @@ type TFilterExpression = {
   ExpressionAttributeNames: { [key: string]: string };
   ExpressionAttributeValues: { [key: string]: any };
 };
+type TFilterObject = { [key: string]: any };
 
 export class DynamoDbClient {
   private client: DocumentClient;
@@ -57,7 +58,7 @@ export class DynamoDbClient {
     this.client = new AWS.DynamoDB.DocumentClient(config);
   }
 
-  private filterExpression(filter: { [key: string]: any }): TFilterExpression {
+  private filterExpression(filter: TFilterObject): TFilterExpression {
     const expression: TFilterExpression = {
       FilterExpression: '',
       ExpressionAttributeNames: {},
@@ -85,7 +86,7 @@ export class DynamoDbClient {
     return this.client.put(args).promise();
   }
 
-  async scan(tableName: string, filter?: {}): Promise<AttributeMap[]> {
+  async scan(tableName: string, filter?: TFilterObject): Promise<AttributeMap[]> {
     const args: ScanInput = {
       TableName: tableName,
     };
