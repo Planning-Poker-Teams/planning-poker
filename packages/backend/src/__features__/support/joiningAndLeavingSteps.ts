@@ -70,6 +70,7 @@ When('a participant named {string} is removed from a room', function (userName: 
   this.inputEvent = {
     eventType: 'removeUser',
     userName,
+    roomName: this.room!.name,
   };
 
   const removedParticipant = this.room?.participants.find(p => p.name === userName);
