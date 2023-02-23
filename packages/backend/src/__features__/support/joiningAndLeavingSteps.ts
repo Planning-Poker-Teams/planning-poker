@@ -85,6 +85,11 @@ When('a participant named {string} is removed from a room', function (userName: 
     removedParticipant.id,
     removedParticipant
   );
+
+  this.inputEvent = {
+    eventType: 'userLeft',
+    userName,
+  };
 });
 
 Then('he should be added as a new participant', function () {

@@ -31,6 +31,7 @@ interface UserLeft {
 interface UserRemoved {
   eventType: 'removeUser';
   userName: string;
+  roomName: string;
 }
 
 interface ChangeCardDeck {

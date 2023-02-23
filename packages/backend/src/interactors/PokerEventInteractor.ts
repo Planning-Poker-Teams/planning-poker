@@ -22,8 +22,9 @@ export default class PokerEventInteractor {
     let participantInfo = await this.participantRepository.fetchParticipantInfo(connectionId);
 
     if (pokerEvent.eventType === 'removeUser') {
-      participantInfo = await this.participantRepository.fetchParticipantInfoByName(
-        pokerEvent.userName
+      participantInfo = await this.participantRepository.fetchParticipantInfoByNameAndRoom(
+        pokerEvent.userName,
+        pokerEvent.roomName
       );
     }
 

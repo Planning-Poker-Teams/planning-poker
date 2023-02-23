@@ -44,12 +44,36 @@ const inTestEnvironment = process.env.NODE_ENV === 'test';
 const AWS = inTestEnvironment ? AWSNoXRay : AWSXRay.captureAWS(require('aws-sdk'));
 
 type KeyInfo = { [key: string]: any };
+type TFilterExpression = {
+  FilterExpression: string;
+  ExpressionAttributeNames: { [key: string]: string };
+  ExpressionAttributeValues: { [key: string]: any };
+};
 
 export class DynamoDbClient {
   private client: DocumentClient;
 
   constructor(config: AWS.DynamoDB.ClientConfiguration | undefined = undefined) {
     this.client = new AWS.DynamoDB.DocumentClient(config);
+  }
+
+  private filterExpression(filter: { [key: string]: any }): TFilterExpression {
+    const expression: TFilterExpression = {
+      FilterExpression: '',
+      ExpressionAttributeNames: {},
+      ExpressionAttributeValues: {},
+    };
+
+    expression.FilterExpression = Object.keys(filter)
+      .map(attr => `#${attr} = :${attr}`)
+      .join(' AND ');
+
+    for (const attr in filter) {
+      expression.ExpressionAttributeNames[`#${attr}`] = attr;
+      expression.ExpressionAttributeValues[`:${attr}`] = filter[attr];
+    }
+
+    return expression;
   }
 
   put(tableName: string, item: object): Promise<PutItemOutput> {
@@ -61,10 +85,14 @@ export class DynamoDbClient {
     return this.client.put(args).promise();
   }
 
-  async scan(tableName: string): Promise<AttributeMap[]> {
+  async scan(tableName: string, filter?: {}): Promise<AttributeMap[]> {
     const args: ScanInput = {
       TableName: tableName,
     };
+
+    if (filter) {
+      Object.assign(args, this.filterExpression(filter));
+    }
 
     const items: AttributeMap[] = [];
     let pagedItems;
