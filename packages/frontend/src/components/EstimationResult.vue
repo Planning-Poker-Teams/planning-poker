@@ -82,7 +82,7 @@ const sortFunctions = {
 
 const sortedEntries = computed((): Entries => {
   return [...estimationResultBySize.value].sort((e1, e2): number => {
-    const dirModifier = sortDir.value === 'down' ? 1 : -1;
+    const dirModifier = sortDir.value === 'down' ? -1 : 1;
     return sortFunctions[sortCol.value](e1, e2) * dirModifier;
   });
 });

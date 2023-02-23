@@ -51,24 +51,13 @@ describe('estimation result with numerical job-sizes', () => {
   it('should sort estimations according to their job-size', async () => {
     const estimationRows = wrapper.findAll('tbody > tr').map(tr => tr.text());
 
-    expect(estimationRows[0]).toContain('Jessie');
+    expect(estimationRows[0]).toContain('Hank');
     expect(estimationRows[1]).toContain('Saul');
     expect(estimationRows[1]).toContain('Walter');
-    expect(estimationRows[2]).toContain('Hank');
+    expect(estimationRows[2]).toContain('Jessie');
   });
 
   it('should sort estimations according to their voters count DESC on click', async () => {
-    await tableHeaders[1].trigger('click');
-    const estimationRows = wrapper.findAll('tbody > tr').map(tr => tr.text());
-
-    expect(estimationRows[0]).toContain('Walter');
-    expect(estimationRows[0]).toContain('Saul');
-    expect(estimationRows[1]).toContain('Jessie');
-    expect(estimationRows[2]).toContain('Hank');
-  });
-
-  it('should sort estimations according to their voters count ASC on double click', async () => {
-    await tableHeaders[1].trigger('click');
     await tableHeaders[1].trigger('click');
     const estimationRows = wrapper.findAll('tbody > tr').map(tr => tr.text());
 
@@ -76,6 +65,17 @@ describe('estimation result with numerical job-sizes', () => {
     expect(estimationRows[1]).toContain('Jessie');
     expect(estimationRows[2]).toContain('Walter');
     expect(estimationRows[2]).toContain('Saul');
+  });
+
+  it('should sort estimations according to their voters count ASC on double click', async () => {
+    await tableHeaders[1].trigger('click');
+    await tableHeaders[1].trigger('click');
+    const estimationRows = wrapper.findAll('tbody > tr').map(tr => tr.text());
+
+    expect(estimationRows[0]).toContain('Walter');
+    expect(estimationRows[0]).toContain('Saul');
+    expect(estimationRows[1]).toContain('Jessie');
+    expect(estimationRows[2]).toContain('Hank');
   });
 });
 
@@ -109,9 +109,9 @@ describe('estimation result with custom job-sizes', () => {
   it('should sort estimations according to their job-size', async () => {
     const estimationRows = wrapper.findAll('tbody > tr').map(tr => tr.text());
 
-    expect(estimationRows[0]).toContain('Walter');
-    expect(estimationRows[0]).toContain('Saul');
+    expect(estimationRows[0]).toContain('Jessie');
     expect(estimationRows[1]).toContain('Hank');
-    expect(estimationRows[2]).toContain('Jessie');
+    expect(estimationRows[2]).toContain('Walter');
+    expect(estimationRows[2]).toContain('Saul');
   });
 });
