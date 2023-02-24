@@ -97,7 +97,7 @@ describe('mutations', () => {
     expect(state.participants).toEqual([exampleParticipant]);
   });
 
-  it('removes participants when they leave', () => {
+  describe('when a user leaves', () => {
     const state: State = {
       ...initialState,
       participants: [exampleParticipant, { ...exampleParticipant, name: 'Bar' }],
@@ -108,9 +108,49 @@ describe('mutations', () => {
       userName: 'Bar',
     };
 
-    mutations.userLeft(state, userLeft);
+    it('should be removed from participants list', () => {
+      const testState = { ...state };
+      mutations.userLeft(testState, userLeft);
+      expect(testState.participants).toEqual([exampleParticipant]);
+    });
 
-    expect(state.participants).toEqual([exampleParticipant]);
+    it('should remove pending vote', () => {
+      const testState = {
+        ...state,
+        estimationResult: {
+          taskName: 'Some old task',
+          startDate: new Date(),
+          endDate: new Date(),
+          estimates: [
+            { userName: 'Bar', estimate: undefined },
+            { userName: 'Foo', estimate: 'O' },
+          ],
+        },
+      };
+      mutations.userLeft(testState, userLeft);
+      expect(testState.estimationResult?.estimates).not.toContain({
+        userName: 'Bar',
+        estimate: undefined,
+      });
+    });
+
+    it('should not remove active vote', () => {
+      const estimates = [
+        { userName: 'Bar', estimate: 'N' },
+        { userName: 'Foo', estimate: 'O' },
+      ];
+      const testState = {
+        ...state,
+        estimationResult: {
+          taskName: 'Some old task',
+          startDate: new Date(),
+          endDate: new Date(),
+          estimates,
+        },
+      };
+      mutations.userLeft(testState, userLeft);
+      expect(testState.estimationResult?.estimates).toEqual(estimates);
+    });
   });
 
   it('prepares state if a new estimation is initiated', () => {

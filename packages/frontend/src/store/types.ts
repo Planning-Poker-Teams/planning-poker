@@ -33,5 +33,5 @@ export interface EstimationResult {
 
 export interface Estimate {
   userName: string;
-  estimate: string;
+  estimate?: string;
 }
