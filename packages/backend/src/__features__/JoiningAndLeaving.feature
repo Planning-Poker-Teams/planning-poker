@@ -12,6 +12,12 @@ Feature: Joining and leaving poker room
     And he should receive information about the existing participants
     And the existing participants should be informed about the new participant
 
+  Scenario: Joining a room with existing user-name
+    Given there is a room with a participant named "Fred"
+    When a participant named "Fred" joins the room
+    Then the new participant should be renamed to "Fred (1)"
+    And the participant himself should be informed about the user-name change
+
   Scenario: Leaving a room
     Given there is a room with a few participants
     When a participant named "Fred" leaves the room

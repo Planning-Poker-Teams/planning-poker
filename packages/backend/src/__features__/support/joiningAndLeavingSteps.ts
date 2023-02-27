@@ -28,6 +28,14 @@ Given('there is a room with a few participants', function () {
   };
 });
 
+Given('there is a room with a participant named {string}', function (userName: string) {
+  this.room = {
+    name: ROOM_NAME,
+    participants: [buildParticipant(userName)],
+    cardDeck: ['0', '1', '2', '3', '5', '8', '13', '20', '40', '100', '???'],
+  };
+});
+
 When('a participant named {string} joins the room', function (userName: string) {
   this.inputEvent = {
     eventType: 'joinRoom',
@@ -144,5 +152,38 @@ Then('the remaining participants should be informed the leaving participant', fu
   expect(this.outgoingCommands).toContainEqual({
     type: CommandType.BROADCAST_MESSAGE,
     payload: this.inputEvent,
+  });
+});
+
+Then('the new participant should be renamed to {string}', function (userName: string) {
+  const userJoinedEvent: UserJoined = {
+    eventType: 'userJoined',
+    userName,
+    isSpectator: this.newParticipant!.isSpectator,
+  };
+
+  this.changedUsername = userName;
+
+  expect(this.outgoingCommands).toContainEqual({
+    type: CommandType.BROADCAST_MESSAGE,
+    payload: userJoinedEvent,
+  });
+});
+
+Then('the participant himself should be informed about the user-name change', function () {
+  const userRenamedEvent: UserRenamed = {
+    eventType: 'userRenamed',
+    userName: this.changedUsername,
+  };
+
+  const recipient = {
+    ...this.newParticipant,
+    name: this.changedUsername,
+  };
+
+  expect(this.outgoingCommands).toContainEqual({
+    type: CommandType.SEND_MESSAGE,
+    payload: [userRenamedEvent],
+    recipient,
   });
 });
