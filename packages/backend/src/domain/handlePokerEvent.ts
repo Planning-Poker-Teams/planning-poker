@@ -1,3 +1,4 @@
+import uniqueName from '../helpers/uniqueName';
 import log from '../log';
 import { CommandType, Command } from './commandTypes';
 import { PokerRoom, Participant } from './types';
@@ -28,15 +29,19 @@ export const handlePokerEvent = (
 ): Command[] => {
   switch (inputEvent.eventType) {
     case 'joinRoom': {
+      const participantNames: string[] = room.participants.map(({ name }) => name);
+      const newParticipantName = uniqueName(inputEvent.userName, participantNames);
+      const renamed = newParticipantName !== inputEvent.userName;
+
       const newParticipant: Participant = {
         id: participantId,
-        name: inputEvent.userName,
+        name: newParticipantName,
         isSpectator: inputEvent.isSpectator,
       };
 
       const userJoinedEvent: UserJoined = {
         eventType: 'userJoined',
-        userName: inputEvent.userName,
+        userName: newParticipantName,
         isSpectator: inputEvent.isSpectator,
       };
 
@@ -66,6 +71,19 @@ export const handlePokerEvent = (
           ],
         },
       ];
+
+      if (renamed) {
+        messagesToSend.push({
+          type: SEND_MESSAGE,
+          recipient: newParticipant,
+          payload: [
+            {
+              eventType: 'userRenamed',
+              userName: newParticipantName,
+            },
+          ],
+        });
+      }
 
       if (room.currentEstimation) {
         const startEstimationEvent: StartEstimation = {
