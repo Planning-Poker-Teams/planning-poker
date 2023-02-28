@@ -52,7 +52,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from 'vue';
+import { computed, ref, toRef } from 'vue';
 import { Store, useStore } from 'vuex';
 import { useStorage } from '../hooks/useStorage';
 import { State } from '../store/types';
@@ -67,7 +67,7 @@ type Entries = Entry[];
 const store: Store<State> = useStore();
 const taskName = ref(store.state.estimationResult?.taskName);
 const cardDeck = ref(store.state.cardDeck);
-const estimationResultBySize = ref<Entries>(store.getters.resultBySize);
+const estimationResultBySize = toRef(store.getters, 'resultBySize');
 
 const storedSortDir = useStorage('sortDir');
 const storedSortCol = useStorage('sortCol');

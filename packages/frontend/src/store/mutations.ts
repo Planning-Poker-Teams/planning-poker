@@ -1,4 +1,5 @@
 import { MutationTree } from 'vuex';
+import router from '../router';
 import {
   ChangeCardDeck,
   EstimationResult,
@@ -6,14 +7,16 @@ import {
   UserHasEstimated,
   UserJoined,
   UserLeft,
+  UserRenamed,
 } from '../store/pokerEvents';
-import { State, RoomInformation } from '../store/types';
+import { State, RoomInformation, EstimationResult as StoreEstimationResult } from '../store/types';
 
 export enum MutationsType {
   SET_ROOM_INFORMATION = 'setRoomInformation',
   LEAVE_ROOM = 'leaveRoom',
   USER_JOINED = 'userJoined',
   USER_LEFT = 'userLeft',
+  USER_RENAMED = 'userRenamed',
   CHANGE_CARD_DECK = 'changeCardDeck',
   START_ESTIMATION = 'startEstimation',
   USER_HAS_ESTIMATED = 'userHasEstimated',
@@ -25,10 +28,21 @@ export type Mutations = {
   [MutationsType.LEAVE_ROOM](state: State): void;
   [MutationsType.USER_JOINED](state: State, event: UserJoined): void;
   [MutationsType.USER_LEFT](state: State, event: UserLeft): void;
+  [MutationsType.USER_RENAMED](state: State, event: UserRenamed): void;
   [MutationsType.CHANGE_CARD_DECK](state: State, event: ChangeCardDeck): void;
   [MutationsType.START_ESTIMATION](state: State, event: StartEstimation): void;
   [MutationsType.USER_HAS_ESTIMATED](state: State, event: UserHasEstimated): void;
   [MutationsType.ESTIMATION_RESULT](state: State, event: EstimationResult): void;
+};
+
+const removePendingUserEstimation = (
+  userName: string,
+  estimationResult: StoreEstimationResult
+): StoreEstimationResult => {
+  const estimates = estimationResult.estimates.filter(
+    userEstimate => userEstimate.userName !== userName || userEstimate.estimate
+  );
+  return { ...estimationResult, estimates };
 };
 
 export const mutations: MutationTree<State> & Mutations = {
@@ -57,7 +71,22 @@ export const mutations: MutationTree<State> & Mutations = {
     }
   },
   [MutationsType.USER_LEFT](state: State, event: UserLeft) {
+    if (state.room?.userName === event.userName) {
+      router.push({ name: 'lobby', query: { room: state.room?.name } });
+    }
     state.participants = state.participants.filter(p => p.name != event.userName);
+
+    if (state.estimationResult) {
+      state.estimationResult = removePendingUserEstimation(event.userName, state.estimationResult);
+    }
+  },
+  [MutationsType.USER_RENAMED](state: State, event: UserRenamed) {
+    if (state.room) {
+      state.room = {
+        ...state.room,
+        userName: event.userName,
+      };
+    }
   },
   [MutationsType.CHANGE_CARD_DECK](state: State, event: ChangeCardDeck) {
     state.cardDeck = event.cardDeck;

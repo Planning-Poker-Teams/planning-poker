@@ -2,12 +2,14 @@ type PokerEvent =
   | JoinRoom
   | UserJoined
   | UserLeft
+  | UserRemoved
   | ChangeCardDeck
   | StartEstimation
   | UserEstimate
   | UserHasEstimated
   | RequestShowEstimationResult
-  | EstimationResult;
+  | EstimationResult
+  | UserRenamed;
 
 interface JoinRoom {
   eventType: 'joinRoom';
@@ -27,9 +29,20 @@ interface UserLeft {
   userName: string;
 }
 
+interface UserRemoved {
+  eventType: 'removeUser';
+  userName: string;
+  roomName: string;
+}
+
 interface ChangeCardDeck {
   eventType: 'changeCardDeck';
   cardDeck: string[];
+}
+
+interface UserRenamed {
+  eventType: 'userRenamed';
+  userName: string;
 }
 
 interface StartEstimation {

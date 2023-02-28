@@ -33,7 +33,7 @@ Feature: Performing estimations
     Given there is a room with an ongoing estimation for "Buy milk"
     And "John" estimated "1"
     And "Jimmy" estimated "13"
-    When a participant named "Fred" joins the room
+    When a participant named "Fredrich" joins the room
     Then he should receive information about the task
     And he should receive information about who has already estimated
 
@@ -42,7 +42,7 @@ Feature: Performing estimations
     And "John" estimated "1"
     And "Jimmy" estimated "13"
     When showing the result is requested
-    Then no action should be performed
+    Then all participants get informed about the estimation result
 
   Scenario: Estimation results can be shown without estimations from spectators
     Given there is a room with an ongoing estimation for "Buy milk"

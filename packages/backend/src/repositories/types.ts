@@ -1,7 +1,7 @@
 import { Participant } from '../domain/types';
 import { Room } from './dynamodb/RoomRepository';
 
-interface ParticipantInfo {
+export interface ParticipantInfo {
   participant: Participant;
   roomName: string;
 }
@@ -9,6 +9,10 @@ interface ParticipantInfo {
 export interface ParticipantRepository {
   putParticipant(participant: Participant, roomName: string): Promise<void>;
   fetchParticipantInfo(id: string): Promise<ParticipantInfo | undefined>;
+  fetchParticipantInfoByNameAndRoom(
+    name: string,
+    roomName: string
+  ): Promise<ParticipantInfo | undefined>;
   fetchParticipants(ids: string[]): Promise<Participant[]>;
   removeParticipant(id: string): Promise<void>;
 }

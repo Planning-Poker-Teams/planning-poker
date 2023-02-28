@@ -51,7 +51,7 @@ export type Store = Omit<VuexStore<State>, 'getters' | 'commit' | 'dispatch'> & 
   };
 };
 
-export const customStore = (options: { [key: string]: any }) => {
+export const customStore = (options: State) => {
   const customOptions = { ...defaultOptions };
   customOptions.state = { ...customOptions.state, ...options };
   return createStore<State>(customOptions);

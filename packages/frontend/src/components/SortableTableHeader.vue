@@ -27,7 +27,7 @@ const props = defineProps({
 });
 
 const linkTooltip = computed(
-  () => `Sort column in ${props.activeDir === 'up' ? 'descending' : 'ascending' } order`
+  () => `Sort column in ${props.activeDir === 'up' ? 'descending' : 'ascending'} order`
 );
 
 defineEmits(['onClick']);
