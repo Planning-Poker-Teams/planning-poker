@@ -5,17 +5,34 @@
   >
     <div class="mx-auto p-5 border w-2/4 shadow-lg rounded-md bg-white">
       <div class="mt-3 text-center">
-        <p class="text-lg leading-6 font-medium text-gray-900">
-          Not everyone has voted yet. Are you sure?
-        </p>
+        <template v-if="pendingParticipants.length">
+          <p class="text-lg leading-6 font-medium text-gray-900">
+            Not everyone has voted yet. Are you sure?
+          </p>
 
-        <h4 class="mt-3 mb-1">Pending participants:</h4>
-        <ul class="list-none list-outside mb-2 text-left inline-block">
-          <li v-for="{ name } in pendingParticipants" :key="name">
-            <font-awesome-icon icon="xmark" class="text-red-500" />
-            {{ name }}
-          </li>
-        </ul>
+          <h4 class="mt-3 mb-1">Pending participants:</h4>
+          <ul class="list-none list-outside mb-2 text-left inline-block">
+            <li v-for="{ name } in pendingParticipants" :key="name">
+              <font-awesome-icon icon="xmark" class="text-red-500" />
+              {{ name }}
+
+              <a
+                v-if="userName !== name"
+                class="cursor-pointer"
+                :title="`Remove ${name} from the room`"
+                @click="removeUser(name)"
+              >
+                <small class="pl-2 text-red-500 underline">remove</small>
+              </a>
+            </li>
+          </ul>
+        </template>
+
+        <template v-else>
+          <p class="text-lg mb-2 leading-6 font-medium text-gray-900">
+            Everyone has voted, proceed to view the results by clicking "OK"!
+          </p>
+        </template>
 
         <div class="w-5/6 mx-auto items-center px-4 py-3">
           <button
@@ -37,14 +54,23 @@
 </template>
 
 <script setup lang="ts">
-import { Ref, toRef } from 'vue';
+import { Ref, toRef, computed } from 'vue';
 import { Store, useStore } from 'vuex';
-import { State } from '../store/types';
+import { ActionType } from '../store/actions';
+import { Participant, State } from '../store/types';
 
 const emits = defineEmits(['on_confirm', 'on_cancel']);
 const store: Store<State> = useStore();
-const pendingParticipants: Ref<boolean> = toRef(store.getters, 'pendingParticipants');
+const pendingParticipants: Ref<Participant[]> = toRef(store.getters, 'pendingParticipants');
 
 const confirm = () => emits('on_confirm');
 const cancel = () => emits('on_cancel');
+
+const userName = computed(() => {
+  return store.state.room?.userName;
+});
+
+const removeUser = (userName: string) => {
+  store.dispatch(ActionType.REMOVE_USER, userName);
+};
 </script>

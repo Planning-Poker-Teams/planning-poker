@@ -223,8 +223,8 @@ Then('all participants get informed about the estimation result', function () {
   });
 
   const allKeys = Array.from(estimations.keys());
-
-  expect(payload.estimates).toHaveLength(allKeys.length);
+  const estimatesWithValue = payload.estimates.filter(({ estimate }) => Boolean(estimate));
+  expect(estimatesWithValue).toHaveLength(allKeys.length);
 
   allKeys.forEach(name => {
     expect(payload.estimates).toContainEqual({

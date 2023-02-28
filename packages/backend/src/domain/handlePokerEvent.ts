@@ -102,6 +102,23 @@ export const handlePokerEvent = (
       }
     }
 
+    case 'removeUser': {
+      return [
+        {
+          type: BROADCAST_MESSAGE,
+          payload: {
+            eventType: 'userLeft',
+            userName: participant!.name,
+          },
+        },
+        {
+          type: REMOVE_PARTICIPANT,
+          roomName: room.name,
+          participant: participant!,
+        },
+      ];
+    }
+
     case 'userLeft': {
       return [
         {
