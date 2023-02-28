@@ -66,6 +66,32 @@ When('a participant named {string} leaves the room', function (userName: string)
   );
 });
 
+When('a participant named {string} is removed from a room', function (userName: string) {
+  this.inputEvent = {
+    eventType: 'removeUser',
+    userName,
+    roomName: this.room!.name,
+  };
+
+  const removedParticipant = this.room?.participants.find(p => p.name === userName);
+  if (!removedParticipant) {
+    throw Error('Participant not found in room');
+  }
+
+  this.leavingParticipant = removedParticipant;
+  this.outgoingCommands = handlePokerEvent(
+    this.room!,
+    this.inputEvent,
+    removedParticipant.id,
+    removedParticipant
+  );
+
+  this.inputEvent = {
+    eventType: 'userLeft',
+    userName,
+  };
+});
+
 Then('he should be added as a new participant', function () {
   expect(this.outgoingCommands).toContainEqual({
     type: CommandType.ADD_PARTICIPANT,

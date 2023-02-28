@@ -1,6 +1,7 @@
 import { ActionTree, Dispatch } from 'vuex';
 import {
   ChangeCardDeck,
+  RemoveUser,
   RequestShowEstimationResult,
   StartEstimation,
   UserEstimate,
@@ -10,6 +11,7 @@ import { State } from '../store/types';
 export enum ActionType {
   ENTER_ROOM = 'enterRoom',
   LEAVE_ROOM = 'leaveRoom',
+  REMOVE_USER = 'removeUser',
   SEND_MESSAGE = 'sendMessage',
   CHANGE_CARD_DECK = 'changeCardDeck',
   REQUEST_START_ESTIMATION = 'requestStartEstimation',
@@ -39,6 +41,18 @@ export const actions: ActionTree<State, State> & Actions = {
   },
   [ActionType.LEAVE_ROOM]() {
     // handled by websocketPlugin
+  },
+  [ActionType.REMOVE_USER]({ dispatch, state }, userName: string) {
+    if (!state.room) {
+      console.error('There is no room', state);
+      return;
+    }
+    const removeUserMessage: RemoveUser = {
+      eventType: 'removeUser',
+      userName,
+      roomName: state.room?.name,
+    };
+    dispatch(ActionType.SEND_MESSAGE, removeUserMessage);
   },
   [ActionType.SEND_MESSAGE]() {
     // handled by websocketPlugin

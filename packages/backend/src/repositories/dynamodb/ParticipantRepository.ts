@@ -1,5 +1,5 @@
 import { Participant } from '../../domain/types';
-import { ParticipantRepository } from '../types';
+import { ParticipantRepository, ParticipantInfo } from '../types';
 import { DynamoDbClient } from './DynamoDbClient';
 
 interface ParticipantRowSchema {
@@ -16,6 +16,19 @@ export default class DynamoDbParticipantRepository implements ParticipantReposit
     private participantsTableName: string,
     private client: DynamoDbClient = new DynamoDbClient()
   ) {}
+
+  private rowToParticpantInfo(row: ParticipantRowSchema): ParticipantInfo {
+    const participant = {
+      id: row.connectionId,
+      name: row.name,
+      isSpectator: row.isSpectator,
+    };
+
+    return {
+      participant,
+      roomName: row.roomName,
+    };
+  }
 
   async getAllParticipants(): Promise<Participant[]> {
     const allItems = await this.client.scan(this.participantsTableName);
@@ -42,20 +55,10 @@ export default class DynamoDbParticipantRepository implements ParticipantReposit
     this.cache.set(participant.id, row);
   }
 
-  async fetchParticipantInfo(
-    id: string
-  ): Promise<{ participant: Participant; roomName: string } | undefined> {
+  async fetchParticipantInfo(id: string): Promise<ParticipantInfo | undefined> {
     if (this.cache.has(id)) {
       const row = this.cache.get(id)!;
-      const participant = {
-        id: row.connectionId,
-        name: row.name,
-        isSpectator: row.isSpectator,
-      };
-      return {
-        participant,
-        roomName: row.roomName,
-      };
+      return this.rowToParticpantInfo(row);
     }
 
     const result = await this.client.get(this.participantsTableName, {
@@ -64,17 +67,19 @@ export default class DynamoDbParticipantRepository implements ParticipantReposit
     if (!result || !result.Item) {
       return undefined;
     }
-    const row = result.Item;
-    const participant = {
-      id: row.connectionId,
-      name: row.name,
-      isSpectator: row.isSpectator,
-    };
+    return this.rowToParticpantInfo(result.Item as ParticipantRowSchema);
+  }
 
-    return {
-      participant,
-      roomName: row.roomName,
-    };
+  async fetchParticipantInfoByNameAndRoom(
+    name: string,
+    roomName: string
+  ): Promise<{ participant: Participant; roomName: string } | undefined> {
+    const results = await this.client.scan(this.participantsTableName, { name, roomName });
+    if (results.length === 0) {
+      return undefined;
+    }
+
+    return this.rowToParticpantInfo(results[0] as ParticipantRowSchema);
   }
 
   async fetchParticipants(ids: string[]): Promise<Participant[]> {

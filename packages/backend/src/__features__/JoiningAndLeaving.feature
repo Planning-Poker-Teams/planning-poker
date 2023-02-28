@@ -17,3 +17,9 @@ Feature: Joining and leaving poker room
     When a participant named "Fred" leaves the room
     Then he should be removed from the participants
     And the remaining participants should be informed the leaving participant
+
+  Scenario: Beeing removed from a room
+    Given there is a room with a few participants
+    When a participant named "Fred" is removed from a room
+    Then he should be removed from the participants
+    And the remaining participants should be informed the leaving participant

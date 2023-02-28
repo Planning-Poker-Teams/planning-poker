@@ -1,4 +1,5 @@
 import { MutationTree } from 'vuex';
+import router from '../router';
 import {
   ChangeCardDeck,
   EstimationResult,
@@ -57,6 +58,9 @@ export const mutations: MutationTree<State> & Mutations = {
     }
   },
   [MutationsType.USER_LEFT](state: State, event: UserLeft) {
+    if (state.room?.userName === event.userName) {
+      router.push({ name: 'lobby', query: { room: state.room?.name } });
+    }
     state.participants = state.participants.filter(p => p.name != event.userName);
   },
   [MutationsType.CHANGE_CARD_DECK](state: State, event: ChangeCardDeck) {
