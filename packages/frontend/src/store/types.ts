@@ -11,6 +11,7 @@ export interface RoomInformation {
   userName: string;
   isSpectator: boolean;
   showCats: boolean;
+  showAverage: boolean;
 }
 
 export interface Participant {

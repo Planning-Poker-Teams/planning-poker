@@ -48,6 +48,8 @@
       alt="Consensus cats!"
       :src="catUrl"
     />
+
+    {{ store.state.room?.showAverage ? cardAverage : '' }}
   </section>
 </template>
 
@@ -105,6 +107,26 @@ const sortColumn = (column: SortCol) => {
 };
 
 const catUrl = `https://thecatapi.com/api/images/get?format=src&type=gif&nocache=${new Date().toISOString()}`;
+
+const cardAverage = computed(
+  () => {
+    var avg = 0;
+    var numericalEntries = 0;
+    var entries: Entry[] = [...estimationResultBySize.value];
+
+    entries.forEach( (entry) => {
+      var parsedEntryValue = parseInt(entry.value);
+
+      if(!isNaN(parsedEntryValue)) {
+        avg += parsedEntryValue;
+        numericalEntries++;
+      }
+    })
+
+    avg = avg/numericalEntries;
+    return avg;
+  }
+);
 
 defineExpose({
   taskName,

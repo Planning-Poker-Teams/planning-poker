@@ -39,6 +39,13 @@
           label="Consensus cats"
           :value="showCats"
         />
+        <Toggle
+          id="showAverage"
+          v-model="showAverage"
+          class="mx-2 mb-2"
+          label="Show Average"
+          :value="showAverage"
+        />
         <div class="mt-2 flex flex-row-reverse items-center">
           <button
             class="my-2 ml-2 bg-gray-300 hover:bg-gray-100 text-lg text-gray-700 font- py-2 px-4 border-2 border-gray-400 rounded"
@@ -89,6 +96,8 @@ const onRoomName = (event: Event) => {
 
 const isSpectator = ref(false);
 const showCats = ref(true);
+const showAverage = ref(false);
+
 const roomNameQuery = route.query.room as string;
 if (typeof roomNameQuery === 'string' && roomNameQuery.length > 0) {
   roomName.value = roomNameQuery;
@@ -100,6 +109,7 @@ const joinRoom = () => {
     userName: userName,
     isSpectator: isSpectator,
     showCats: showCats,
+    showAverage: showAverage,
   });
   router.push({ name: 'room', params: { roomName: roomName.value } });
 };
@@ -113,6 +123,7 @@ defineExpose({
   roomName,
   isSpectator,
   showCats,
+  showAverage,
   formIsCompleted,
   joinRoom,
 });
