@@ -1,6 +1,10 @@
 <template>
-  <div class="sticky top-0 bg-white rounded-t-lg w-full flex flex-col border-b shadow-sm">
-    <div class="w-full min-h-16 flex justify-center items-center relative overflow-hidden">
+  <div
+    class="sticky top-0 bg-white rounded-t-lg w-full flex flex-col border-b shadow-sm"
+  >
+    <div
+      class="w-full min-h-16 flex justify-center items-center relative overflow-hidden"
+    >
       <div class="absolute top-0 left-0 flex items-center m-2">
         <img
           class="object-contain h-12 shadow-md rounded-lg mr-2"
@@ -12,39 +16,54 @@
           <br />for teams
         </h2>
       </div>
+
       <h1 class="w:3/5 flex-1 text-center text-2xl m-0 font-sans font-bold">
         {{ roomName }}
       </h1>
 
-      <button
-        class="absolute top-0 right-0 bg-gray-300 text-gray-700 m-2 p-2 mr-40 border-2 hover:border-gray-400 border-gray-300 rounded"
-        type="button"
-        :hidden="!canChangeCardDeck"
-        @click="showChangeDeckModal"
+      <div
+        id="controlArea"
+        class="absolute top-0 right-0 w-5/12 flex justify-end"
       >
-        <span class="hidden lg:inline mr-2">Change Card Deck</span>
-        <font-awesome-icon icon="sliders-h" />
-      </button>
+        <button
+          class="bg-gray-300 text-gray-700 m-2 p-2 border-2 hover:border-gray-400 border-gray-300 rounded"
+          type="button"
+          @click="copyUrl"
+        >
+          <span class="hidden lg:inline mr-2">Invite</span>
+          <font-awesome-icon icon="fa-link" />
+        </button>
 
-      <button
-        class="absolute top-0 right-0 bg-gray-300 text-gray-700 m-2 p-2 border-2 hover:border-gray-400 border-gray-300 rounded"
-        type="button"
-        @click="leaveRoom"
-      >
-        <span class="hidden lg:inline mr-2">Leave Room</span>
-        <font-awesome-icon icon="door-open" />
-      </button>
+        <button
+          class="bg-gray-300 text-gray-700 m-2 p-2 border-2 hover:border-gray-400 border-gray-300 rounded"
+          type="button"
+          :hidden="!canChangeCardDeck"
+          @click="showChangeDeckModal"
+        >
+          <span class="hidden lg:inline mr-2">Card Deck</span>
+          <font-awesome-icon icon="sliders-h" />
+        </button>
+
+        <button
+          class="bg-gray-300 text-gray-700 m-2 p-2 border-2 hover:border-gray-400 border-gray-300 rounded"
+          type="button"
+          @click="leaveRoom"
+        >
+          <span class="hidden lg:inline mr-2">Leave Room</span>
+          <font-awesome-icon icon="door-open" />
+        </button>
+      </div>
     </div>
     <participants-list :participants="refParticipants" />
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed, PropType, toRef } from 'vue';
-import { useRouter } from 'vue-router';
-import { useStore } from 'vuex';
-import ParticipantsList from '../components/ParticipantsList.vue';
-import { Participant } from '../store/types';
+import { ref, computed, PropType, toRef } from "vue";
+import { useRouter } from "vue-router";
+import { useStore } from "vuex";
+import ParticipantsList from "../components/ParticipantsList.vue";
+import { Participant } from "../store/types";
 
 const store = useStore();
 const router = useRouter();
@@ -59,19 +78,27 @@ const props = defineProps({
     required: true,
   },
 });
-const refParticipants = toRef(props, 'participants');
+const refParticipants = toRef(props, "participants");
 const canChangeCardDeck = computed<boolean>(
   () => !store.getters.somebodyHasVoted || !store.state.ongoingEstimation
 );
 
-const emits = defineEmits(['show_change_deck_modal']);
+const emits = defineEmits(["show_change_deck_modal"]);
 
 const showChangeDeckModal = () => {
-  emits('show_change_deck_modal');
+  emits("show_change_deck_modal");
 };
 
 const leaveRoom = () => {
-  router.push({ name: 'lobby', query: { room: props.roomName } });
+  router.push({ name: "lobby", query: { room: props.roomName } });
+};
+
+const copyUrl = () => {
+  console.log(window.location.pathname);
+  //TODO: Shouldn't use plaintext domain here, instead import from wherever it's stored
+  navigator.clipboard.writeText(
+    `https://planningpoker.cc${window.location.pathname}`
+  );
 };
 
 defineExpose({

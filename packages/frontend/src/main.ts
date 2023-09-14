@@ -8,6 +8,7 @@ import {
   faXmark,
   faArrowDown,
   faArrowUp,
+  faLink
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { createApp } from 'vue';
@@ -24,5 +25,7 @@ library.add(faSlidersH);
 library.add(faXmark);
 library.add(faArrowDown);
 library.add(faArrowUp);
+library.add(faLink);
+
 
 createApp(App).use(store).use(router).component('font-awesome-icon', FontAwesomeIcon).mount('#app');
