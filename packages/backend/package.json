@@ -30,7 +30,6 @@
     "eslint-plugin-prettier": "^4.0.0",
     "jest": "^27.4.5",
     "prettier": "^2.5.1",
-    "prettier-airbnb-config": "^1.0.0",
     "testcontainers": "^2.8.1",
     "ts-jest": "^27.1.2",
     "ts-node": "^10.4.0",
