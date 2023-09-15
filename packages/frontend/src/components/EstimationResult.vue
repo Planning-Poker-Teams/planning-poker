@@ -1,7 +1,6 @@
 <template>
   <section class="flex-1 flex flex-col px-4 justify-around items-center">
     <h1 class="text-sans text-xl font-medium my-4">{{ taskName }}</h1>
-
     <table class="table-fixed bg-gray-300 rounded-t text-center w-full lg:w-3/4">
       <thead>
         <tr>
