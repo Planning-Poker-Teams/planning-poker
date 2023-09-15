@@ -26,12 +26,20 @@
         class="absolute top-0 right-0 w-5/12 flex justify-end"
       >
         <button
-          class="bg-gray-300 text-gray-700 m-2 p-2 border-2 hover:border-gray-400 border-gray-300 rounded"
+          class="text-gray-700 m-2 p-2 border-2 rounded"
+          :class="
+            urlCopyStatus
+              ? 'bg-codecentric-100 border-codecentric-100 hover:border-codecentric-100'
+              : 'bg-gray-300 border-gray-300 hover:border-gray-400'
+          "
           type="button"
+          :style="urlCopyStatus ? { cursor: 'default' } : { cursor: 'pointer' }"
           @click="copyUrl"
         >
-          <span class="hidden lg:inline mr-2">Invite</span>
-          <font-awesome-icon icon="fa-link" />
+          <span class="hidden lg:inline mr-2">{{
+            urlCopyStatus ? "URL copied" : "Invite User"
+          }}</span>
+          <font-awesome-icon :icon="urlCopyStatus ? 'fa-check' : 'fa-link'" />
         </button>
 
         <button
@@ -93,12 +101,13 @@ const leaveRoom = () => {
   router.push({ name: "lobby", query: { room: props.roomName } });
 };
 
-const copyUrl = () => {
-  console.log(window.location.pathname);
+const urlCopyStatus = ref(false);
+const copyUrl = async () => {
   //TODO: Shouldn't use plaintext domain here, instead import from wherever it's stored
   navigator.clipboard.writeText(
     `https://planningpoker.cc${window.location.pathname}`
   );
+  urlCopyStatus.value = true;
 };
 
 defineExpose({

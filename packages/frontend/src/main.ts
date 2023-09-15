@@ -8,7 +8,7 @@ import {
   faXmark,
   faArrowDown,
   faArrowUp,
-  faLink
+  faLink,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { createApp } from 'vue';
