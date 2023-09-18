@@ -15,6 +15,7 @@ const exampleRoom: RoomInformation = {
   userName: 'Bar',
   isSpectator: false,
   showCats: false,
+  showAverage: false,
 };
 
 describe('mutations', () => {
@@ -25,6 +26,7 @@ describe('mutations', () => {
       userName: 'Jane',
       isSpectator: false,
       showCats: true,
+      showAverage: false
     };
 
     mutations.setRoomInformation(state, roomInformation);

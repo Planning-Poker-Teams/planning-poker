@@ -42,6 +42,14 @@
         </tr>
       </tbody>
     </table>
+
+    <div
+      v-if="store.state.room?.showAverage"
+      class="m-2 px-6 py-2 bg-gray-300 font-medium p-2 border-2 hover:border-gray-400 border-gray-300 rounded"
+    >
+      Average: {{ cardAverage }}
+    </div>
+
     <img
       v-if="showConsensusCats"
       class="object-contain h-32 rounded my-2"
@@ -105,6 +113,24 @@ const sortColumn = (column: SortCol) => {
 };
 
 const catUrl = `https://thecatapi.com/api/images/get?format=src&type=gif&nocache=${new Date().toISOString()}`;
+
+const cardAverage = computed(() => {
+  let avg = 0;
+  let numericalEntries = 0;
+  const entries: Entry[] = [...estimationResultBySize.value];
+
+  entries.forEach(entry => {
+    const parsedEntryValue = parseInt(entry.value);
+
+    if (!isNaN(parsedEntryValue)) {
+      avg += parsedEntryValue;
+      numericalEntries++;
+    }
+  });
+
+  avg = avg / numericalEntries;
+  return avg;
+});
 
 defineExpose({
   taskName,
