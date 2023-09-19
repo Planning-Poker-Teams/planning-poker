@@ -26,7 +26,7 @@
         class="absolute top-0 right-0 w-5/12 flex justify-end"
       >
         <button
-          class="text-gray-700 m-2 p-2 border-2 rounded"
+          class="text-gray-700 m-2 p-2 border-2 rounded flex justify-center items-center flex-nowrap whitespace-nowrap"
           :class="
             urlCopyStatus
               ? 'bg-codecentric-100 border-codecentric-100 hover:border-codecentric-100'
@@ -37,27 +37,27 @@
           @click="copyUrl"
         >
           <span class="hidden lg:inline mr-2">{{
-            urlCopyStatus ? "URL copied" : "Invite User"
+            urlCopyStatus ? "Copied" : "Invite"
           }}</span>
           <font-awesome-icon :icon="urlCopyStatus ? 'fa-check' : 'fa-link'" />
         </button>
 
         <button
-          class="bg-gray-300 text-gray-700 m-2 p-2 border-2 hover:border-gray-400 border-gray-300 rounded"
+          class="bg-gray-300 text-gray-700 m-2 p-2 border-2 hover:border-gray-400 border-gray-300 rounded flex justify-center items-center flex-nowrap whitespace-nowrap"
           type="button"
           :hidden="!canChangeCardDeck"
           @click="showChangeDeckModal"
         >
-          <span class="hidden lg:inline mr-2">Card Deck</span>
+          <span class="hidden lg:inline mr-2">Deck</span>
           <font-awesome-icon icon="sliders-h" />
         </button>
 
         <button
-          class="bg-gray-300 text-gray-700 m-2 p-2 border-2 hover:border-gray-400 border-gray-300 rounded"
+          class="bg-gray-300 text-gray-700 m-2 p-2 border-2 hover:border-gray-400 border-gray-300 rounded flex justify-center items-center flex-nowrap whitespace-nowrap"
           type="button"
           @click="leaveRoom"
         >
-          <span class="hidden lg:inline mr-2">Leave Room</span>
+          <span class="hidden lg:inline mr-2">Exit</span>
           <font-awesome-icon icon="door-open" />
         </button>
       </div>
