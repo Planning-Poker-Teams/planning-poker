@@ -2,8 +2,10 @@ import { library } from '@fortawesome/fontawesome-svg-core';
 import {
   faDoorOpen,
   faCheck,
+  faPlus,
   faPlay,
   faRedo,
+  faUndo,
   faSlidersH,
   faXmark,
   faArrowDown,
@@ -20,7 +22,9 @@ import './assets/tailwind.css';
 library.add(faDoorOpen);
 library.add(faCheck);
 library.add(faPlay);
+library.add(faPlus);
 library.add(faRedo);
+library.add(faUndo);
 library.add(faSlidersH);
 library.add(faXmark);
 library.add(faArrowDown);

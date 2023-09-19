@@ -4,6 +4,7 @@
     @on_confirm="requestResult"
     @on_cancel="closeConfirmDialog"
   />
+  <TaskHeader :task-name="taskName" :task-status="'Estimation'"></TaskHeader>
   <section class="flex-1 flex flex-col items-center p-4">
     <div class="w-full flex justify-center lg:pt-4 pb-4 lg:pb-8">
       <div
@@ -49,6 +50,7 @@ import { onBeforeUpdate, PropType, Ref, ref, toRef, VueElement } from 'vue';
 import { Store, useStore } from 'vuex';
 import { State } from '../store/types';
 import Card from './Card.vue';
+import TaskHeader from './TaskHeader.vue';
 import useCardAnimation, { translates } from './CardAnimation';
 import ConfirmShowResultsDialog from './ConfirmShowResultsDialog.vue';
 
