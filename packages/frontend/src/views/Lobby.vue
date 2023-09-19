@@ -57,7 +57,7 @@
         </div>
 
         <div class="my-4x flex flex-col items-center">
-          <div class="my-4 w-full rounded border border-gray-200" />
+          <div class="my-4 w-full rounded border border-gray-200"></div>
           <a class="underline text-gray-700" href="/legal-notice"
             >Legal notice</a
           >
@@ -83,13 +83,15 @@ const store: Store<State> = useStore();
 const storageUserName = useStorage("userName");
 const userName = ref(storageUserName.value);
 const onUserName = (event: Event) => {
-  storageUserName.value = event.target?.value;
+  const target = event.target as HTMLButtonElement;
+  storageUserName.value = target.value;
 };
 
 const storageRoomName = useStorage("roomName");
 const roomName = ref(storageRoomName.value);
 const onRoomName = (event: Event) => {
-  storageRoomName.value = event.target?.value;
+  const target = event.target as HTMLButtonElement;
+  storageRoomName.value = target?.value;
 };
 
 const isSpectator = ref(false);
