@@ -56,6 +56,7 @@
               :key="name"
               :name="name"
               :has-voted="hasVoted(entry.value)"
+              :abbreviation="refAbbreviations.get(name)?.toString() || name"
             />
           </td>
         </tr>
@@ -82,7 +83,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref, toRef } from 'vue';
+import { PropType, computed, ref, toRef } from 'vue';
 import { Store, useStore } from 'vuex';
 import { useStorage } from '../hooks/useStorage';
 import { State } from '../store/types';
@@ -95,10 +96,18 @@ type SortCol = 'votes' | 'size' | 'agreement';
 type Entry = { value: string; names: string[] };
 type Entries = Entry[];
 
+const props = defineProps({
+  participantAbbreviations: {
+    type: Map as PropType<Map<String,String>>,
+    required: true,
+  }
+});
+
 const store: Store<State> = useStore();
 const taskName = ref(store.state.estimationResult?.taskName);
 const cardDeck = ref(store.state.cardDeck);
 const estimationResultBySize = toRef(store.getters, 'resultBySize');
+const refAbbreviations = toRef(props, 'participantAbbreviations');
 
 const storedSortDir = useStorage('sortDir');
 const storedSortCol = useStorage('sortCol');

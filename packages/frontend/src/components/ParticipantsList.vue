@@ -8,6 +8,7 @@
         :name="participant.name"
         :has-voted="participant.hasEstimated || participant.isSpectator"
         :show-checkmark="true"
+        :abbreviation="refAbbreviations.get(participant.name)?.toString() || participant.name"
       />
     </div>
   </div>
@@ -23,8 +24,14 @@ const props = defineProps({
     type: Array as PropType<Participant[]>,
     required: true,
   },
+  participantAbbreviations: {
+    type: Map as PropType<Map<String,String>>,
+    required: true,
+  }
 });
+
 const refParticipants = toRef(props, 'participants');
+const refAbbreviations = toRef(props, 'participantAbbreviations');
 
 defineExpose({
   refParticipants,

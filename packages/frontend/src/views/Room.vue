@@ -4,6 +4,7 @@
   >
     <room-header
       :participants="participants"
+      :participant-abbreviations="participantAbbreviations"
       :room-name="roomName"
       @show_change_deck_modal="showChangeDeckModal = true"
     />
@@ -21,7 +22,11 @@
       @send-estimation="sendEstimation"
       @request-result="requestResult"
     />
-    <estimation-result v-if="estimationResultAvailable" />
+    <estimation-result 
+      v-if="estimationResultAvailable" 
+      :participant-abbreviations="participantAbbreviations"
+    />
+    <start-estimation-form v-if="!isEstimationOngoing" @start-estimation="startEstimation" />
   </div>
   <participants-list :participants="participants" />
   <connection-status-dialog
@@ -80,17 +85,60 @@ onUnmounted(() => {
 const isEstimationOngoing = computed(
   () => store.getters.estimationState == EstimationState.ONGOING
 );
+
 const estimationResultAvailable = computed(() => store.state.estimationResult !== undefined);
+
 const changeCardDeck = async (newCardDeck: string[]) => {
   store.dispatch(ActionType.CHANGE_CARD_DECK, newCardDeck);
   showChangeDeckModal.value = false;
 };
+
+const startEstimation = async (taskName: string) => {
+  store.dispatch(ActionType.REQUEST_START_ESTIMATION, taskName);
+};
+
 const sendEstimation = async (value: string) => {
   store.dispatch(ActionType.SEND_ESTIMATION, value);
 };
+
 const requestResult = async () => {
   store.dispatch(ActionType.REQUEST_RESULT);
 };
+
+
+const participantAbbreviations = computed(() => {
+  let abbreviatedParticipants: String[] = [];
+  let abbreviationMap = new Map<String, String>();
+
+  for (let i = 0; i < store.state.participants.length; i++) {
+    abbreviatedParticipants.push(store.state.participants[i].name.charAt(0));
+  }
+  
+  for (let i = 0; i < store.state.participants.length; i++) {
+    let currentAbbrv = abbreviatedParticipants[i];
+    let isUnique = true;
+
+    for (let j = i+1; j < store.state.participants.length; j++) {
+      if (currentAbbrv == abbreviatedParticipants[j]) {
+        isUnique = false;
+        if(abbreviatedParticipants[i].length == currentAbbrv.length) {
+          abbreviatedParticipants[i] = store.state.participants[i].name.substring(0,abbreviatedParticipants[i].length+1);
+        }
+        abbreviatedParticipants[j] = store.state.participants[j].name.substring(0,abbreviatedParticipants[j].length+1);
+      }
+    }
+
+    if(!isUnique) {
+      i--;
+      continue;
+    }
+  }
+
+  for (let i = 0; i < store.state.participants.length; i++) {
+    abbreviationMap.set(store.state.participants[i].name, abbreviatedParticipants[i]);
+  }
+  return abbreviationMap;
+});
 
 defineExpose({
   showChangeDeckModal,

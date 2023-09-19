@@ -49,6 +49,10 @@
         </button-p-p>
       </div>
     </div>
+    <participants-list 
+      :participants="refParticipants" 
+      :participant-abbreviations="refAbbreviations"
+    />
   </div>
 </template>
 
@@ -71,8 +75,14 @@ const props = defineProps({
     type: Array as PropType<Participant[]>,
     required: true,
   },
+  participantAbbreviations: {
+    type: Map as PropType<Map<String,String>>,
+    required: true,
+  }
 });
 const refParticipants = toRef(props, 'participants');
+const refAbbreviations = toRef(props, 'participantAbbreviations');
+
 const canChangeCardDeck = computed<boolean>(
   () => !store.getters.somebodyHasVoted || !store.state.ongoingEstimation
 );
