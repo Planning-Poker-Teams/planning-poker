@@ -28,7 +28,8 @@
       <card
         v-for="(value, index) in currentCardDeck"
         :ref="
-          el => {
+          (el) => {
+            // @ts-ignore TODO: create proper typing for cardRefList
             cardRefList[index] = el;
           }
         "
@@ -46,13 +47,13 @@
 </template>
 
 <script setup lang="ts">
-import { onBeforeUpdate, PropType, Ref, ref, toRef, VueElement } from 'vue';
-import { Store, useStore } from 'vuex';
-import { State } from '../store/types';
-import Card from './Card.vue';
-import TaskHeader from './TaskHeader.vue';
-import useCardAnimation, { translates } from './CardAnimation';
-import ConfirmShowResultsDialog from './ConfirmShowResultsDialog.vue';
+import { onBeforeUpdate, PropType, Ref, ref, toRef, VueElement } from "vue";
+import { Store, useStore } from "vuex";
+import { State } from "../store/types";
+import Card from "./Card.vue";
+import useCardAnimation, { translates } from "./CardAnimation";
+import ConfirmShowResultsDialog from "./ConfirmShowResultsDialog.vue";
+import TaskHeader from "./TaskHeader.vue";
 
 defineProps({
   taskName: {
@@ -64,9 +65,9 @@ defineProps({
     required: true,
   },
 });
-const emits = defineEmits(['send-estimation', 'request-result']);
+const emits = defineEmits(["send-estimation", "request-result"]);
 const store: Store<State> = useStore();
-const votingIsComplete: Ref<boolean> = toRef(store.getters, 'votingIsComplete');
+const votingIsComplete: Ref<boolean> = toRef(store.getters, "votingIsComplete");
 const isSpectator = ref(store.state.room?.isSpectator);
 const showConfirmDialog = ref(false);
 const cardTargetField: Ref<Element | undefined> = ref(undefined);
@@ -90,7 +91,7 @@ const handleSubmitResult = () => {
 
 const requestResult = () => {
   showConfirmDialog.value = false;
-  emits('request-result');
+  emits("request-result");
 };
 
 let lastSelectedCard: VueElement | undefined;
@@ -98,18 +99,24 @@ let lastCardMovement: translates;
 const sendEstimation = (value: string, index: number) => {
   if (selectedEstimation.value !== index) {
     try {
-      const { animateCardSelection } = useCardAnimation(cardRefList.value[index], cardTargetField);
+      const { animateCardSelection } = useCardAnimation(
+        cardRefList.value[index],
+        cardTargetField
+      );
 
-      lastCardMovement = animateCardSelection(lastSelectedCard, lastCardMovement);
+      lastCardMovement = animateCardSelection(
+        lastSelectedCard,
+        lastCardMovement
+      );
       lastSelectedCard = cardRefList.value[index];
     } catch (error) {
-      console.warn('Card selection could not be animated', error);
+      console.warn("Card selection could not be animated", error);
     }
 
     selectedEstimation.value = index;
   }
 
-  emits('send-estimation', value);
+  emits("send-estimation", value);
 };
 
 defineExpose({
