@@ -2,7 +2,7 @@
   <confirm-show-results-dialog
     v-if="showConfirmDialog"
     @on_confirm="requestResult"
-    @on_cancel="closeConfirmDialog"
+    @on_cancel="closeShowResultDialog"
   />
   <new-task-dialog
     v-if="showNewTaskDialog"
@@ -21,7 +21,7 @@
           v-if="isEstimationOngoing"
           class="bg-codecentric-100 text-gray-700 m-2 p-2 border-2 hover:border-gray-400 border-codecentric-100 rounded flex justify-center items-center flex-nowrap whitespace-nowrap"
           type="button"
-          @click="handleSubmitResult"
+          @click="handleShowResultButton"
         >
           <span class="hidden lg:inline mr-2">Show Result</span>
           <font-awesome-icon icon="fa-plus" />
@@ -41,7 +41,7 @@
           v-if="estimationResultAvailable"
           class="bg-codecentric-100 text-gray-700 m-2 p-2 border-2 hover:border-gray-400 border-codecentric-100 rounded flex justify-center items-center flex-nowrap whitespace-nowrap"
           type="button"
-          @click="console.log('TODO')"
+          @click="handleRestartTaskButton(taskName)"
         >
           <span class="hidden lg:inline mr-2">Restart</span>
           <font-awesome-icon icon="fa-undo" />
@@ -61,32 +61,6 @@ import ConfirmShowResultsDialog from "./ConfirmShowResultsDialog.vue";
 import NewTaskDialog from "./NewTaskDialog.vue";
 
 const store = useStore();
-
-const votingIsComplete: Ref<boolean> = toRef(store.getters, "votingIsComplete");
-const showConfirmDialog = ref(false);
-const showNewTaskDialog = ref(false);
-
-const handleSubmitResult = () => {
-  if (votingIsComplete.value) {
-    return requestResult();
-  }
-  showConfirmDialog.value = true;
-};
-const handleNewTaskButton = () => {
-  showNewTaskDialog.value = true;
-};
-const requestResult = () => {
-  showConfirmDialog.value = false;
-  store.dispatch(ActionType.REQUEST_RESULT);
-};
-
-const closeConfirmDialog = () => {
-  showConfirmDialog.value = false;
-};
-const closeNewTaskDialog = () => {
-  showNewTaskDialog.value = false;
-};
-
 const props = defineProps({
   taskName: {
     type: String,
@@ -98,12 +72,41 @@ const props = defineProps({
   },
 });
 
+const votingIsComplete: Ref<boolean> = toRef(store.getters, "votingIsComplete");
+const showConfirmDialog = ref(false);
+const showNewTaskDialog = ref(false);
 const isEstimationOngoing = computed(
   () => store.getters.estimationState == EstimationState.ONGOING
 );
 const estimationResultAvailable = computed(
   () => store.state.estimationResult !== undefined
 );
+
+//Show Result Logic
+const handleShowResultButton = () => {
+  if (votingIsComplete.value) {
+    return requestResult();
+  }
+  showConfirmDialog.value = true;
+};
+const requestResult = () => {
+  showConfirmDialog.value = false;
+  store.dispatch(ActionType.REQUEST_RESULT);
+};
+const closeShowResultDialog = () => {
+  showConfirmDialog.value = false;
+};
+
+//Task Start Logic
+const handleNewTaskButton = () => {
+  showNewTaskDialog.value = true;
+};
+const closeNewTaskDialog = () => {
+  showNewTaskDialog.value = false;
+};
+const handleRestartTaskButton = async (taskName: string) => {
+  await store.dispatch(ActionType.REQUEST_START_ESTIMATION, taskName);
+};
 
 defineExpose({});
 </script>
