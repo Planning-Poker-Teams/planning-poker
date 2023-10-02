@@ -1,10 +1,6 @@
 <template>
-  <section class="flex-1 flex flex-col px-4 justify-around items-center">
-    <TaskHeader
-      :task-name="taskName || ''"
-      :task-status="'Result'"
-    ></TaskHeader>
-    <h1 class="text-sans text-xl font-medium my-4">{{ taskName }}</h1>
+  <TaskHeader :task-name="taskName || ''" :task-status="'Result'"></TaskHeader>
+  <template v-if="!consensusReached">
     <table
       class="table-fixed bg-gray-300 rounded-t text-center w-full lg:w-3/4"
     >
@@ -54,13 +50,22 @@
         </tr>
       </tbody>
     </table>
+  </template>
+
+  <template v-if="consensusReached">
+    <div class="text-xl font-sans m-2 text-center">
+      <span class="font-bold">Consensus Reached! 🎉</span><br />
+      <span class="">{{
+        `All ${sortedEntries[0]?.names.length} participants voted for option ${sortedEntries[0]?.value}`
+      }}</span>
+    </div>
     <img
       v-if="showConsensusCats"
-      class="object-contain h-32 rounded my-2"
+      class="object-contain h-80 rounded my-2"
       alt="Consensus cats!"
       :src="catUrl"
     />
-  </section>
+  </template>
 </template>
 
 <script setup lang="ts">
@@ -103,6 +108,9 @@ const sortedEntries = computed((): Entries => {
 
 const showConsensusCats = computed(
   () => store.state.room?.showCats && estimationResultBySize.value.length == 1
+);
+const consensusReached = computed(
+  () => estimationResultBySize.value.length == 1
 );
 
 const hasVoted = (vote?: string): boolean => typeof vote !== "undefined";

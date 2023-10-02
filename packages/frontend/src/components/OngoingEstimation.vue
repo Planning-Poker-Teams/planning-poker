@@ -1,11 +1,9 @@
 <template>
   <TaskHeader :task-name="taskName" :task-status="'Estimation'"></TaskHeader>
   <section
-    class="w-full flex-1 flex justify-center gap-10 items-center p-4 box-border"
+    class="w-full flex-1 flex justify-evenly gap-10 items-center p-4 box-border"
   >
-    <div
-      class="flex justify-center h-full w-full m-10 lg:pt-4 pb-4 lg:pb-8 box-border"
-    >
+    <div class="flex justify-center h-80 w-80 box-border">
       <div
         ref="cardTargetField"
         class="min-h-24 w-full max-w-lg flex justify-center items-center rounded border-4 border-gray-300 border-dashed"
@@ -13,12 +11,12 @@
         <p
           class="text-2xl font-medium font-sans text-center text-gray-800 p-10"
         >
-          {{ taskName }}
+          Place your vote!
         </p>
       </div>
     </div>
 
-    <div v-if="!isSpectator" class="grid grid-cols-4 gap-x-2 gap-y-2 mb-4 w-full">
+    <div v-if="!isSpectator" class="grid grid-cols-5 gap-x-2 gap-y-2 mb-4">
       <card
         v-for="(value, index) in currentCardDeck"
         :ref="
