@@ -30,7 +30,7 @@
               :active-dir="sortDir"
               :active-col="sortCol"
               @on-click="sortColumn('agreement')"
-              >%Agreement</sortable-table-header
+              >%Votes</sortable-table-header
             >
           </th>
           <th class="p-2">Voters</th>

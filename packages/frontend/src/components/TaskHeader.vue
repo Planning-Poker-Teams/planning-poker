@@ -24,7 +24,7 @@
           @click="handleShowResultButton"
         >
           <span class="hidden lg:inline mr-2">Show Result</span>
-          <font-awesome-icon icon="fa-plus" />
+          <font-awesome-icon icon="fa-magnifying-glass" />
         </button>
 
         <button

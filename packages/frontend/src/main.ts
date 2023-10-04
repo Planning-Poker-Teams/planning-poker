@@ -1,4 +1,4 @@
-import { library } from '@fortawesome/fontawesome-svg-core';
+import { library } from "@fortawesome/fontawesome-svg-core";
 import {
   faDoorOpen,
   faCheck,
@@ -11,13 +11,14 @@ import {
   faArrowDown,
   faArrowUp,
   faLink,
-} from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
-import { createApp } from 'vue';
-import App from './App.vue';
-import router from './router';
-import store from './store';
-import './assets/tailwind.css';
+  faMagnifyingGlass,
+} from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+import { createApp } from "vue";
+import App from "./App.vue";
+import router from "./router";
+import store from "./store";
+import "./assets/tailwind.css";
 
 library.add(faDoorOpen);
 library.add(faCheck);
@@ -30,6 +31,10 @@ library.add(faXmark);
 library.add(faArrowDown);
 library.add(faArrowUp);
 library.add(faLink);
+library.add(faMagnifyingGlass);
 
-
-createApp(App).use(store).use(router).component('font-awesome-icon', FontAwesomeIcon).mount('#app');
+createApp(App)
+  .use(store)
+  .use(router)
+  .component("font-awesome-icon", FontAwesomeIcon)
+  .mount("#app");

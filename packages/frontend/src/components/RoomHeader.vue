@@ -3,7 +3,7 @@
     class="sticky top-0 bg-white rounded-t-lg w-full flex flex-col border-b shadow-sm z-10"
   >
     <div
-      class="w-full min-h-16 flex justify-center items-center relative overflow-hidden"
+      class="w-full min-h-16 flex justify-left lg:justify-center items-center relative overflow-hidden"
     >
       <div class="absolute top-0 left-0 flex items-center m-2">
         <img
@@ -17,7 +17,7 @@
         </h2>
       </div>
 
-      <h1 class="w:3/5 flex-1 text-center text-2xl m-0 font-sans font-bold">
+      <h1 class="w:3/5 text-2xl ml-16 lg:m-0 font-sans font-bold">
         {{ roomName }}
       </h1>
 

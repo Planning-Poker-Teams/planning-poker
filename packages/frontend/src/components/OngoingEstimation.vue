@@ -1,9 +1,9 @@
 <template>
   <TaskHeader :task-name="taskName" :task-status="'Estimation'"></TaskHeader>
   <section
-    class="w-full flex-1 flex justify-evenly gap-10 items-center p-4 box-border"
+    class="w-full flex-1 flex flex-col lg:flex-row justify-evenly gap-10 items-center p-4 box-border"
   >
-    <div class="flex justify-center h-80 w-80 box-border">
+    <div class="flex justify-center lg:h-80 w-80 box-border">
       <div
         ref="cardTargetField"
         class="min-h-24 w-full max-w-lg flex justify-center items-center rounded border-4 border-gray-300 border-dashed"
