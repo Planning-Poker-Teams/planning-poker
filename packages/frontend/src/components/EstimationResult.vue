@@ -12,7 +12,7 @@
               :active-dir="sortDir"
               :active-col="sortCol"
               @on-click="sortColumn('size')"
-              >Size</sortable-table-header
+              >Option</sortable-table-header
             >
           </th>
           <th class="p-2">
@@ -21,10 +21,19 @@
               :active-dir="sortDir"
               :active-col="sortCol"
               @on-click="sortColumn('votes')"
-              >Votes</sortable-table-header
+              >#Votes</sortable-table-header
             >
           </th>
-          <th class="p-2 w-1/2">Voters</th>
+          <th class="p-2">
+            <sortable-table-header
+              column="agreement"
+              :active-dir="sortDir"
+              :active-col="sortCol"
+              @on-click="sortColumn('agreement')"
+              >%Agreement</sortable-table-header
+            >
+          </th>
+          <th class="p-2">Voters</th>
         </tr>
       </thead>
       <tbody class="bg-gray-200">
@@ -39,6 +48,16 @@
             }}</span>
           </td>
           <td class="p-2">{{ entry.names.length }}</td>
+          <td class="p-2">
+            <Progressbar
+              class="progress-bar"
+              :total-step="store.state.participants.length"
+              :current-step="entry.names.length"
+              :show-footer="false"
+              :with-label="false"
+              front-color="black"
+            ></Progressbar>
+          </td>
           <td class="p-2 flex justify-start overflow-x-auto">
             <participant-item
               v-for="name in entry.names"
@@ -78,11 +97,12 @@ import { Store, useStore } from "vuex";
 import { useStorage } from "../hooks/useStorage";
 import { State } from "../store/types";
 import ParticipantItem from "./ParticipantItem.vue";
+import Progressbar from "./Progressbar.vue";
 import SortableTableHeader from "./SortableTableHeader.vue";
 import TaskHeader from "./TaskHeader.vue";
 
 type SortDir = "up" | "down";
-type SortCol = "votes" | "size";
+type SortCol = "votes" | "size" | "agreement";
 type Entry = { value: string; names: string[] };
 type Entries = Entry[];
 
@@ -100,6 +120,8 @@ const sortFunctions = {
   size: (e1: Entry, e2: Entry): number =>
     cardDeck.value.indexOf(e1.value) - cardDeck.value.indexOf(e2.value),
   votes: (e1: Entry, e2: Entry): number =>
+    e1.names.length < e2.names.length ? -1 : 1,
+  agreement: (e1: Entry, e2: Entry): number =>
     e1.names.length < e2.names.length ? -1 : 1,
 };
 
