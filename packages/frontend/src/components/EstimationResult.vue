@@ -73,13 +73,11 @@
 
   <template v-if="consensusReached">
     <div class="text-xl font-sans m-2 text-center">
-      <span class="font-bold">Consensus Reached! 🎉</span><br />
+      <span class="font-bold">Consensus Reached! 🎉</span><br /><br />
       <span class="">{{
-        `All ${sortedEntries[0]?.names.length} participants ${
-          sortedEntries[0]?.value
-            ? "voted for option " + sortedEntries[0]?.value
-            : "were to confused to select anything 🧐"
-        }`
+        sortedEntries[0]?.value
+          ? `All ${sortedEntries[0]?.names.length} participants voted for option ${sortedEntries[0]?.value}.`
+          : `All ${sortedEntries[0]?.names.length} participants were to confused to select anything. 🧐`
       }}</span>
     </div>
     <img

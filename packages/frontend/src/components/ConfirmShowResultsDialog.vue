@@ -4,7 +4,7 @@
     data-testid="confirm-show-results-dialog"
   >
     <div
-      class="mx-auto p-5 border w-5/6 lg:w-2/4 shadow-lg rounded-md bg-white"
+      class="mx-auto p-5 border w-5/6 lg:w-2/4 lg:max-w-xl shadow-lg rounded-md bg-white"
     >
       <div class="mt-3 text-center">
         <template v-if="pendingParticipants.length">
@@ -36,18 +36,18 @@
           </p>
         </template>
 
-        <div class="lg:w-5/6 mx-auto items-center px-4 py-3">
+        <div class="mx-auto flex justify-between py-3">
           <button
-            class="mr-5 px-4 py-2 bg-red-500 text-white text-base font-medium rounded-md w-5/12 shadow-sm hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-green-300"
+            class="mr-5 px-4 py-2 bg-gray-400 text-black text-base font-medium rounded-md w-5/12 shadow-sm hover:bg-gray-500 focus:outline-none focus:ring-2 focus:ring-green-300"
             @click="cancel"
           >
-            CANCEL
+            Cancel
           </button>
           <button
-            class="ml-5 px-4 py-2 bg-green-500 text-white text-base font-medium rounded-md w-5/12 shadow-sm hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-300"
+            class="ml-5 px-4 py-2 text-base font-medium rounded-md w-5/12 shadow-sm focus:outline-none focus:ring-2 focus:ring-green-300 bg-codecentric-100 hover:bg-codecentric-200 text-black"
             @click="confirm"
           >
-            OK
+            Proceed
           </button>
         </div>
       </div>
