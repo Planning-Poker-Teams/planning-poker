@@ -56,7 +56,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, Ref, computed, toRef, onMounted } from "vue";
+import { ref, Ref, computed, toRef, onMounted, onBeforeUpdate } from "vue";
 import { useRouter } from "vue-router";
 import { useStore } from "vuex";
 import { ActionType } from "../store/actions";
@@ -80,6 +80,13 @@ const props = defineProps({
     required: false,
     default: false,
   },
+});
+
+//lifecylce hooks
+onBeforeUpdate(() => {
+  //TODO: Workaround to avoid new task popup window in case task is already ongoing. This would happen because leaveroom does not reset components.
+  //TODO: A proper way would probably be to unmount all inner components when leaving a room (instead of just pushing to a different router page)
+  showNewTaskDialog.value = props.newTask;
 });
 
 const votingIsComplete: Ref<boolean> = toRef(store.getters, "votingIsComplete");
@@ -112,11 +119,11 @@ const handleNewTaskButton = () => {
   showNewTaskDialog.value = true;
 };
 const cancelNewTaskDialog = () => {
+  closeNewTaskDialog();
   if (props.newTask) {
     //TODO: exception case: newtaskdialog shown when joining new room without task. A bit ugly that this has to be checked here, could be imprvoed.
     router.push({ name: "lobby", query: { room: store.state.room.name } });
   }
-  closeNewTaskDialog();
 };
 const closeNewTaskDialog = () => {
   showNewTaskDialog.value = false;
