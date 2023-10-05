@@ -1,5 +1,4 @@
 <template>
-  <TaskHeader :task-name="taskName || ''" :task-status="'Result'"></TaskHeader>
   <template v-if="!consensusReached">
     <table
       class="table-fixed bg-gray-300 rounded-t text-center w-full lg:w-3/4"

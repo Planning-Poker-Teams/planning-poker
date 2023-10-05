@@ -20,7 +20,7 @@
 
         <div class="mx-auto flex justify-between py-3">
           <button
-            class="mr-5 px-4 py-2 bg-gray-400 text-black text-base font-medium rounded-md w-5/12 shadow-sm hover:bg-gray-500 focus:outline-none focus:ring-2 focus:ring-green-300"
+            class="mr-5 px-4 py-2 bg-gray-400 text-black text-base font-medium rounded-md w-5/12 shadow-sm hover:bg-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-500"
             @click="cancel"
           >
             Cancel

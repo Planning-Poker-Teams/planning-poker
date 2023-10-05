@@ -7,9 +7,12 @@
   <new-task-dialog
     v-if="showNewTaskDialog"
     @on_confirm="closeNewTaskDialog"
-    @on_cancel="closeNewTaskDialog"
+    @on_cancel="cancelNewTaskDialog"
   />
-  <div class="w-full min-h-24 relative overflow-hidden box-border">
+  <div
+    v-if="taskName"
+    class="w-full min-h-24 relative overflow-hidden box-border"
+  >
     <div class="flex justify-center items-center relative">
       <div class="w:3/5 flex-1 text-xl font-sans m-2">
         <span class="font-bold">{{ taskName }} - </span>
@@ -53,12 +56,14 @@
 </template>
 
 <script setup lang="ts">
-import { ref, Ref, computed, toRef } from "vue";
+import { ref, Ref, computed, toRef, onMounted } from "vue";
+import { useRouter } from "vue-router";
 import { useStore } from "vuex";
 import { ActionType } from "../store/actions";
 import { EstimationState } from "../store/getters";
 import ConfirmShowResultsDialog from "./ConfirmShowResultsDialog.vue";
 import NewTaskDialog from "./NewTaskDialog.vue";
+const router = useRouter();
 
 const store = useStore();
 const props = defineProps({
@@ -70,11 +75,16 @@ const props = defineProps({
     type: String,
     required: true,
   },
+  newTask: {
+    type: Boolean,
+    required: false,
+    default: false,
+  },
 });
 
 const votingIsComplete: Ref<boolean> = toRef(store.getters, "votingIsComplete");
 const showConfirmDialog = ref(false);
-const showNewTaskDialog = ref(false);
+const showNewTaskDialog = ref(props.newTask);
 const isEstimationOngoing = computed(
   () => store.getters.estimationState == EstimationState.ONGOING
 );
@@ -100,6 +110,13 @@ const closeShowResultDialog = () => {
 //Task Start Logic
 const handleNewTaskButton = () => {
   showNewTaskDialog.value = true;
+};
+const cancelNewTaskDialog = () => {
+  if (props.newTask) {
+    //TODO: exception case: newtaskdialog shown when joining new room without task. A bit ugly that this has to be checked here, could be imprvoed.
+    router.push({ name: "lobby", query: { room: store.state.room.name } });
+  }
+  closeNewTaskDialog();
 };
 const closeNewTaskDialog = () => {
   showNewTaskDialog.value = false;

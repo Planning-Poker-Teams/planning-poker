@@ -7,6 +7,13 @@
       :room-name="roomName"
       @show_change_deck_modal="showChangeDeckModal = true"
     />
+    <task-header
+      :task-name="taskName"
+      :task-status="estimationResultAvailable ? 'Result' : 'Estimation'"
+      :new-task="
+        !isEstimationOngoing && !estimationResultAvailable ? true : false
+      "
+    ></task-header>
     <change-card-deck-dialog
       v-if="showChangeDeckModal"
       :current-card-deck="cardDeck"
@@ -21,10 +28,6 @@
       @request-result="requestResult"
     />
     <estimation-result v-if="estimationResultAvailable" />
-    <start-estimation-form
-      v-if="!isEstimationOngoing && !estimationResultAvailable"
-      @start-estimation="startEstimation"
-    />
   </div>
 </template>
 
@@ -36,7 +39,7 @@ import ChangeCardDeckDialog from "../components/ChangeCardDeckDialog.vue";
 import EstimationResult from "../components/EstimationResult.vue";
 import OngoingEstimation from "../components/OngoingEstimation.vue";
 import RoomHeader from "../components/RoomHeader.vue";
-import StartEstimationForm from "../components/StartEstimationForm.vue";
+import TaskHeader from "../components/TaskHeader.vue";
 import { ActionType } from "../store/actions";
 import { EstimationState } from "../store/getters";
 import { State } from "../store/types";
@@ -50,11 +53,13 @@ const cardDeck = toRef(store.state, "cardDeck");
 
 const participants = toRef(store.state, "participants");
 const taskName = computed(() => {
-  if (typeof store.state.ongoingEstimation === "undefined") {
+  if (store.state.ongoingEstimation) {
+    return store.state.ongoingEstimation.taskName;
+  } else if (store.state.estimationResult) {
+    return store.state.estimationResult.taskName;
+  } else {
     return "";
   }
-
-  return store.state.ongoingEstimation.taskName;
 });
 const roomName = computed(() => {
   if (typeof store.state.room === "undefined") {
@@ -85,9 +90,6 @@ const changeCardDeck = async (newCardDeck: string[]) => {
   store.dispatch(ActionType.CHANGE_CARD_DECK, newCardDeck);
   showChangeDeckModal.value = false;
 };
-const startEstimation = async (taskName: string) => {
-  store.dispatch(ActionType.REQUEST_START_ESTIMATION, taskName);
-};
 const sendEstimation = async (value: string) => {
   store.dispatch(ActionType.SEND_ESTIMATION, value);
 };
@@ -104,7 +106,6 @@ defineExpose({
   isEstimationOngoing,
   estimationResultAvailable,
   changeCardDeck,
-  startEstimation,
   sendEstimation,
   requestResult,
 });

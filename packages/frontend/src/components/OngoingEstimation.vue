@@ -1,5 +1,4 @@
 <template>
-  <TaskHeader :task-name="taskName" :task-status="'Estimation'"></TaskHeader>
   <section
     class="w-full flex-1 flex flex-col lg:flex-row justify-evenly gap-10 items-center p-4 box-border"
   >
