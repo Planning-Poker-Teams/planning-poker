@@ -2,6 +2,7 @@ import { Store, ActionPayload } from "vuex";
 import { ActionType } from "../store/actions";
 import { PokerEvent } from "../store/pokerEvents";
 import { State } from "../store/types";
+import { ConnectionState } from ".";
 
 const webSocketPlugin = (store: Store<State>) => {
   let socket: WebSocket | undefined = undefined;
@@ -14,6 +15,7 @@ const webSocketPlugin = (store: Store<State>) => {
         }
         const { name, userName, isSpectator } = state.room;
         socket = setupWebSocketConnection(name, userName, isSpectator);
+        store.state.connectionState = ConnectionState.CONNECTING;
         break;
       }
       case ActionType.LEAVE_ROOM: {
@@ -34,6 +36,11 @@ const webSocketPlugin = (store: Store<State>) => {
   const handleIncomingMessage = (message: PokerEvent) => {
     switch (message.eventType) {
       case "userJoined":
+        if (message.userName == store.state.room?.userName) {
+          store.state.connectionState = ConnectionState.CONNECTED;
+        }
+        store.commit(message.eventType, message);
+        break;
       case "userLeft":
       case "userRenamed":
       case "changeCardDeck":
@@ -64,8 +71,23 @@ const webSocketPlugin = (store: Store<State>) => {
     };
 
     socket.onmessage = (event) => {
+      console.log(event.data);
       const json = JSON.parse(event.data);
       handleIncomingMessage(json);
+    };
+
+    socket.onerror = (event) => {
+      console.log("[error] Connection error, see log for details.");
+      console.log(event);
+    };
+
+    socket.onclose = (event) => {
+      store.state.connectionState = ConnectionState.NOT_CONNECTED;
+      if (event.wasClean) {
+        console.log(`[close] Connection closed cleanly, code=${event.code}.`);
+      } else {
+        console.log(`[close] Connection died, code=${event?.code}.`);
+      }
     };
 
     return socket;

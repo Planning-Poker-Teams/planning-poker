@@ -5,7 +5,10 @@
     @on_cancel="closeShowResultDialog"
   />
   <new-task-dialog
-    v-if="!taskName || showNewTaskDialog"
+    v-if="
+      (store.getters.estimationState == EstimationState.NOT_STARTED || showNewTaskDialog) &&
+      store.state.connectionState == ConnectionState.CONNECTED
+    "
     @on_confirm="closeNewTaskDialog"
     @on_cancel="cancelNewTaskDialog"
   />
@@ -60,6 +63,7 @@
 import { Ref, computed, ref, toRef } from "vue";
 import { useRouter } from "vue-router";
 import { useStore } from "vuex";
+import { ConnectionState } from "../store";
 import { ActionType } from "../store/actions";
 import { EstimationState } from "../store/getters";
 import ConfirmShowResultsDialog from "./ConfirmShowResultsDialog.vue";

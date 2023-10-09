@@ -26,7 +26,9 @@
     <estimation-result v-if="estimationResultAvailable" />
   </div>
   <participants-list :participants="participants" />
-  <connection-status-dialog :show="false"></connection-status-dialog>
+  <connection-status-dialog
+    :show="store.state.connectionState != ConnectionState.CONNECTED"
+  ></connection-status-dialog>
 </template>
 
 <script setup lang="ts">
@@ -40,8 +42,10 @@ import OngoingEstimation from "../components/OngoingEstimation.vue";
 import ParticipantsList from "../components/ParticipantsList.vue";
 import RoomHeader from "../components/RoomHeader.vue";
 import TaskHeader from "../components/TaskHeader.vue";
+import { ConnectionState } from "../store";
 import { ActionType } from "../store/actions";
 import { EstimationState } from "../store/getters";
+
 import { State } from "../store/types";
 
 const store: Store<State> = useStore();
