@@ -53,8 +53,9 @@
               :total-step="store.state.participants.length"
               :current-step="entry.names.length"
               :show-footer="false"
-              :with-label="false"
-              front-color="black"
+              :with-label="true"
+              :bar-color="'#2d3748'"
+              :font-color="'white'"
             ></Progressbar>
           </td>
           <td class="p-2 flex justify-start overflow-x-auto">

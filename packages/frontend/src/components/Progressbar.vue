@@ -5,11 +5,17 @@
       class="progress-bar-body"
     >
       <div
-        :style="{ width: percentage, 'background-color': frontColor }"
+        :style="{
+          width: percentage,
+          'background-color': barColor,
+        }"
         class="bar-itself-background"
-      ></div>
-      <div :style="{ width: percentage }" class="bar-itself-percentage-text">
-        <p v-if="withLabel" class="headline5">{{ percentage }}</p>
+      >
+        <div :style="{ width: percentage }" class="bar-itself-percentage-text">
+          <p v-if="withLabel" class="headline5" :style="{ color: fontColor }">
+            {{ percentage }}
+          </p>
+        </div>
       </div>
     </div>
     <div v-if="showFooter" class="progress-bar-footer">
@@ -33,9 +39,13 @@ export default {
       type: String,
       default: "#A9B4BE",
     },
-    frontColor: {
+    barColor: {
       type: String,
       default: "#CCECFC",
+    },
+    fontColor: {
+      type: String,
+      default: "white",
     },
     withLabel: {
       type: Boolean,
@@ -64,23 +74,21 @@ r
 }
 .progress-bar-body {
   box-shadow: inset -5px 5px 10px rgba(0, 0, 0, 0.25);
-  border-radius: 30px;
+  border-radius: 10px;
   width: 100%;
   position: relative;
+}
+.bar-itself-background {
+  position: relative;
+  height: 30px;
+  border-radius: 10px;
+  text-align: center;
 }
 .bar-itself-percentage-text {
   height: 30px;
   text-align: center;
   filter: blur(0);
-}
-.bar-itself-background {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  height: 30px;
-  border-radius: 30px;
-  text-align: center;
+  display: table-cell;
+  vertical-align: middle;
 }
 </style>
