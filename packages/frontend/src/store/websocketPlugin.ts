@@ -1,7 +1,7 @@
-import { Store, ActionPayload } from 'vuex';
-import { ActionType } from '../store/actions';
-import { PokerEvent } from '../store/pokerEvents';
-import { State } from '../store/types';
+import { Store, ActionPayload } from "vuex";
+import { ActionType } from "../store/actions";
+import { PokerEvent } from "../store/pokerEvents";
+import { State } from "../store/types";
 
 const webSocketPlugin = (store: Store<State>) => {
   let socket: WebSocket | undefined = undefined;
@@ -17,6 +17,10 @@ const webSocketPlugin = (store: Store<State>) => {
         break;
       }
       case ActionType.LEAVE_ROOM: {
+        //reset store
+        store.commit("leaveRoom");
+
+        //close connection
         socket?.close();
         break;
       }
@@ -29,13 +33,13 @@ const webSocketPlugin = (store: Store<State>) => {
 
   const handleIncomingMessage = (message: PokerEvent) => {
     switch (message.eventType) {
-      case 'userJoined':
-      case 'userLeft':
-      case 'userRenamed':
-      case 'changeCardDeck':
-      case 'startEstimation':
-      case 'userHasEstimated':
-      case 'estimationResult':
+      case "userJoined":
+      case "userLeft":
+      case "userRenamed":
+      case "changeCardDeck":
+      case "startEstimation":
+      case "userHasEstimated":
+      case "estimationResult":
         store.commit(message.eventType, message);
         break;
     }
@@ -51,7 +55,7 @@ const webSocketPlugin = (store: Store<State>) => {
     socket.onopen = () => {
       socket.send(
         JSON.stringify({
-          eventType: 'joinRoom',
+          eventType: "joinRoom",
           userName,
           roomName,
           isSpectator,
@@ -59,7 +63,7 @@ const webSocketPlugin = (store: Store<State>) => {
       );
     };
 
-    socket.onmessage = event => {
+    socket.onmessage = (event) => {
       const json = JSON.parse(event.data);
       handleIncomingMessage(json);
     };
