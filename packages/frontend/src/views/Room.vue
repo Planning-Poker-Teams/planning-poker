@@ -26,6 +26,7 @@
     <estimation-result v-if="estimationResultAvailable" />
   </div>
   <participants-list :participants="participants" />
+  <connection-status-dialog :show="false"></connection-status-dialog>
 </template>
 
 <script setup lang="ts">
@@ -33,6 +34,7 @@ import { computed, onMounted, onUnmounted, ref, toRef } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { Store, useStore } from "vuex";
 import ChangeCardDeckDialog from "../components/ChangeCardDeckDialog.vue";
+import ConnectionStatusDialog from "../components/ConnectionStatusDialog.vue";
 import EstimationResult from "../components/EstimationResult.vue";
 import OngoingEstimation from "../components/OngoingEstimation.vue";
 import ParticipantsList from "../components/ParticipantsList.vue";
