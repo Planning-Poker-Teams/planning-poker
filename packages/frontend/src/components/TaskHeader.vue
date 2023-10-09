@@ -5,7 +5,7 @@
     @on_cancel="closeShowResultDialog"
   />
   <new-task-dialog
-    v-if="showNewTaskDialog"
+    v-if="!taskName || showNewTaskDialog"
     @on_confirm="closeNewTaskDialog"
     @on_cancel="cancelNewTaskDialog"
   />
@@ -15,6 +15,7 @@
   >
     <div class="flex justify-center items-center relative">
       <div class="w:3/5 flex-1 text-xl font-sans m-2">
+        Task:
         <span class="font-bold">{{ taskName }} - </span>
         <span class="">{{ taskStatus }}</span>
       </div>
@@ -56,7 +57,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, Ref, computed, toRef, onMounted, onBeforeUpdate } from "vue";
+import { Ref, computed, ref, toRef } from "vue";
 import { useRouter } from "vue-router";
 import { useStore } from "vuex";
 import { ActionType } from "../store/actions";
@@ -67,38 +68,31 @@ const router = useRouter();
 
 const store = useStore();
 const props = defineProps({
-  taskName: {
-    type: String,
-    required: true,
-  },
   taskStatus: {
     type: String,
     required: true,
   },
-  newTask: {
-    type: Boolean,
-    required: false,
-    default: false,
-  },
 });
 
-//lifecylce hooks
-onBeforeUpdate(() => {
-  //TODO: Workaround to avoid new task popup window in case task is already ongoing. This would happen because leaveroom does not reset components.
-  //TODO: A proper way would probably be to unmount all inner components when leaving a room (instead of just pushing to a different router page)
-  showNewTaskDialog.value = props.newTask;
-});
-
-const votingIsComplete: Ref<boolean> = toRef(store.getters, "votingIsComplete");
-const showConfirmDialog = ref(false);
-const showNewTaskDialog = ref(props.newTask);
 const isEstimationOngoing = computed(
   () => store.getters.estimationState == EstimationState.ONGOING
 );
 const estimationResultAvailable = computed(
   () => store.state.estimationResult !== undefined
 );
+const taskName = computed(() => {
+  if (store.state.ongoingEstimation) {
+    return store.state.ongoingEstimation.taskName;
+  } else if (store.state.estimationResult) {
+    return store.state.estimationResult.taskName;
+  } else {
+    return "";
+  }
+});
 
+const votingIsComplete: Ref<boolean> = toRef(store.getters, "votingIsComplete");
+const showConfirmDialog = ref(false);
+const showNewTaskDialog = ref(false);
 //Show Result Logic
 const handleShowResultButton = () => {
   if (votingIsComplete.value) {
@@ -120,7 +114,7 @@ const handleNewTaskButton = () => {
 };
 const cancelNewTaskDialog = () => {
   closeNewTaskDialog();
-  if (props.newTask) {
+  if (!taskName.value) {
     //TODO: exception case: newtaskdialog shown when joining new room without task. A bit ugly that this has to be checked here, could be imprvoed.
     router.push({ name: "lobby", query: { room: store.state.room.name } });
   }

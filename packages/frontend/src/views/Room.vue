@@ -8,11 +8,7 @@
       @show_change_deck_modal="showChangeDeckModal = true"
     />
     <task-header
-      :task-name="taskName"
       :task-status="estimationResultAvailable ? 'Result' : 'Estimation'"
-      :new-task="
-        !isEstimationOngoing && !estimationResultAvailable ? true : false
-      "
     ></task-header>
     <change-card-deck-dialog
       v-if="showChangeDeckModal"
@@ -29,6 +25,7 @@
     />
     <estimation-result v-if="estimationResultAvailable" />
   </div>
+  <participants-list :participants="participants" />
 </template>
 
 <script setup lang="ts">
@@ -38,6 +35,7 @@ import { Store, useStore } from "vuex";
 import ChangeCardDeckDialog from "../components/ChangeCardDeckDialog.vue";
 import EstimationResult from "../components/EstimationResult.vue";
 import OngoingEstimation from "../components/OngoingEstimation.vue";
+import ParticipantsList from "../components/ParticipantsList.vue";
 import RoomHeader from "../components/RoomHeader.vue";
 import TaskHeader from "../components/TaskHeader.vue";
 import { ActionType } from "../store/actions";

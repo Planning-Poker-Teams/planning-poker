@@ -62,7 +62,6 @@
         </button>
       </div>
     </div>
-    <participants-list :participants="refParticipants" />
   </div>
 </template>
 
@@ -70,7 +69,6 @@
 import { ref, computed, PropType, toRef } from "vue";
 import { useRouter } from "vue-router";
 import { useStore } from "vuex";
-import ParticipantsList from "../components/ParticipantsList.vue";
 import { Participant } from "../store/types";
 
 const store = useStore();
