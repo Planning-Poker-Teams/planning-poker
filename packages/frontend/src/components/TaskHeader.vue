@@ -29,7 +29,7 @@
       <div id="controlArea" class="flex justify-end">
         <button
           v-if="isEstimationOngoing"
-          id="show-result-button"
+          ref="show-result-button"
           class="bg-codecentric-100 text-gray-700 m-2 p-2 border-2 hover:border-gray-400 border-codecentric-100 rounded flex justify-center items-center flex-nowrap whitespace-nowrap"
           type="button"
           @click="handleShowResultButton"
@@ -40,7 +40,7 @@
 
         <button
           v-if="estimationResultAvailable"
-          id="new-task-button"
+          ref="new-task-button"
           class="bg-codecentric-100 text-gray-700 m-2 p-2 border-2 hover:border-gray-400 border-codecentric-100 rounded flex justify-center items-center flex-nowrap whitespace-nowrap"
           type="button"
           @click="handleNewTaskButton"
@@ -51,7 +51,7 @@
 
         <button
           v-if="estimationResultAvailable"
-          id="restart-task-button"
+          ref="restart-task-button"
           class="bg-codecentric-100 text-gray-700 m-2 p-2 border-2 hover:border-gray-400 border-codecentric-100 rounded flex justify-center items-center flex-nowrap whitespace-nowrap"
           type="button"
           @click="handleRestartTaskButton(taskName)"

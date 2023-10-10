@@ -19,10 +19,6 @@ const webSocketPlugin = (store: Store<State>) => {
         break;
       }
       case ActionType.LEAVE_ROOM: {
-        //reset store
-        store.commit("leaveRoom");
-
-        //close connection
         socket?.close();
         break;
       }
@@ -35,12 +31,6 @@ const webSocketPlugin = (store: Store<State>) => {
 
   const handleIncomingMessage = (message: PokerEvent) => {
     switch (message.eventType) {
-      case "userJoined":
-        if (message.userName == store.state.room?.userName) {
-          store.state.connectionState = ConnectionState.CONNECTED;
-        }
-        store.commit(message.eventType, message);
-        break;
       case "userLeft":
       case "userRenamed":
       case "changeCardDeck":
@@ -60,6 +50,7 @@ const webSocketPlugin = (store: Store<State>) => {
     const socket = new WebSocket(`wss://${window.planningPoker.apiUrl}`);
 
     socket.onopen = () => {
+      store.commit("enterRoom");
       socket.send(
         JSON.stringify({
           eventType: "joinRoom",
@@ -82,7 +73,7 @@ const webSocketPlugin = (store: Store<State>) => {
     };
 
     socket.onclose = (event) => {
-      store.state.connectionState = ConnectionState.NOT_CONNECTED;
+      store.commit("leaveRoom");
       if (event.wasClean) {
         console.log(`[close] Connection closed cleanly, code=${event.code}.`);
       } else {

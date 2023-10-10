@@ -1,5 +1,5 @@
-import { MutationTree } from 'vuex';
-import router from '../router';
+import { MutationTree } from "vuex";
+import router from "../router";
 import {
   ChangeCardDeck,
   EstimationResult,
@@ -8,31 +8,46 @@ import {
   UserJoined,
   UserLeft,
   UserRenamed,
-} from '../store/pokerEvents';
-import { State, RoomInformation, EstimationResult as StoreEstimationResult } from '../store/types';
+} from "../store/pokerEvents";
+import {
+  State,
+  RoomInformation,
+  EstimationResult as StoreEstimationResult,
+} from "../store/types";
 
 export enum MutationsType {
-  SET_ROOM_INFORMATION = 'setRoomInformation',
-  LEAVE_ROOM = 'leaveRoom',
-  USER_JOINED = 'userJoined',
-  USER_LEFT = 'userLeft',
-  USER_RENAMED = 'userRenamed',
-  CHANGE_CARD_DECK = 'changeCardDeck',
-  START_ESTIMATION = 'startEstimation',
-  USER_HAS_ESTIMATED = 'userHasEstimated',
-  ESTIMATION_RESULT = 'estimationResult',
+  SET_ROOM_INFORMATION = "setRoomInformation",
+  ENTER_ROOM = "enterRoom",
+  LEAVE_ROOM = "leaveRoom",
+  USER_JOINED = "userJoined",
+  USER_LEFT = "userLeft",
+  USER_RENAMED = "userRenamed",
+  CHANGE_CARD_DECK = "changeCardDeck",
+  START_ESTIMATION = "startEstimation",
+  USER_HAS_ESTIMATED = "userHasEstimated",
+  ESTIMATION_RESULT = "estimationResult",
 }
 
 export type Mutations = {
-  [MutationsType.SET_ROOM_INFORMATION](state: State, roomInformation: RoomInformation): void;
+  [MutationsType.SET_ROOM_INFORMATION](
+    state: State,
+    roomInformation: RoomInformation
+  ): void;
+  [MutationsType.ENTER_ROOM](state: State): void;
   [MutationsType.LEAVE_ROOM](state: State): void;
   [MutationsType.USER_JOINED](state: State, event: UserJoined): void;
   [MutationsType.USER_LEFT](state: State, event: UserLeft): void;
   [MutationsType.USER_RENAMED](state: State, event: UserRenamed): void;
   [MutationsType.CHANGE_CARD_DECK](state: State, event: ChangeCardDeck): void;
   [MutationsType.START_ESTIMATION](state: State, event: StartEstimation): void;
-  [MutationsType.USER_HAS_ESTIMATED](state: State, event: UserHasEstimated): void;
-  [MutationsType.ESTIMATION_RESULT](state: State, event: EstimationResult): void;
+  [MutationsType.USER_HAS_ESTIMATED](
+    state: State,
+    event: UserHasEstimated
+  ): void;
+  [MutationsType.ESTIMATION_RESULT](
+    state: State,
+    event: EstimationResult
+  ): void;
 };
 
 const removePendingUserEstimation = (
@@ -40,17 +55,24 @@ const removePendingUserEstimation = (
   estimationResult: StoreEstimationResult
 ): StoreEstimationResult => {
   const estimates = estimationResult.estimates.filter(
-    userEstimate => userEstimate.userName !== userName || userEstimate.estimate
+    (userEstimate) =>
+      userEstimate.userName !== userName || userEstimate.estimate
   );
   return { ...estimationResult, estimates };
 };
 
 export const mutations: MutationTree<State> & Mutations = {
-  [MutationsType.SET_ROOM_INFORMATION](state: State, roomInformation: RoomInformation) {
+  [MutationsType.SET_ROOM_INFORMATION](
+    state: State,
+    roomInformation: RoomInformation
+  ) {
     state.room = roomInformation;
     state.participants = [];
     state.ongoingEstimation = undefined;
     state.estimationResult = undefined;
+  },
+  [MutationsType.ENTER_ROOM](state: State) {
+    state.connectionState = 'CONNECTED';
   },
   [MutationsType.LEAVE_ROOM](state: State) {
     state.room = undefined;
@@ -58,6 +80,7 @@ export const mutations: MutationTree<State> & Mutations = {
     state.participants = [];
     state.ongoingEstimation = undefined;
     state.estimationResult = undefined;
+    state.connectionState = 'NOT_CONNECTED';
   },
   [MutationsType.USER_JOINED](state: State, event: UserJoined) {
     const participant = {
@@ -65,19 +88,26 @@ export const mutations: MutationTree<State> & Mutations = {
       isSpectator: event.isSpectator,
       hasEstimated: false,
     };
-    const alreadyHasParticipant = state.participants.find(p => p.name == participant.name);
+    const alreadyHasParticipant = state.participants.find(
+      (p) => p.name == participant.name
+    );
     if (!alreadyHasParticipant) {
       state.participants.push(participant);
     }
   },
   [MutationsType.USER_LEFT](state: State, event: UserLeft) {
     if (state.room?.userName === event.userName) {
-      router.push({ name: 'lobby', query: { room: state.room?.name } });
+      router.push({ name: "lobby", query: { room: state.room?.name } });
     }
-    state.participants = state.participants.filter(p => p.name != event.userName);
+    state.participants = state.participants.filter(
+      (p) => p.name != event.userName
+    );
 
     if (state.estimationResult) {
-      state.estimationResult = removePendingUserEstimation(event.userName, state.estimationResult);
+      state.estimationResult = removePendingUserEstimation(
+        event.userName,
+        state.estimationResult
+      );
     }
   },
   [MutationsType.USER_RENAMED](state: State, event: UserRenamed) {
@@ -93,7 +123,7 @@ export const mutations: MutationTree<State> & Mutations = {
   },
   [MutationsType.START_ESTIMATION](state: State, event: StartEstimation) {
     state.estimationResult = undefined;
-    state.participants = state.participants.map(p => ({
+    state.participants = state.participants.map((p) => ({
       ...p,
       hasEstimated: false,
     }));
@@ -106,7 +136,7 @@ export const mutations: MutationTree<State> & Mutations = {
     if (state.ongoingEstimation?.taskName !== event.taskName) {
       return;
     }
-    state.participants = state.participants.map(p => {
+    state.participants = state.participants.map((p) => {
       if (p.name == event.userName) {
         return {
           ...p,
