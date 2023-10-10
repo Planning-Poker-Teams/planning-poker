@@ -7,9 +7,7 @@
       :room-name="roomName"
       @show_change_deck_modal="showChangeDeckModal = true"
     />
-    <task-header
-      :task-status="estimationResultAvailable ? 'Result' : 'Estimation'"
-    ></task-header>
+    <task-header></task-header>
     <change-card-deck-dialog
       v-if="showChangeDeckModal"
       :current-card-deck="cardDeck"

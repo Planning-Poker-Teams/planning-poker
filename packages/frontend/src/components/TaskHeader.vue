@@ -6,7 +6,8 @@
   />
   <new-task-dialog
     v-if="
-      (store.getters.estimationState == EstimationState.NOT_STARTED || showNewTaskDialog) &&
+      (store.getters.estimationState == EstimationState.NOT_STARTED ||
+        showNewTaskDialog) &&
       store.state.connectionState == ConnectionState.CONNECTED
     "
     @on_confirm="closeNewTaskDialog"
@@ -20,12 +21,15 @@
       <div class="w:3/5 flex-1 text-xl font-sans m-2">
         Task:
         <span class="font-bold">{{ taskName }} - </span>
-        <span class="">{{ taskStatus }}</span>
+        <span class="">{{
+          isEstimationOngoing ? "Estimation" : "Result"
+        }}</span>
       </div>
 
       <div id="controlArea" class="flex justify-end">
         <button
           v-if="isEstimationOngoing"
+          id="show-result-button"
           class="bg-codecentric-100 text-gray-700 m-2 p-2 border-2 hover:border-gray-400 border-codecentric-100 rounded flex justify-center items-center flex-nowrap whitespace-nowrap"
           type="button"
           @click="handleShowResultButton"
@@ -36,6 +40,7 @@
 
         <button
           v-if="estimationResultAvailable"
+          id="new-task-button"
           class="bg-codecentric-100 text-gray-700 m-2 p-2 border-2 hover:border-gray-400 border-codecentric-100 rounded flex justify-center items-center flex-nowrap whitespace-nowrap"
           type="button"
           @click="handleNewTaskButton"
@@ -46,6 +51,7 @@
 
         <button
           v-if="estimationResultAvailable"
+          id="restart-task-button"
           class="bg-codecentric-100 text-gray-700 m-2 p-2 border-2 hover:border-gray-400 border-codecentric-100 rounded flex justify-center items-center flex-nowrap whitespace-nowrap"
           type="button"
           @click="handleRestartTaskButton(taskName)"
@@ -71,12 +77,6 @@ import NewTaskDialog from "./NewTaskDialog.vue";
 const router = useRouter();
 
 const store = useStore();
-const props = defineProps({
-  taskStatus: {
-    type: String,
-    required: true,
-  },
-});
 
 const isEstimationOngoing = computed(
   () => store.getters.estimationState == EstimationState.ONGOING
