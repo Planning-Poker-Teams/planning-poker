@@ -31,6 +31,7 @@ const webSocketPlugin = (store: Store<State>) => {
 
   const handleIncomingMessage = (message: PokerEvent) => {
     switch (message.eventType) {
+      case "userJoined":
       case "userLeft":
       case "userRenamed":
       case "changeCardDeck":
@@ -50,6 +51,7 @@ const webSocketPlugin = (store: Store<State>) => {
     const socket = new WebSocket(`wss://${window.planningPoker.apiUrl}`);
 
     socket.onopen = () => {
+      //TODO: enterRoom should be called after user actually got confirmation of room joining and received taskname etc. to prevent flickering of task creaton modal
       store.commit("enterRoom");
       socket.send(
         JSON.stringify({
