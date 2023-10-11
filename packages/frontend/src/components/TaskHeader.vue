@@ -1,6 +1,7 @@
 <template>
   <confirm-show-results-dialog
     v-if="showConfirmDialog"
+    ref="confirm-dialog"
     @on_confirm="requestResult"
     @on_cancel="closeShowResultDialog"
   />
@@ -20,7 +21,7 @@
     <div class="flex justify-center items-center relative">
       <div class="w:3/5 flex-1 text-xl font-sans m-2">
         Task:
-        <span class="font-bold">{{ taskName }} - </span>
+        <span ref="task-name-display" class="font-bold">{{ taskName }} - </span>
         <span class="">{{
           isEstimationOngoing ? "Estimation" : "Result"
         }}</span>

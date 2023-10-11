@@ -64,7 +64,6 @@ const webSocketPlugin = (store: Store<State>) => {
     };
 
     socket.onmessage = (event) => {
-      console.log(event.data);
       const json = JSON.parse(event.data);
       handleIncomingMessage(json);
     };
