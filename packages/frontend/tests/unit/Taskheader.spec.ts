@@ -61,9 +61,7 @@ describe("taskheader", () => {
       }
     );
 
-    const resultButton = wrapper.find({
-      ref: "show-result-button",
-    });
+    const resultButton = wrapper.find({ ref: "show-result-button" });
     expect(resultButton.exists()).toBeTruthy();
     await resultButton.trigger("click");
     expect(
@@ -86,14 +84,8 @@ describe("taskheader", () => {
       }
     );
 
-    await wrapper
-      .find({
-        ref: "show-result-button",
-      })
-      .trigger("click");
-    const confirmDialog = wrapper.find({
-      ref: "confirm-dialog",
-    });
+    await wrapper.find({ ref: "show-result-button" }).trigger("click");
+    const confirmDialog = wrapper.find({ ref: "confirm-dialog" });
     expect(confirmDialog.exists()).toBeTruthy();
     expect(confirmDialog.text()).include("test-user-b");
   });
