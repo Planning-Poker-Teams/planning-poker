@@ -58,6 +58,7 @@ describe("taskheader", () => {
           { name: "test-user-c", isSpectator: false, hasEstimated: true },
         ],
         cardDeck: ["0, 1, 2, 3, 5, 8, 13"],
+        ongoingEstimation,
       }
     );
 
@@ -69,7 +70,6 @@ describe("taskheader", () => {
     ).toBeFalsy();
   });
 
-  //TODO: Move to taskheader test
   it("should show warning dialog when not all users have voted yet", async () => {
     const { wrapper } = createWrapper(
       TaskHeader,
@@ -81,11 +81,14 @@ describe("taskheader", () => {
           { name: "test-user-c", isSpectator: false, hasEstimated: true },
         ],
         cardDeck: ["0, 1, 2, 3, 5, 8, 13"],
+        ongoingEstimation,
       }
     );
 
     await wrapper.find({ ref: "show-result-button" }).trigger("click");
-    const confirmDialog = wrapper.find({ ref: "confirm-dialog" });
+    const confirmDialog = wrapper.find(
+      "[data-testid=confirm-show-results-dialog]"
+    );
     expect(confirmDialog.exists()).toBeTruthy();
     expect(confirmDialog.text()).include("test-user-b");
   });

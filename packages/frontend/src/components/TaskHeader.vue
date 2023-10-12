@@ -1,7 +1,6 @@
 <template>
   <confirm-show-results-dialog
     v-if="showConfirmDialog"
-    ref="confirm-dialog"
     @on_confirm="requestResult"
     @on_cancel="closeShowResultDialog"
   />
