@@ -1,5 +1,5 @@
-import { GetterTree } from 'vuex';
-import { State, Estimate, Participant } from '../store/types';
+import {GetterTree} from 'vuex';
+import {State, Estimate, Participant} from '../store/types';
 
 export enum EstimationState {
   NOT_STARTED = 'NOT_STARTED',
@@ -7,7 +7,7 @@ export enum EstimationState {
   ENDED = 'ENDED',
 }
 
-type EstimationResult = { value: string; names: string[] }[];
+type EstimationResult = {value: string; names: string[]}[];
 
 export enum GetterType {
   ESTIMATION_STATE = 'estimationState',
@@ -48,19 +48,19 @@ export const getters: GetterTree<State, State> = {
       return undefined;
     }
     const data = state.estimationResult.estimates.reduce(
-      (accumulator: { value: string; names: string[] }[], estimate: Estimate) => {
+      (accumulator: {value: string; names: string[]}[], estimate: Estimate) => {
         const value = estimate.estimate;
         const existingEntry = accumulator.find(entry => entry.value == value);
         if (existingEntry) {
           return accumulator.map(entry => {
             if (entry.value == value) {
-              return { ...entry, names: [...entry.names, estimate.userName] };
+              return {...entry, names: [...entry.names, estimate.userName]};
             } else {
               return entry;
             }
           });
         } else {
-          return [...accumulator, { value, names: [estimate.userName] }];
+          return [...accumulator, {value, names: [estimate.userName]}];
         }
       },
       []

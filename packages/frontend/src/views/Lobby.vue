@@ -51,16 +51,13 @@
           </button>
           <p class="my-2 mr-2 justify-center text-sm text-gray-700">
             By clicking "Join room" you agree to our
-            <a class="underline text-gray-700" href="/privacy">Privacy Policy</a
-            >.
+            <a class="underline text-gray-700" href="/privacy">Privacy Policy</a>.
           </p>
         </div>
 
         <div class="my-4x flex flex-col items-center">
           <div class="my-4 w-full rounded border border-gray-200"></div>
-          <a class="underline text-gray-700" href="/legal-notice"
-            >Legal notice</a
-          >
+          <a class="underline text-gray-700" href="/legal-notice">Legal notice</a>
         </div>
       </div>
     </form>
@@ -68,26 +65,26 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from "vue";
-import { useRoute, useRouter } from "vue-router";
-import { Store, useStore } from "vuex";
-import Toggle from "../components/Toggle.vue";
-import { useStorage } from "../hooks/useStorage";
-import { MutationsType } from "../store/mutations";
-import { State } from "../store/types";
+import {computed, ref} from 'vue';
+import {useRoute, useRouter} from 'vue-router';
+import {Store, useStore} from 'vuex';
+import Toggle from '../components/Toggle.vue';
+import {useStorage} from '../hooks/useStorage';
+import {MutationsType} from '../store/mutations';
+import {State} from '../store/types';
 
 const router = useRouter();
 const route = useRoute();
 const store: Store<State> = useStore();
 
-const storageUserName = useStorage("userName");
+const storageUserName = useStorage('userName');
 const userName = ref(storageUserName.value);
 const onUserName = (event: Event) => {
   const target = event.target as HTMLButtonElement;
   storageUserName.value = target.value;
 };
 
-const storageRoomName = useStorage("roomName");
+const storageRoomName = useStorage('roomName');
 const roomName = ref(storageRoomName.value);
 const onRoomName = (event: Event) => {
   const target = event.target as HTMLButtonElement;
@@ -97,7 +94,7 @@ const onRoomName = (event: Event) => {
 const isSpectator = ref(false);
 const showCats = ref(true);
 const roomNameQuery = route.query.room as string;
-if (typeof roomNameQuery === "string" && roomNameQuery.length > 0) {
+if (typeof roomNameQuery === 'string' && roomNameQuery.length > 0) {
   roomName.value = roomNameQuery;
 }
 
@@ -108,11 +105,11 @@ const joinRoom = () => {
     isSpectator: isSpectator,
     showCats: showCats,
   });
-  router.push({ name: "room", params: { roomName: roomName.value } });
+  router.push({name: 'room', params: {roomName: roomName.value}});
 };
 
 const formIsCompleted = computed((): boolean => {
-  return typeof roomName.value !== "undefined" && userName.value.length > 0;
+  return typeof roomName.value !== 'undefined' && userName.value.length > 0;
 });
 
 defineExpose({

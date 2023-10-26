@@ -1,4 +1,4 @@
-import { computed } from 'vue';
+import {computed} from 'vue';
 export function useStorage(key: string) {
   return computed({
     get: () => {

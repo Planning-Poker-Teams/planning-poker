@@ -80,5 +80,5 @@ export interface EstimationResult {
   taskName: string;
   startDate: string;
   endDate: string;
-  estimates: { userName: string; estimate: string }[];
+  estimates: {userName: string; estimate: string}[];
 }

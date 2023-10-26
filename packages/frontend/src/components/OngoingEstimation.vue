@@ -7,9 +7,7 @@
         ref="cardTargetField"
         class="min-h-24 w-full max-w-lg flex justify-center items-center rounded border-4 border-gray-300 border-dashed"
       >
-        <p
-          class="text-2xl font-medium font-sans text-center text-gray-800 p-10"
-        >
+        <p class="text-2xl font-medium font-sans text-center text-gray-800 p-10">
           Place your vote!
         </p>
       </div>
@@ -19,7 +17,7 @@
       <card
         v-for="(value, index) in currentCardDeck"
         :ref="
-          (el) => {
+          el => {
             // @ts-ignore TODO: create proper typing for cardRefList
             cardRefList[index] = el;
           }
@@ -38,12 +36,12 @@
 </template>
 
 <script setup lang="ts">
-import { onBeforeUpdate, PropType, Ref, ref, toRef, VueElement } from "vue";
-import { Store, useStore } from "vuex";
-import { State } from "../store/types";
-import Card from "./Card.vue";
-import useCardAnimation, { translates } from "./CardAnimation";
-import TaskHeader from "./TaskHeader.vue";
+import {onBeforeUpdate, PropType, Ref, ref, toRef, VueElement} from 'vue';
+import {Store, useStore} from 'vuex';
+import {State} from '../store/types';
+import Card from './Card.vue';
+import useCardAnimation, {translates} from './CardAnimation';
+import TaskHeader from './TaskHeader.vue';
 
 defineProps({
   taskName: {
@@ -55,9 +53,9 @@ defineProps({
     required: true,
   },
 });
-const emits = defineEmits(["send-estimation", "request-result"]);
+const emits = defineEmits(['send-estimation', 'request-result']);
 const store: Store<State> = useStore();
-const votingIsComplete: Ref<boolean> = toRef(store.getters, "votingIsComplete");
+const votingIsComplete: Ref<boolean> = toRef(store.getters, 'votingIsComplete');
 const isSpectator = ref(store.state.room?.isSpectator);
 const cardTargetField: Ref<Element | undefined> = ref(undefined);
 const selectedEstimation: Ref<number | undefined> = ref(undefined);
@@ -71,24 +69,18 @@ let lastCardMovement: translates;
 const sendEstimation = (value: string, index: number) => {
   if (selectedEstimation.value !== index) {
     try {
-      const { animateCardSelection } = useCardAnimation(
-        cardRefList.value[index],
-        cardTargetField
-      );
+      const {animateCardSelection} = useCardAnimation(cardRefList.value[index], cardTargetField);
 
-      lastCardMovement = animateCardSelection(
-        lastSelectedCard,
-        lastCardMovement
-      );
+      lastCardMovement = animateCardSelection(lastSelectedCard, lastCardMovement);
       lastSelectedCard = cardRefList.value[index];
     } catch (error) {
-      console.warn("Card selection could not be animated", error);
+      console.warn('Card selection could not be animated', error);
     }
 
     selectedEstimation.value = index;
   }
 
-  emits("send-estimation", value);
+  emits('send-estimation', value);
 };
 
 defineExpose({

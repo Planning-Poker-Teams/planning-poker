@@ -21,15 +21,11 @@
       <div class="max-w-sm p-4">
         <div class="text-sm">
           <span class="font-bold">Connection Error</span><br />
-          There seems to be a problem connecting to the server. Please retry
-          from the lobby.
+          There seems to be a problem connecting to the server. Please retry from the lobby.
         </div>
 
         <div class="flex justify-between pt-5">
-          <button
-            class="bg-gray-500 px-4 py-2 text-sm font-bold text-white"
-            @click="backToLobby()"
-          >
+          <button class="bg-gray-500 px-4 py-2 text-sm font-bold text-white" @click="backToLobby()">
             Back to Lobby.
           </button>
         </div>
@@ -39,9 +35,9 @@
 </template>
 
 <script setup lang="ts">
-import { useRouter } from "vue-router";
-import { useStore } from "vuex";
-import { ConnectionState } from "../store";
+import {useRouter} from 'vue-router';
+import {useStore} from 'vuex';
+import {ConnectionState} from '../store';
 const router = useRouter();
 
 const store = useStore();
@@ -55,6 +51,6 @@ const props = defineProps({
 });
 
 const backToLobby = () => {
-  router.push({ name: "lobby", query: { room: store.state.room.name } });
+  router.push({name: 'lobby', query: {room: store.state.room.name}});
 };
 </script>

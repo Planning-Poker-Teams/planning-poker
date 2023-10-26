@@ -4,7 +4,7 @@ export interface State {
   participants: Participant[];
   ongoingEstimation?: Estimation;
   estimationResult?: EstimationResult;
-  connectionState?: string
+  connectionState?: string;
 }
 
 export interface RoomInformation {

@@ -2,8 +2,8 @@ import fs from 'fs';
 import path from 'path';
 import legacy from '@vitejs/plugin-legacy';
 import vue from '@vitejs/plugin-vue';
-import { defineConfig } from 'vite';
-import { createHtmlPlugin } from 'vite-plugin-html';
+import {defineConfig} from 'vite';
+import {createHtmlPlugin} from 'vite-plugin-html';
 
 export default defineConfig({
   test: {

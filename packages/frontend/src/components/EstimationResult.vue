@@ -1,8 +1,6 @@
 <template>
   <template v-if="!consensusReached">
-    <table
-      class="table-fixed bg-gray-300 rounded-t text-center w-full lg:w-3/4"
-    >
+    <table class="table-fixed bg-gray-300 rounded-t text-center w-full lg:w-3/4">
       <thead>
         <tr>
           <th class="p-2">
@@ -36,15 +34,9 @@
         </tr>
       </thead>
       <tbody class="bg-gray-200">
-        <tr
-          v-for="entry in sortedEntries"
-          :key="entry.value"
-          class="last:rounded-b rounded"
-        >
+        <tr v-for="entry in sortedEntries" :key="entry.value" class="last:rounded-b rounded">
           <td class="p-2">
-            <span class="text-2xl font-mono font-medium">{{
-              entry.value
-            }}</span>
+            <span class="text-2xl font-mono font-medium">{{ entry.value }}</span>
           </td>
           <td class="p-2">{{ entry.names.length }}</td>
           <td class="p-2">
@@ -90,42 +82,40 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref, toRef } from "vue";
-import { Store, useStore } from "vuex";
-import { useStorage } from "../hooks/useStorage";
-import { State } from "../store/types";
-import ParticipantItem from "./ParticipantItem.vue";
-import Progressbar from "./Progressbar.vue";
-import SortableTableHeader from "./SortableTableHeader.vue";
-import TaskHeader from "./TaskHeader.vue";
+import {computed, ref, toRef} from 'vue';
+import {Store, useStore} from 'vuex';
+import {useStorage} from '../hooks/useStorage';
+import {State} from '../store/types';
+import ParticipantItem from './ParticipantItem.vue';
+import Progressbar from './Progressbar.vue';
+import SortableTableHeader from './SortableTableHeader.vue';
+import TaskHeader from './TaskHeader.vue';
 
-type SortDir = "up" | "down";
-type SortCol = "votes" | "size" | "agreement";
-type Entry = { value: string; names: string[] };
+type SortDir = 'up' | 'down';
+type SortCol = 'votes' | 'size' | 'agreement';
+type Entry = {value: string; names: string[]};
 type Entries = Entry[];
 
 const store: Store<State> = useStore();
 const taskName = ref(store.state.estimationResult?.taskName);
 const cardDeck = ref(store.state.cardDeck);
-const estimationResultBySize = toRef(store.getters, "resultBySize");
+const estimationResultBySize = toRef(store.getters, 'resultBySize');
 
-const storedSortDir = useStorage("sortDir");
-const storedSortCol = useStorage("sortCol");
-const sortDir = ref<SortDir>(storedSortDir.value || "up");
-const sortCol = ref<SortCol>(storedSortCol.value || "size");
+const storedSortDir = useStorage('sortDir');
+const storedSortCol = useStorage('sortCol');
+const sortDir = ref<SortDir>(storedSortDir.value || 'up');
+const sortCol = ref<SortCol>(storedSortCol.value || 'size');
 
 const sortFunctions = {
   size: (e1: Entry, e2: Entry): number =>
     cardDeck.value.indexOf(e1.value) - cardDeck.value.indexOf(e2.value),
-  votes: (e1: Entry, e2: Entry): number =>
-    e1.names.length < e2.names.length ? -1 : 1,
-  agreement: (e1: Entry, e2: Entry): number =>
-    e1.names.length < e2.names.length ? -1 : 1,
+  votes: (e1: Entry, e2: Entry): number => (e1.names.length < e2.names.length ? -1 : 1),
+  agreement: (e1: Entry, e2: Entry): number => (e1.names.length < e2.names.length ? -1 : 1),
 };
 
 const sortedEntries = computed((): Entries => {
   return [...estimationResultBySize.value].sort((e1, e2): number => {
-    const dirModifier = sortDir.value === "down" ? -1 : 1;
+    const dirModifier = sortDir.value === 'down' ? -1 : 1;
     return sortFunctions[sortCol.value](e1, e2) * dirModifier;
   });
 });
@@ -133,15 +123,13 @@ const sortedEntries = computed((): Entries => {
 const showConsensusCats = computed(
   () => store.state.room?.showCats && estimationResultBySize.value.length == 1
 );
-const consensusReached = computed(
-  () => estimationResultBySize.value.length == 1
-);
+const consensusReached = computed(() => estimationResultBySize.value.length == 1);
 
-const hasVoted = (vote?: string): boolean => typeof vote !== "undefined";
+const hasVoted = (vote?: string): boolean => typeof vote !== 'undefined';
 
 const sortColumn = (column: SortCol) => {
   if (sortCol.value === column) {
-    sortDir.value = sortDir.value === "up" ? "down" : "up";
+    sortDir.value = sortDir.value === 'up' ? 'down' : 'up';
   } else {
     sortCol.value = column;
   }

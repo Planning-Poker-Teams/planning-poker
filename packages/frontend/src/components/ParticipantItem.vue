@@ -11,7 +11,7 @@
 </template>
 
 <script setup lang="ts">
-import { toRef } from 'vue';
+import {toRef} from 'vue';
 const props = defineProps({
   name: {
     type: String,

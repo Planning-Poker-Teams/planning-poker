@@ -3,13 +3,9 @@
     class="fixed z-10 inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full flex h-screen justify-center items-center"
     data-testid="confirm-show-results-dialog"
   >
-    <div
-      class="mx-auto p-5 border w-5/6 lg:w-2/4 lg:max-w-xl shadow-lg rounded-md bg-white"
-    >
+    <div class="mx-auto p-5 border w-5/6 lg:w-2/4 lg:max-w-xl shadow-lg rounded-md bg-white">
       <div class="mt-3 text-center">
-        <p class="mb-5 text-lg leading-6 font-bold text-gray-900">
-          What do you want to vote on?
-        </p>
+        <p class="mb-5 text-lg leading-6 font-bold text-gray-900">What do you want to vote on?</p>
 
         <input
           v-model="newTaskName"
@@ -44,22 +40,22 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
-import { Store, useStore } from "vuex";
-import { ActionType } from "../store/actions";
-import { State } from "../store/types";
+import {ref} from 'vue';
+import {Store, useStore} from 'vuex';
+import {ActionType} from '../store/actions';
+import {State} from '../store/types';
 
-const newTaskName = ref("");
+const newTaskName = ref('');
 
-const emits = defineEmits(["on_confirm", "on_cancel"]);
+const emits = defineEmits(['on_confirm', 'on_cancel']);
 const store: Store<State> = useStore();
 
 const confirm = () => {
   startEstimation(newTaskName.value);
-  emits("on_confirm");
+  emits('on_confirm');
 };
 const startEstimation = async (taskName: string) => {
   store.dispatch(ActionType.REQUEST_START_ESTIMATION, taskName);
 };
-const cancel = () => emits("on_cancel");
+const cancel = () => emits('on_cancel');
 </script>

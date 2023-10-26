@@ -32,7 +32,7 @@
 </template>
 
 <script setup lang="ts">
-import { PropType, ref } from 'vue';
+import {PropType, ref} from 'vue';
 
 const props = defineProps({
   currentCardDeck: {

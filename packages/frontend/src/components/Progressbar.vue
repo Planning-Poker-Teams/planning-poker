@@ -1,9 +1,6 @@
 <template>
   <div class="progress-bar">
-    <div
-      :style="{ 'background-color': backgroundColor }"
-      class="progress-bar-body"
-    >
+    <div :style="{'background-color': backgroundColor}" class="progress-bar-body">
       <div
         :style="{
           width: percentage,
@@ -11,8 +8,8 @@
         }"
         class="bar-itself-background"
       >
-        <div :style="{ width: percentage }" class="bar-itself-percentage-text">
-          <p v-if="withLabel" class="headline5" :style="{ color: fontColor }">
+        <div :style="{width: percentage}" class="bar-itself-percentage-text">
+          <p v-if="withLabel" class="headline5" :style="{color: fontColor}">
             {{ percentage }}
           </p>
         </div>
@@ -37,15 +34,15 @@ export default {
     },
     backgroundColor: {
       type: String,
-      default: "#A9B4BE",
+      default: '#A9B4BE',
     },
     barColor: {
       type: String,
-      default: "#CCECFC",
+      default: '#CCECFC',
     },
     fontColor: {
       type: String,
-      default: "white",
+      default: 'white',
     },
     withLabel: {
       type: Boolean,
@@ -58,10 +55,10 @@ export default {
   },
   computed: {
     progress() {
-      return this.currentStep + "/" + this.totalStep + " steps";
+      return this.currentStep + '/' + this.totalStep + ' steps';
     },
     percentage() {
-      return Math.round((this.currentStep / this.totalStep) * 100) + "%";
+      return Math.round((this.currentStep / this.totalStep) * 100) + '%';
     },
   },
 };

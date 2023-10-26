@@ -1,4 +1,4 @@
-import { ActionTree, Dispatch } from 'vuex';
+import {ActionTree, Dispatch} from 'vuex';
 import {
   ChangeCardDeck,
   RemoveUser,
@@ -6,7 +6,7 @@ import {
   StartEstimation,
   UserEstimate,
 } from '../store/pokerEvents';
-import { State } from '../store/types';
+import {State} from '../store/types';
 
 export enum ActionType {
   ENTER_ROOM = 'enterRoom',
@@ -23,16 +23,16 @@ export type Actions = {
   [ActionType.ENTER_ROOM](): void;
   [ActionType.LEAVE_ROOM](): void;
   [ActionType.SEND_MESSAGE](): void;
-  [ActionType.CHANGE_CARD_DECK]({ dispatch }: { dispatch: Dispatch }, newCardDeck: string[]): void;
+  [ActionType.CHANGE_CARD_DECK]({dispatch}: {dispatch: Dispatch}, newCardDeck: string[]): void;
   [ActionType.REQUEST_START_ESTIMATION](
-    { dispatch, state }: { dispatch: Dispatch; state: State },
+    {dispatch, state}: {dispatch: Dispatch; state: State},
     taskName: string
   ): void;
   [ActionType.SEND_ESTIMATION](
-    { dispatch, state }: { dispatch: Dispatch; state: State },
+    {dispatch, state}: {dispatch: Dispatch; state: State},
     estimate: string
   ): void;
-  [ActionType.REQUEST_RESULT]({ dispatch, state }: { dispatch: Dispatch; state: State }): void;
+  [ActionType.REQUEST_RESULT]({dispatch, state}: {dispatch: Dispatch; state: State}): void;
 };
 
 export const actions: ActionTree<State, State> & Actions = {
@@ -42,7 +42,7 @@ export const actions: ActionTree<State, State> & Actions = {
   [ActionType.LEAVE_ROOM]() {
     // handled by websocketPlugin
   },
-  [ActionType.REMOVE_USER]({ dispatch, state }, userName: string) {
+  [ActionType.REMOVE_USER]({dispatch, state}, userName: string) {
     if (!state.room) {
       console.error('There is no room', state);
       return;
@@ -57,14 +57,14 @@ export const actions: ActionTree<State, State> & Actions = {
   [ActionType.SEND_MESSAGE]() {
     // handled by websocketPlugin
   },
-  [ActionType.CHANGE_CARD_DECK]({ dispatch }: { dispatch: Dispatch }, newCardDeck: string[]) {
+  [ActionType.CHANGE_CARD_DECK]({dispatch}: {dispatch: Dispatch}, newCardDeck: string[]) {
     const changeCardDeckMessage: ChangeCardDeck = {
       eventType: 'changeCardDeck',
       cardDeck: newCardDeck,
     };
     dispatch(ActionType.SEND_MESSAGE, changeCardDeckMessage);
   },
-  [ActionType.REQUEST_START_ESTIMATION]({ dispatch, state }, taskName: string) {
+  [ActionType.REQUEST_START_ESTIMATION]({dispatch, state}, taskName: string) {
     if (!state.room) {
       console.error('There is no room', state);
       return;
@@ -77,7 +77,7 @@ export const actions: ActionTree<State, State> & Actions = {
     };
     dispatch(ActionType.SEND_MESSAGE, startEstimationMessage);
   },
-  [ActionType.SEND_ESTIMATION]({ dispatch, state }, estimate: string) {
+  [ActionType.SEND_ESTIMATION]({dispatch, state}, estimate: string) {
     if (!state.room || !state.ongoingEstimation) {
       console.error('There is no room or no ongoing estimation', state);
       return;
@@ -90,7 +90,7 @@ export const actions: ActionTree<State, State> & Actions = {
     };
     dispatch(ActionType.SEND_MESSAGE, estimationMessage);
   },
-  [ActionType.REQUEST_RESULT]({ dispatch, state }) {
+  [ActionType.REQUEST_RESULT]({dispatch, state}) {
     if (!state.room) {
       console.error('There is no room', state);
       return;

@@ -1,7 +1,5 @@
 <template>
-  <div
-    class="sticky top-0 bg-white rounded-t-lg w-full flex flex-col border-b shadow-sm z-10"
-  >
+  <div class="sticky top-0 bg-white rounded-t-lg w-full flex flex-col border-b shadow-sm z-10">
     <div
       class="w-full min-h-16 flex justify-left lg:justify-center items-center relative overflow-hidden"
     >
@@ -21,10 +19,7 @@
         {{ roomName }}
       </h1>
 
-      <div
-        id="controlArea"
-        class="absolute top-0 right-0 w-5/12 flex justify-end"
-      >
+      <div id="controlArea" class="absolute top-0 right-0 w-5/12 flex justify-end">
         <button
           class="text-gray-700 m-2 p-2 border-2 rounded flex justify-center items-center flex-nowrap whitespace-nowrap"
           :class="
@@ -33,12 +28,10 @@
               : 'bg-gray-300 border-gray-300 hover:border-gray-400'
           "
           type="button"
-          :style="urlCopyStatus ? { cursor: 'default' } : { cursor: 'pointer' }"
+          :style="urlCopyStatus ? {cursor: 'default'} : {cursor: 'pointer'}"
           @click="copyUrl"
         >
-          <span class="hidden lg:inline mr-2">{{
-            urlCopyStatus ? "Copied" : "Invite"
-          }}</span>
+          <span class="hidden lg:inline mr-2">{{ urlCopyStatus ? 'Copied' : 'Invite' }}</span>
           <font-awesome-icon :icon="urlCopyStatus ? 'fa-check' : 'fa-link'" />
         </button>
 
@@ -66,10 +59,10 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, PropType, toRef } from "vue";
-import { useRouter } from "vue-router";
-import { useStore } from "vuex";
-import { Participant } from "../store/types";
+import {ref, computed, PropType, toRef} from 'vue';
+import {useRouter} from 'vue-router';
+import {useStore} from 'vuex';
+import {Participant} from '../store/types';
 
 const store = useStore();
 const router = useRouter();
@@ -84,27 +77,25 @@ const props = defineProps({
     required: true,
   },
 });
-const refParticipants = toRef(props, "participants");
+const refParticipants = toRef(props, 'participants');
 const canChangeCardDeck = computed<boolean>(
   () => !store.getters.somebodyHasVoted || !store.state.ongoingEstimation
 );
 
-const emits = defineEmits(["show_change_deck_modal"]);
+const emits = defineEmits(['show_change_deck_modal']);
 
 const showChangeDeckModal = () => {
-  emits("show_change_deck_modal");
+  emits('show_change_deck_modal');
 };
 
 const leaveRoom = () => {
-  router.push({ name: "lobby", query: { room: props.roomName } });
+  router.push({name: 'lobby', query: {room: props.roomName}});
 };
 
 const urlCopyStatus = ref(false);
 const copyUrl = async () => {
   //TODO: Shouldn't use plaintext domain here, instead import from wherever it's stored
-  navigator.clipboard.writeText(
-    `https://planningpoker.cc${window.location.pathname}`
-  );
+  navigator.clipboard.writeText(`https://planningpoker.cc${window.location.pathname}`);
   urlCopyStatus.value = true;
 };
 

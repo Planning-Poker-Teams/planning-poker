@@ -27,9 +27,9 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from 'vue';
-import { Store, useStore } from 'vuex';
-import { State } from '../store/types';
+import {computed, ref} from 'vue';
+import {Store, useStore} from 'vuex';
+import {State} from '../store/types';
 
 const store: Store<State> = useStore();
 const newTaskName = ref('');
