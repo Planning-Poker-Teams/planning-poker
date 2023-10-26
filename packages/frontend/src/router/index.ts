@@ -1,4 +1,4 @@
-import {createRouter, createWebHistory, RouteRecordRaw} from 'vue-router';
+import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router';
 import LegalNotice from '../views/LegalNotice.vue';
 import Lobby from '../views/Lobby.vue';
 import PrivacyPolicy from '../views/PrivacyPolicy.vue';

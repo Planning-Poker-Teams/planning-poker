@@ -40,10 +40,10 @@
 </template>
 
 <script setup lang="ts">
-import {ref} from 'vue';
-import {Store, useStore} from 'vuex';
-import {ActionType} from '../store/actions';
-import {State} from '../store/types';
+import { ref } from 'vue';
+import { Store, useStore } from 'vuex';
+import { ActionType } from '../store/actions';
+import { State } from '../store/types';
 
 const newTaskName = ref('');
 

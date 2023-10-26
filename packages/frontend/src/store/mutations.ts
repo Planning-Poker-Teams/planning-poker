@@ -1,4 +1,4 @@
-import {MutationTree} from 'vuex';
+import { MutationTree } from 'vuex';
 import router from '../router';
 import {
   ChangeCardDeck,
@@ -9,7 +9,7 @@ import {
   UserLeft,
   UserRenamed,
 } from '../store/pokerEvents';
-import {State, RoomInformation, EstimationResult as StoreEstimationResult} from '../store/types';
+import { State, RoomInformation, EstimationResult as StoreEstimationResult } from '../store/types';
 
 export enum MutationsType {
   SET_ROOM_INFORMATION = 'setRoomInformation',
@@ -44,7 +44,7 @@ const removePendingUserEstimation = (
   const estimates = estimationResult.estimates.filter(
     userEstimate => userEstimate.userName !== userName || userEstimate.estimate
   );
-  return {...estimationResult, estimates};
+  return { ...estimationResult, estimates };
 };
 
 export const mutations: MutationTree<State> & Mutations = {
@@ -78,7 +78,7 @@ export const mutations: MutationTree<State> & Mutations = {
   },
   [MutationsType.USER_LEFT](state: State, event: UserLeft) {
     if (state.room?.userName === event.userName) {
-      router.push({name: 'lobby', query: {room: state.room?.name}});
+      router.push({ name: 'lobby', query: { room: state.room?.name } });
     }
     state.participants = state.participants.filter(p => p.name != event.userName);
 

@@ -12,7 +12,7 @@
 </template>
 
 <script setup lang="ts">
-import {useModel} from '../hooks/useModel';
+import { useModel } from '../hooks/useModel';
 
 const props = defineProps({
   id: {

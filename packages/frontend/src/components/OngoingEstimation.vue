@@ -36,11 +36,11 @@
 </template>
 
 <script setup lang="ts">
-import {onBeforeUpdate, PropType, Ref, ref, toRef, VueElement} from 'vue';
-import {Store, useStore} from 'vuex';
-import {State} from '../store/types';
+import { onBeforeUpdate, PropType, Ref, ref, toRef, VueElement } from 'vue';
+import { Store, useStore } from 'vuex';
+import { State } from '../store/types';
 import Card from './Card.vue';
-import useCardAnimation, {translates} from './CardAnimation';
+import useCardAnimation, { translates } from './CardAnimation';
 import TaskHeader from './TaskHeader.vue';
 
 defineProps({
@@ -69,7 +69,7 @@ let lastCardMovement: translates;
 const sendEstimation = (value: string, index: number) => {
   if (selectedEstimation.value !== index) {
     try {
-      const {animateCardSelection} = useCardAnimation(cardRefList.value[index], cardTargetField);
+      const { animateCardSelection } = useCardAnimation(cardRefList.value[index], cardTargetField);
 
       lastCardMovement = animateCardSelection(lastSelectedCard, lastCardMovement);
       lastSelectedCard = cardRefList.value[index];

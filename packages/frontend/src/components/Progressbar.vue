@@ -1,6 +1,6 @@
 <template>
   <div class="progress-bar">
-    <div :style="{'background-color': backgroundColor}" class="progress-bar-body">
+    <div :style="{ 'background-color': backgroundColor }" class="progress-bar-body">
       <div
         :style="{
           width: percentage,
@@ -8,8 +8,8 @@
         }"
         class="bar-itself-background"
       >
-        <div :style="{width: percentage}" class="bar-itself-percentage-text">
-          <p v-if="withLabel" class="headline5" :style="{color: fontColor}">
+        <div :style="{ width: percentage }" class="bar-itself-percentage-text">
+          <p v-if="withLabel" class="headline5" :style="{ color: fontColor }">
             {{ percentage }}
           </p>
         </div>

@@ -60,12 +60,12 @@
 </template>
 
 <script setup lang="ts">
-import {Ref, computed, ref, toRef} from 'vue';
-import {useRouter} from 'vue-router';
-import {useStore} from 'vuex';
-import {ConnectionState} from '../store';
-import {ActionType} from '../store/actions';
-import {EstimationState} from '../store/getters';
+import { Ref, computed, ref, toRef } from 'vue';
+import { useRouter } from 'vue-router';
+import { useStore } from 'vuex';
+import { ConnectionState } from '../store';
+import { ActionType } from '../store/actions';
+import { EstimationState } from '../store/getters';
 import ConfirmShowResultsDialog from './ConfirmShowResultsDialog.vue';
 import NewTaskDialog from './NewTaskDialog.vue';
 const router = useRouter();
@@ -112,7 +112,7 @@ const cancelNewTaskDialog = () => {
   closeNewTaskDialog();
   if (!taskName.value) {
     //TODO: exception case: newtaskdialog shown when joining new room without task. A bit ugly that this has to be checked here, could be imprvoed.
-    router.push({name: 'lobby', query: {room: store.state.room.name}});
+    router.push({ name: 'lobby', query: { room: store.state.room.name } });
   }
 };
 const closeNewTaskDialog = () => {

@@ -1,8 +1,14 @@
-import {createLogger, createStore, CommitOptions, DispatchOptions, Store as VuexStore} from 'vuex';
-import {Actions, actions} from '../store/actions';
-import {Getters, getters} from '../store/getters';
-import {Mutations, mutations} from '../store/mutations';
-import {State} from '../store/types';
+import {
+  createLogger,
+  createStore,
+  CommitOptions,
+  DispatchOptions,
+  Store as VuexStore,
+} from 'vuex';
+import { Actions, actions } from '../store/actions';
+import { Getters, getters } from '../store/getters';
+import { Mutations, mutations } from '../store/mutations';
+import { State } from '../store/types';
 import webSocketPlugin from '../store/websocketPlugin';
 
 export enum ConnectionState {
@@ -53,8 +59,8 @@ export type Store = Omit<VuexStore<State>, 'getters' | 'commit' | 'dispatch'> & 
 };
 
 export const customStore = (options: State) => {
-  const customOptions = {...defaultOptions};
-  customOptions.state = {...customOptions.state, ...options};
+  const customOptions = { ...defaultOptions };
+  customOptions.state = { ...customOptions.state, ...options };
   return createStore<State>(customOptions);
 };
 

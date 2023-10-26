@@ -21,7 +21,7 @@ module.exports = {
     'no-console': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
     'no-debugger': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
     'vue/multi-word-component-names': 'off',
-    'import/order': ['error', {alphabetize: {order: 'asc', caseInsensitive: true}}],
+    'import/order': ['error', { alphabetize: { order: 'asc', caseInsensitive: true } }],
   },
   overrides: [
     {

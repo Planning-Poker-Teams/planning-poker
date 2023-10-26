@@ -12,7 +12,7 @@
 
           <h4 class="mt-3 mb-1">Pending participants:</h4>
           <ul class="list-none list-outside mb-2 text-left inline-block">
-            <li v-for="{name} in pendingParticipants" :key="name">
+            <li v-for="{ name } in pendingParticipants" :key="name">
               <font-awesome-icon icon="xmark" class="text-red-500" />
               {{ name }}
 
@@ -54,10 +54,10 @@
 </template>
 
 <script setup lang="ts">
-import {Ref, toRef, computed} from 'vue';
-import {Store, useStore} from 'vuex';
-import {ActionType} from '../store/actions';
-import {Participant, State} from '../store/types';
+import { Ref, toRef, computed } from 'vue';
+import { Store, useStore } from 'vuex';
+import { ActionType } from '../store/actions';
+import { Participant, State } from '../store/types';
 
 const emits = defineEmits(['on_confirm', 'on_cancel']);
 const store: Store<State> = useStore();

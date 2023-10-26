@@ -1,5 +1,5 @@
-import {VueWrapper, DOMWrapper} from '@vue/test-utils';
-import {describe, expect, it, beforeEach, afterEach} from 'vitest';
+import { VueWrapper, DOMWrapper } from '@vue/test-utils';
+import { describe, expect, it, beforeEach, afterEach } from 'vitest';
 import EstimationResult from '../../src/components/EstimationResult.vue';
 import {
   EstimationResult as IEstimationResult,
@@ -8,10 +8,10 @@ import {
 import createWrapper from './helper';
 
 const participants: IParticipant[] = [
-  {name: 'Hank', isSpectator: false, hasEstimated: true},
-  {name: 'Jessie', isSpectator: false, hasEstimated: true},
-  {name: 'Walter', isSpectator: false, hasEstimated: true},
-  {name: 'Saul', isSpectator: false, hasEstimated: true},
+  { name: 'Hank', isSpectator: false, hasEstimated: true },
+  { name: 'Jessie', isSpectator: false, hasEstimated: true },
+  { name: 'Walter', isSpectator: false, hasEstimated: true },
+  { name: 'Saul', isSpectator: false, hasEstimated: true },
 ];
 
 let wrapper: VueWrapper;
@@ -23,10 +23,10 @@ describe('estimation result with numerical job-sizes', () => {
     startDate: new Date(),
     endDate: new Date(),
     estimates: [
-      {userName: 'Hank', estimate: '2'},
-      {userName: 'Jessie', estimate: '18'},
-      {userName: 'Walter', estimate: '10'},
-      {userName: 'Saul', estimate: '10'},
+      { userName: 'Hank', estimate: '2' },
+      { userName: 'Jessie', estimate: '18' },
+      { userName: 'Walter', estimate: '10' },
+      { userName: 'Saul', estimate: '10' },
     ],
   };
 
@@ -85,10 +85,10 @@ describe('estimation result with custom job-sizes', () => {
     startDate: new Date(),
     endDate: new Date(),
     estimates: [
-      {userName: 'Hank', estimate: 'L'},
-      {userName: 'Jessie', estimate: 'XS'},
-      {userName: 'Walter', estimate: 'XL'},
-      {userName: 'Saul', estimate: 'XL'},
+      { userName: 'Hank', estimate: 'L' },
+      { userName: 'Jessie', estimate: 'XS' },
+      { userName: 'Walter', estimate: 'XL' },
+      { userName: 'Saul', estimate: 'XL' },
     ],
   };
 

@@ -1,10 +1,10 @@
-import {describe, expect, it} from 'vitest';
+import { describe, expect, it } from 'vitest';
 import OngoingEstimation from '../../src/components/OngoingEstimation.vue';
 import createWrapper from './helper';
 
 describe('ongoing estimation', () => {
   it('should show hint if user is spectator', () => {
-    const {wrapper} = createWrapper(
+    const { wrapper } = createWrapper(
       OngoingEstimation,
       {
         props: {

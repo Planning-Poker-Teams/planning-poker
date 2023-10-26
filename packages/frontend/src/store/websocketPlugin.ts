@@ -1,8 +1,8 @@
-import {Store, ActionPayload} from 'vuex';
-import {ActionType} from '../store/actions';
-import {PokerEvent} from '../store/pokerEvents';
-import {State} from '../store/types';
-import {ConnectionState} from '.';
+import { Store, ActionPayload } from 'vuex';
+import { ActionType } from '../store/actions';
+import { PokerEvent } from '../store/pokerEvents';
+import { State } from '../store/types';
+import { ConnectionState } from '.';
 
 const webSocketPlugin = (store: Store<State>) => {
   let socket: WebSocket | undefined = undefined;
@@ -13,7 +13,7 @@ const webSocketPlugin = (store: Store<State>) => {
         if (!state.room) {
           return;
         }
-        const {name, userName, isSpectator} = state.room;
+        const { name, userName, isSpectator } = state.room;
         socket = setupWebSocketConnection(name, userName, isSpectator);
         store.state.connectionState = ConnectionState.CONNECTING;
         break;

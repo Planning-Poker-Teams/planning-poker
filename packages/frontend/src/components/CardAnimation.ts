@@ -1,7 +1,7 @@
-import {Ref, VueElement} from 'vue';
+import { Ref, VueElement } from 'vue';
 
-export type translates = {transform: string}[];
-type coordinates = {x: number; y: number};
+export type translates = { transform: string }[];
+type coordinates = { x: number; y: number };
 
 export default function useCardAnimation(
   selectedCard: VueElement,
@@ -34,7 +34,7 @@ export default function useCardAnimation(
       };
     }
 
-    return {x: 0, y: 0};
+    return { x: 0, y: 0 };
   };
 
   /**
@@ -44,9 +44,9 @@ export default function useCardAnimation(
     return Math.random() * 180 - 90;
   };
 
-  const getCardMovement = ({x, y}: coordinates, rotation: number): translates => {
+  const getCardMovement = ({ x, y }: coordinates, rotation: number): translates => {
     return [
-      {transform: 'translate3D(0, 0, 0) rotate(0)'},
+      { transform: 'translate3D(0, 0, 0) rotate(0)' },
       {
         transform: `translate3D(${x}px, ${y}px, 0) rotate(${rotation}deg)`,
       },

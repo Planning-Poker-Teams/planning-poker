@@ -28,7 +28,7 @@
               : 'bg-gray-300 border-gray-300 hover:border-gray-400'
           "
           type="button"
-          :style="urlCopyStatus ? {cursor: 'default'} : {cursor: 'pointer'}"
+          :style="urlCopyStatus ? { cursor: 'default' } : { cursor: 'pointer' }"
           @click="copyUrl"
         >
           <span class="hidden lg:inline mr-2">{{ urlCopyStatus ? 'Copied' : 'Invite' }}</span>
@@ -59,10 +59,10 @@
 </template>
 
 <script setup lang="ts">
-import {ref, computed, PropType, toRef} from 'vue';
-import {useRouter} from 'vue-router';
-import {useStore} from 'vuex';
-import {Participant} from '../store/types';
+import { ref, computed, PropType, toRef } from 'vue';
+import { useRouter } from 'vue-router';
+import { useStore } from 'vuex';
+import { Participant } from '../store/types';
 
 const store = useStore();
 const router = useRouter();
@@ -89,7 +89,7 @@ const showChangeDeckModal = () => {
 };
 
 const leaveRoom = () => {
-  router.push({name: 'lobby', query: {room: props.roomName}});
+  router.push({ name: 'lobby', query: { room: props.roomName } });
 };
 
 const urlCopyStatus = ref(false);

@@ -1,8 +1,8 @@
-import {beforeEach, describe, expect, it, vi} from 'vitest';
-import {ActionContext} from 'vuex';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { ActionContext } from 'vuex';
 import store from '../store';
-import {actions, ActionType} from '../store/actions';
-import {State} from '../store/types';
+import { actions, ActionType } from '../store/actions';
+import { State } from '../store/types';
 
 describe('actions', () => {
   const state: State = {
@@ -14,8 +14,8 @@ describe('actions', () => {
     },
     cardDeck: ['0', '1', '2', '3', '5', '8'],
     participants: [
-      {name: 'Foo', isSpectator: false, hasEstimated: false},
-      {name: 'Bar', isSpectator: false, hasEstimated: false},
+      { name: 'Foo', isSpectator: false, hasEstimated: false },
+      { name: 'Bar', isSpectator: false, hasEstimated: false },
     ],
     ongoingEstimation: {
       taskName: 'The task',

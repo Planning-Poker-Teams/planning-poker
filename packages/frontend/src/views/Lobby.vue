@@ -65,13 +65,13 @@
 </template>
 
 <script setup lang="ts">
-import {computed, ref} from 'vue';
-import {useRoute, useRouter} from 'vue-router';
-import {Store, useStore} from 'vuex';
+import { computed, ref } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
+import { Store, useStore } from 'vuex';
 import Toggle from '../components/Toggle.vue';
-import {useStorage} from '../hooks/useStorage';
-import {MutationsType} from '../store/mutations';
-import {State} from '../store/types';
+import { useStorage } from '../hooks/useStorage';
+import { MutationsType } from '../store/mutations';
+import { State } from '../store/types';
 
 const router = useRouter();
 const route = useRoute();
@@ -105,7 +105,7 @@ const joinRoom = () => {
     isSpectator: isSpectator,
     showCats: showCats,
   });
-  router.push({name: 'room', params: {roomName: roomName.value}});
+  router.push({ name: 'room', params: { roomName: roomName.value } });
 };
 
 const formIsCompleted = computed((): boolean => {

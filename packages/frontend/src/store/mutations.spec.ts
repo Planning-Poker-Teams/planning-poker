@@ -1,8 +1,8 @@
-import {describe, expect, it} from 'vitest';
-import {initialState} from '../store';
-import {mutations} from '../store/mutations';
-import {EstimationResult, StartEstimation, UserJoined, UserLeft} from '../store/pokerEvents';
-import {RoomInformation, Participant, State} from '../store/types';
+import { describe, expect, it } from 'vitest';
+import { initialState } from '../store';
+import { mutations } from '../store/mutations';
+import { EstimationResult, StartEstimation, UserJoined, UserLeft } from '../store/pokerEvents';
+import { RoomInformation, Participant, State } from '../store/types';
 
 const exampleParticipant: Participant = {
   name: 'Foo',
@@ -19,7 +19,7 @@ const exampleRoom: RoomInformation = {
 
 describe('mutations', () => {
   it('stores room information', () => {
-    const state = {...initialState};
+    const state = { ...initialState };
     const roomInformation: RoomInformation = {
       name: 'TestRoom',
       userName: 'Jane',
@@ -34,7 +34,7 @@ describe('mutations', () => {
 
   it('resets state when leaving room', () => {
     const state: State = {
-      participants: [exampleParticipant, {...exampleParticipant, name: 'Bar'}],
+      participants: [exampleParticipant, { ...exampleParticipant, name: 'Bar' }],
       room: exampleRoom,
       cardDeck: ['S', 'M', 'L'],
     };
@@ -76,7 +76,7 @@ describe('mutations', () => {
 
     expect(state.participants).toEqual([
       exampleParticipant,
-      {name: 'Bar', isSpectator: true, hasEstimated: false},
+      { name: 'Bar', isSpectator: true, hasEstimated: false },
     ]);
   });
 
@@ -100,7 +100,7 @@ describe('mutations', () => {
   describe('when a user leaves', () => {
     const state: State = {
       ...initialState,
-      participants: [exampleParticipant, {...exampleParticipant, name: 'Bar'}],
+      participants: [exampleParticipant, { ...exampleParticipant, name: 'Bar' }],
       room: exampleRoom,
     };
     const userLeft: UserLeft = {
@@ -109,7 +109,7 @@ describe('mutations', () => {
     };
 
     it('should be removed from participants list', () => {
-      const testState = {...state};
+      const testState = { ...state };
       mutations.userLeft(testState, userLeft);
       expect(testState.participants).toEqual([exampleParticipant]);
     });
@@ -122,8 +122,8 @@ describe('mutations', () => {
           startDate: new Date(),
           endDate: new Date(),
           estimates: [
-            {userName: 'Bar', estimate: undefined},
-            {userName: 'Foo', estimate: 'O'},
+            { userName: 'Bar', estimate: undefined },
+            { userName: 'Foo', estimate: 'O' },
           ],
         },
       };
@@ -136,8 +136,8 @@ describe('mutations', () => {
 
     it('should not remove active vote', () => {
       const estimates = [
-        {userName: 'Bar', estimate: 'N'},
-        {userName: 'Foo', estimate: 'O'},
+        { userName: 'Bar', estimate: 'N' },
+        { userName: 'Foo', estimate: 'O' },
       ];
       const testState = {
         ...state,
@@ -157,8 +157,8 @@ describe('mutations', () => {
     const state: State = {
       ...initialState,
       participants: [
-        {...exampleParticipant, hasEstimated: true},
-        {...exampleParticipant, name: 'Bar', hasEstimated: true},
+        { ...exampleParticipant, hasEstimated: true },
+        { ...exampleParticipant, name: 'Bar', hasEstimated: true },
         {
           ...exampleParticipant,
           name: 'Baz',
@@ -196,7 +196,7 @@ describe('mutations', () => {
       ...initialState,
       participants: [
         exampleParticipant,
-        {...exampleParticipant, name: 'Bar', hasEstimated: false},
+        { ...exampleParticipant, name: 'Bar', hasEstimated: false },
         {
           ...exampleParticipant,
           name: 'Baz',
@@ -223,8 +223,8 @@ describe('mutations', () => {
 
     expect(state.participants).toEqual([
       exampleParticipant,
-      {...exampleParticipant, name: 'Bar', hasEstimated: true},
-      {...exampleParticipant, name: 'Baz', hasEstimated: true},
+      { ...exampleParticipant, name: 'Bar', hasEstimated: true },
+      { ...exampleParticipant, name: 'Baz', hasEstimated: true },
     ]);
   });
 
@@ -233,7 +233,7 @@ describe('mutations', () => {
       ...initialState,
       participants: [
         exampleParticipant,
-        {...exampleParticipant, name: 'Bar', hasEstimated: false},
+        { ...exampleParticipant, name: 'Bar', hasEstimated: false },
         {
           ...exampleParticipant,
           name: 'Baz',

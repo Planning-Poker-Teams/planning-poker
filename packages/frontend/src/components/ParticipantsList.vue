@@ -14,9 +14,9 @@
 </template>
 
 <script setup lang="ts">
-import {PropType, toRef} from 'vue';
+import { PropType, toRef } from 'vue';
 import ParticipantItem from '../components/ParticipantItem.vue';
-import {Participant} from '../store/types';
+import { Participant } from '../store/types';
 
 const props = defineProps({
   participants: {

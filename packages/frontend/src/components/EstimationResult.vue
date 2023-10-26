@@ -82,10 +82,10 @@
 </template>
 
 <script setup lang="ts">
-import {computed, ref, toRef} from 'vue';
-import {Store, useStore} from 'vuex';
-import {useStorage} from '../hooks/useStorage';
-import {State} from '../store/types';
+import { computed, ref, toRef } from 'vue';
+import { Store, useStore } from 'vuex';
+import { useStorage } from '../hooks/useStorage';
+import { State } from '../store/types';
 import ParticipantItem from './ParticipantItem.vue';
 import Progressbar from './Progressbar.vue';
 import SortableTableHeader from './SortableTableHeader.vue';
@@ -93,7 +93,7 @@ import TaskHeader from './TaskHeader.vue';
 
 type SortDir = 'up' | 'down';
 type SortCol = 'votes' | 'size' | 'agreement';
-type Entry = {value: string; names: string[]};
+type Entry = { value: string; names: string[] };
 type Entries = Entry[];
 
 const store: Store<State> = useStore();

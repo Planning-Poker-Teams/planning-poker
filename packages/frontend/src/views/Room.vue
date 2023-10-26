@@ -30,9 +30,9 @@
 </template>
 
 <script setup lang="ts">
-import {computed, onMounted, onUnmounted, ref, toRef} from 'vue';
-import {useRoute, useRouter} from 'vue-router';
-import {Store, useStore} from 'vuex';
+import { computed, onMounted, onUnmounted, ref, toRef } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
+import { Store, useStore } from 'vuex';
 import ChangeCardDeckDialog from '../components/ChangeCardDeckDialog.vue';
 import ConnectionStatusDialog from '../components/ConnectionStatusDialog.vue';
 import EstimationResult from '../components/EstimationResult.vue';
@@ -40,11 +40,11 @@ import OngoingEstimation from '../components/OngoingEstimation.vue';
 import ParticipantsList from '../components/ParticipantsList.vue';
 import RoomHeader from '../components/RoomHeader.vue';
 import TaskHeader from '../components/TaskHeader.vue';
-import {ConnectionState} from '../store';
-import {ActionType} from '../store/actions';
-import {EstimationState} from '../store/getters';
+import { ConnectionState } from '../store';
+import { ActionType } from '../store/actions';
+import { EstimationState } from '../store/getters';
 
-import {State} from '../store/types';
+import { State } from '../store/types';
 
 const store: Store<State> = useStore();
 const route = useRoute();
@@ -74,7 +74,7 @@ const roomName = computed(() => {
 onMounted(() => {
   const roomNameParam = route.params.roomName;
   if (!store.state.room || roomName.value !== roomNameParam) {
-    router.push({name: 'lobby', query: {room: roomNameParam}});
+    router.push({ name: 'lobby', query: { room: roomNameParam } });
   }
   store.dispatch(ActionType.ENTER_ROOM);
 });

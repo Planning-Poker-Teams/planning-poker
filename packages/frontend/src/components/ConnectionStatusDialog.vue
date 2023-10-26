@@ -35,9 +35,9 @@
 </template>
 
 <script setup lang="ts">
-import {useRouter} from 'vue-router';
-import {useStore} from 'vuex';
-import {ConnectionState} from '../store';
+import { useRouter } from 'vue-router';
+import { useStore } from 'vuex';
+import { ConnectionState } from '../store';
 const router = useRouter();
 
 const store = useStore();
@@ -51,6 +51,6 @@ const props = defineProps({
 });
 
 const backToLobby = () => {
-  router.push({name: 'lobby', query: {room: store.state.room.name}});
+  router.push({ name: 'lobby', query: { room: store.state.room.name } });
 };
 </script>
