@@ -55,13 +55,8 @@ const cardDeck = toRef(store.state, 'cardDeck');
 
 const participants = toRef(store.state, 'participants');
 const taskName = computed(() => {
-  if (store.state.ongoingEstimation) {
-    return store.state.ongoingEstimation.taskName;
-  } else if (store.state.estimationResult) {
-    return store.state.estimationResult.taskName;
-  } else {
-    return '';
-  }
+  const { ongoingEstimation, estimationResult } = store.state;
+  return ongoingEstimation?.taskName || estimationResult?.taskName || '';
 });
 const roomName = computed(() => {
   if (typeof store.state.room === 'undefined') {
