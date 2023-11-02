@@ -42,7 +42,7 @@
           <td class="p-2">
             <Progressbar
               class="progress-bar"
-              :total-step="store.state.participants.length"
+              :total-step="store.state.estimationResult?.estimates.length || 1"
               :current-step="entry.names.length"
               :show-footer="false"
               :with-label="true"
@@ -89,7 +89,6 @@ import { State } from '../store/types';
 import ParticipantItem from './ParticipantItem.vue';
 import Progressbar from './Progressbar.vue';
 import SortableTableHeader from './SortableTableHeader.vue';
-import TaskHeader from './TaskHeader.vue';
 
 type SortDir = 'up' | 'down';
 type SortCol = 'votes' | 'size' | 'agreement';
