@@ -69,16 +69,16 @@ const webSocketPlugin = (store: Store<State>) => {
     };
 
     socket.onerror = event => {
-      console.log('[error] Connection error, see log for details.');
-      console.log(event);
+      console.error('[error] Connection error, see log for details.');
+      console.error(event);
     };
 
     socket.onclose = event => {
       store.commit('leaveRoom');
       if (event.wasClean) {
-        console.log(`[close] Connection closed cleanly, code=${event.code}.`);
+        console.info(`[close] Connection closed cleanly, code=${event.code}.`);
       } else {
-        console.log(`[close] Connection died, code=${event?.code}.`);
+        console.warn(`[close] Connection died, code=${event?.code}.`);
       }
     };
 
