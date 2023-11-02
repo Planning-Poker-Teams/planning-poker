@@ -69,7 +69,7 @@
       <span class="">{{
         sortedEntries[0]?.value
           ? `All ${sortedEntries[0]?.names.length} participants voted for option ${sortedEntries[0]?.value}.`
-          : `All ${sortedEntries[0]?.names.length} participants were to confused to select anything. 🧐`
+          : `All ${sortedEntries[0]?.names.length} participants were too confused to select anything. 🧐`
       }}</span>
     </div>
     <img
