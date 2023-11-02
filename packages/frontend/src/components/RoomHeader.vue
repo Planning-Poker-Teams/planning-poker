@@ -20,39 +20,33 @@
       </h1>
 
       <div id="controlArea" class="absolute top-0 right-0 w-5/12 flex justify-end">
-        <button
-          class="text-gray-700 m-2 p-2 border-2 rounded flex justify-center items-center flex-nowrap whitespace-nowrap"
-          :class="
-            urlCopyStatus
-              ? 'bg-codecentric-100 border-codecentric-100 hover:border-codecentric-100'
-              : 'bg-gray-300 border-gray-300 hover:border-gray-400'
-          "
-          type="button"
+        <button-p-p
           :style="urlCopyStatus ? { cursor: 'default' } : { cursor: 'pointer' }"
+          :text="urlCopyStatus ? 'Copied' : 'Invite'"
+          :color="urlCopyStatus ? 'codecentric-100' : 'gray-300'"
+          :icon-name="urlCopyStatus ? 'fa-check' : 'fa-link'"
+          :hidden="!canChangeCardDeck"
           @click="copyUrl"
         >
-          <span class="hidden lg:inline mr-2">{{ urlCopyStatus ? 'Copied' : 'Invite' }}</span>
-          <font-awesome-icon :icon="urlCopyStatus ? 'fa-check' : 'fa-link'" />
-        </button>
+        </button-p-p>
 
-        <button
-          class="bg-gray-300 text-gray-700 m-2 p-2 border-2 hover:border-gray-400 border-gray-300 rounded flex justify-center items-center flex-nowrap whitespace-nowrap"
-          type="button"
+        <button-p-p
+          text="Deck"
+          color="gray-300"
+          icon-name="sliders-h"
           :hidden="!canChangeCardDeck"
           @click="showChangeDeckModal"
         >
-          <span class="hidden lg:inline mr-2">Deck</span>
-          <font-awesome-icon icon="sliders-h" />
-        </button>
+        </button-p-p>
 
-        <button
-          class="bg-gray-300 text-gray-700 m-2 p-2 border-2 hover:border-gray-400 border-gray-300 rounded flex justify-center items-center flex-nowrap whitespace-nowrap"
-          type="button"
+        <button-p-p
+          text="Exit"
+          color="gray-300"
+          icon-name="door-open"
+          :hidden="!canChangeCardDeck"
           @click="leaveRoom"
         >
-          <span class="hidden lg:inline mr-2">Exit</span>
-          <font-awesome-icon icon="door-open" />
-        </button>
+        </button-p-p>
       </div>
     </div>
   </div>
@@ -63,6 +57,7 @@ import { ref, computed, PropType, toRef } from 'vue';
 import { useRouter } from 'vue-router';
 import { useStore } from 'vuex';
 import { Participant } from '../store/types';
+import ButtonPP from './ButtonPP.vue';
 
 const store = useStore();
 const router = useRouter();

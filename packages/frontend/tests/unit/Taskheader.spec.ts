@@ -60,7 +60,7 @@ describe('taskheader', () => {
       }
     );
 
-    const resultButton = wrapper.find({ ref: 'show-result-button' });
+    const resultButton = wrapper.find('[data-testid=show-result-button]');
     expect(resultButton.exists()).toBeTruthy();
     await resultButton.trigger('click');
     expect(wrapper.find('[data-testid=confirm-show-results-dialog]').exists()).toBeFalsy();
@@ -81,7 +81,7 @@ describe('taskheader', () => {
       }
     );
 
-    await wrapper.find({ ref: 'show-result-button' }).trigger('click');
+    await wrapper.find('[data-testid=show-result-button]').trigger('click');
     const confirmDialog = wrapper.find('[data-testid=confirm-show-results-dialog]');
     expect(confirmDialog.exists()).toBeTruthy();
     expect(confirmDialog.text()).include('test-user-b');

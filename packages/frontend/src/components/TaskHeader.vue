@@ -21,38 +21,35 @@
       </div>
 
       <div id="controlArea" class="flex justify-end">
-        <button
+        <button-p-p
           v-if="isEstimationOngoing"
-          ref="show-result-button"
-          class="bg-codecentric-100 text-gray-700 m-2 p-2 border-2 hover:border-gray-400 border-codecentric-100 rounded flex justify-center items-center flex-nowrap whitespace-nowrap"
-          type="button"
+          data-testid="show-result-button"
+          text="Show Result"
+          color="codecentric-100"
+          icon-name="fa-magnifying-glass"
           @click="handleShowResultButton"
         >
-          <span class="hidden lg:inline mr-2">Show Result</span>
-          <font-awesome-icon icon="fa-magnifying-glass" />
-        </button>
+        </button-p-p>
 
-        <button
+        <button-p-p
           v-if="estimationResultAvailable"
-          ref="new-task-button"
-          class="bg-codecentric-100 text-gray-700 m-2 p-2 border-2 hover:border-gray-400 border-codecentric-100 rounded flex justify-center items-center flex-nowrap whitespace-nowrap"
-          type="button"
+          data-testid="new-task-button"
+          text="New Task"
+          color="codecentric-100"
+          icon-name="fa-plus"
           @click="handleNewTaskButton"
         >
-          <span class="hidden lg:inline mr-2">New Task</span>
-          <font-awesome-icon icon="fa-plus" />
-        </button>
+        </button-p-p>
 
-        <button
+        <button-p-p
           v-if="estimationResultAvailable"
-          ref="restart-task-button"
-          class="bg-codecentric-100 text-gray-700 m-2 p-2 border-2 hover:border-gray-400 border-codecentric-100 rounded flex justify-center items-center flex-nowrap whitespace-nowrap"
-          type="button"
+          data-testid="restart-task-button"
+          text="Restart"
+          color="codecentric-100"
+          icon-name="fa-undo"
           @click="handleRestartTaskButton(taskName)"
         >
-          <span class="hidden lg:inline mr-2">Restart</span>
-          <font-awesome-icon icon="fa-undo" />
-        </button>
+        </button-p-p>
       </div>
     </div>
     <hr class="m-2 h-0.5 bg-gray-400 box-border" />
@@ -66,6 +63,7 @@ import { useStore } from 'vuex';
 import { ConnectionState } from '../store';
 import { ActionType } from '../store/actions';
 import { EstimationState } from '../store/getters';
+import ButtonPP from './ButtonPP.vue';
 import ConfirmShowResultsDialog from './ConfirmShowResultsDialog.vue';
 import NewTaskDialog from './NewTaskDialog.vue';
 const router = useRouter();
