@@ -95,7 +95,7 @@ const leaveRoom = () => {
 const urlCopyStatus = ref(false);
 const copyUrl = async () => {
   //TODO: Shouldn't use plaintext domain here, instead import from wherever it's stored
-  navigator.clipboard.writeText(`https://planningpoker.cc${window.location.pathname}`);
+  navigator.clipboard.writeText(`https://${window.location.hostname}${window.location.pathname}`);
   urlCopyStatus.value = true;
 };
 
