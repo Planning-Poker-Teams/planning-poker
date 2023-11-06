@@ -42,7 +42,7 @@ const router = useRouter();
 
 const store = useStore();
 
-const props = defineProps({
+defineProps({
   show: {
     type: Boolean,
     required: true,

@@ -40,7 +40,6 @@ import { Store, useStore } from 'vuex';
 import { State } from '../store/types';
 import Card from './Card.vue';
 import useCardAnimation, { translates } from './CardAnimation';
-import TaskHeader from './TaskHeader.vue';
 
 defineProps({
   taskName: {
