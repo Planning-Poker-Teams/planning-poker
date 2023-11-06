@@ -40,7 +40,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import { Store, useStore } from 'vuex';
 import { ActionType } from '../store/actions';
 import { State } from '../store/types';
@@ -50,9 +50,21 @@ const newTaskName = ref('');
 const emits = defineEmits(['on_confirm', 'on_cancel']);
 const store: Store<State> = useStore();
 
+onMounted(() => {
+  window.addEventListener('keyup', function (e) {
+    if (e.key === 'Enter') {
+      confirm();
+    } else if (e.key === 'Escape') {
+      cancel();
+    }
+  });
+});
+
 const confirm = () => {
-  startEstimation(newTaskName.value);
-  emits('on_confirm');
+  if (newTaskName.value.length > 0) {
+    startEstimation(newTaskName.value);
+    emits('on_confirm');
+  }
 };
 const startEstimation = async (taskName: string) => {
   store.dispatch(ActionType.REQUEST_START_ESTIMATION, taskName);

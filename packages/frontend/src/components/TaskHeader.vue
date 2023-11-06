@@ -95,7 +95,7 @@ const handleShowResultButton = () => {
   showConfirmDialog.value = true;
 };
 const requestResult = () => {
-  showConfirmDialog.value = false;
+  closeShowResultDialog();
   store.dispatch(ActionType.REQUEST_RESULT);
 };
 const closeShowResultDialog = () => {

@@ -54,7 +54,7 @@
 </template>
 
 <script setup lang="ts">
-import { Ref, toRef, computed } from 'vue';
+import { Ref, toRef, computed, onMounted } from 'vue';
 import { Store, useStore } from 'vuex';
 import { ActionType } from '../store/actions';
 import { Participant, State } from '../store/types';
@@ -68,6 +68,16 @@ const cancel = () => emits('on_cancel');
 
 const userName = computed(() => {
   return store.state.room?.userName;
+});
+
+onMounted(() => {
+  window.addEventListener('keyup', function (e) {
+    if (e.key === 'Enter') {
+      confirm();
+    } else if (e.key === 'Escape') {
+      cancel();
+    }
+  });
 });
 
 const removeUser = (userName: string) => {
