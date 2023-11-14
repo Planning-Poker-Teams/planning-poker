@@ -59,7 +59,7 @@ jobs:
           yarn workspace frontend test
 
       - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v1
+        uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: arn:aws:iam::054552196453:role/github-oidc-role
           aws-region: eu-central-1
