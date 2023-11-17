@@ -13,6 +13,7 @@ import { State, RoomInformation, EstimationResult as StoreEstimationResult } fro
 
 export enum MutationsType {
   SET_ROOM_INFORMATION = 'setRoomInformation',
+  ENTER_ROOM = 'enterRoom',
   LEAVE_ROOM = 'leaveRoom',
   USER_JOINED = 'userJoined',
   USER_LEFT = 'userLeft',
@@ -25,6 +26,7 @@ export enum MutationsType {
 
 export type Mutations = {
   [MutationsType.SET_ROOM_INFORMATION](state: State, roomInformation: RoomInformation): void;
+  [MutationsType.ENTER_ROOM](state: State): void;
   [MutationsType.LEAVE_ROOM](state: State): void;
   [MutationsType.USER_JOINED](state: State, event: UserJoined): void;
   [MutationsType.USER_LEFT](state: State, event: UserLeft): void;
@@ -52,12 +54,16 @@ export const mutations: MutationTree<State> & Mutations = {
     state.ongoingEstimation = undefined;
     state.estimationResult = undefined;
   },
+  [MutationsType.ENTER_ROOM](state: State) {
+    state.connectionState = 'CONNECTED';
+  },
   [MutationsType.LEAVE_ROOM](state: State) {
     state.room = undefined;
     state.cardDeck = [];
     state.participants = [];
     state.ongoingEstimation = undefined;
     state.estimationResult = undefined;
+    state.connectionState = 'NOT_CONNECTED';
   },
   [MutationsType.USER_JOINED](state: State, event: UserJoined) {
     const participant = {

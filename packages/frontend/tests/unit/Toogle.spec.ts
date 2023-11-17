@@ -1,6 +1,6 @@
 import { mount } from '@vue/test-utils';
-import Toggle from '../../src/components/Toggle.vue';
 import { describe, expect, it } from 'vitest';
+import Toggle from '../../src/components/Toggle.vue';
 
 describe('Toggle', () => {
   it('should use the property "id" in label and input', () => {

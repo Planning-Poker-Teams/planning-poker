@@ -7,6 +7,7 @@
       :room-name="roomName"
       @show_change_deck_modal="showChangeDeckModal = true"
     />
+    <task-header></task-header>
     <change-card-deck-dialog
       v-if="showChangeDeckModal"
       :current-card-deck="cardDeck"
@@ -21,8 +22,11 @@
       @request-result="requestResult"
     />
     <estimation-result v-if="estimationResultAvailable" />
-    <start-estimation-form v-if="!isEstimationOngoing" @start-estimation="startEstimation" />
   </div>
+  <participants-list :participants="participants" />
+  <connection-status-dialog
+    :show="store.state.connectionState != ConnectionState.CONNECTED"
+  ></connection-status-dialog>
 </template>
 
 <script setup lang="ts">
@@ -30,12 +34,16 @@ import { computed, onMounted, onUnmounted, ref, toRef } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { Store, useStore } from 'vuex';
 import ChangeCardDeckDialog from '../components/ChangeCardDeckDialog.vue';
+import ConnectionStatusDialog from '../components/ConnectionStatusDialog.vue';
 import EstimationResult from '../components/EstimationResult.vue';
 import OngoingEstimation from '../components/OngoingEstimation.vue';
+import ParticipantsList from '../components/ParticipantsList.vue';
 import RoomHeader from '../components/RoomHeader.vue';
-import StartEstimationForm from '../components/StartEstimationForm.vue';
+import TaskHeader from '../components/TaskHeader.vue';
+import { ConnectionState } from '../store';
 import { ActionType } from '../store/actions';
 import { EstimationState } from '../store/getters';
+
 import { State } from '../store/types';
 
 const store: Store<State> = useStore();
@@ -47,11 +55,8 @@ const cardDeck = toRef(store.state, 'cardDeck');
 
 const participants = toRef(store.state, 'participants');
 const taskName = computed(() => {
-  if (typeof store.state.ongoingEstimation === 'undefined') {
-    return '';
-  }
-
-  return store.state.ongoingEstimation.taskName;
+  const { ongoingEstimation, estimationResult } = store.state;
+  return ongoingEstimation?.taskName || estimationResult?.taskName || '';
 });
 const roomName = computed(() => {
   if (typeof store.state.room === 'undefined') {
@@ -80,9 +85,6 @@ const changeCardDeck = async (newCardDeck: string[]) => {
   store.dispatch(ActionType.CHANGE_CARD_DECK, newCardDeck);
   showChangeDeckModal.value = false;
 };
-const startEstimation = async (taskName: string) => {
-  store.dispatch(ActionType.REQUEST_START_ESTIMATION, taskName);
-};
 const sendEstimation = async (value: string) => {
   store.dispatch(ActionType.SEND_ESTIMATION, value);
 };
@@ -99,7 +101,6 @@ defineExpose({
   isEstimationOngoing,
   estimationResultAvailable,
   changeCardDeck,
-  startEstimation,
   sendEstimation,
   requestResult,
 });
