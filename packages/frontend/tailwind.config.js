@@ -16,6 +16,11 @@ module.exports = {
       black: '#000',
       white: '#fff',
 
+      codecentric: {
+        100: '#22f4ae',
+        200: '#0bdb95',
+      },
+
       gray: {
         100: '#f7fafc',
         200: '#edf2f7',

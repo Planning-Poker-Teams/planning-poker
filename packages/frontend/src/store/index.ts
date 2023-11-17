@@ -11,12 +11,19 @@ import { Mutations, mutations } from '../store/mutations';
 import { State } from '../store/types';
 import webSocketPlugin from '../store/websocketPlugin';
 
+export enum ConnectionState {
+  NOT_CONNECTED = 'NOT_CONNECTED',
+  CONNECTED = 'CONNECTED',
+  CONNECTING = 'CONNECTING',
+}
+
 export const initialState: State = {
   room: undefined,
   cardDeck: [],
   participants: [],
   ongoingEstimation: undefined,
   estimationResult: undefined,
+  connectionState: ConnectionState.NOT_CONNECTED,
 };
 
 const plugins = [webSocketPlugin];

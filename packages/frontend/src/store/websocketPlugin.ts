@@ -2,6 +2,7 @@ import { Store, ActionPayload } from 'vuex';
 import { ActionType } from '../store/actions';
 import { PokerEvent } from '../store/pokerEvents';
 import { State } from '../store/types';
+import { ConnectionState } from '.';
 
 const webSocketPlugin = (store: Store<State>) => {
   let socket: WebSocket | undefined = undefined;
@@ -14,6 +15,7 @@ const webSocketPlugin = (store: Store<State>) => {
         }
         const { name, userName, isSpectator } = state.room;
         socket = setupWebSocketConnection(name, userName, isSpectator);
+        store.state.connectionState = ConnectionState.CONNECTING;
         break;
       }
       case ActionType.LEAVE_ROOM: {
@@ -49,6 +51,8 @@ const webSocketPlugin = (store: Store<State>) => {
     const socket = new WebSocket(`wss://${window.planningPoker.apiUrl}`);
 
     socket.onopen = () => {
+      //TODO: enterRoom should be called after user actually got confirmation of room joining and received taskname etc. to prevent flickering of task creaton modal
+      store.commit('enterRoom');
       socket.send(
         JSON.stringify({
           eventType: 'joinRoom',
@@ -62,6 +66,20 @@ const webSocketPlugin = (store: Store<State>) => {
     socket.onmessage = event => {
       const json = JSON.parse(event.data);
       handleIncomingMessage(json);
+    };
+
+    socket.onerror = event => {
+      console.error('[error] Connection error, see log for details.');
+      console.error(event);
+    };
+
+    socket.onclose = event => {
+      store.commit('leaveRoom');
+      if (event.wasClean) {
+        console.info(`[close] Connection closed cleanly, code=${event.code}.`);
+      } else {
+        console.warn(`[close] Connection died, code=${event?.code}.`);
+      }
     };
 
     return socket;

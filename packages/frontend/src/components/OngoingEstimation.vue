@@ -1,34 +1,24 @@
 <template>
-  <confirm-show-results-dialog
-    v-if="showConfirmDialog"
-    @on_confirm="requestResult"
-    @on_cancel="closeConfirmDialog"
-  />
-  <section class="flex-1 flex flex-col items-center p-4">
-    <div class="w-full flex justify-center lg:pt-4 pb-4 lg:pb-8">
+  <section
+    class="w-full flex-1 flex flex-col lg:flex-row justify-evenly gap-10 items-center p-4 box-border"
+  >
+    <div class="flex justify-center lg:h-80 w-80 box-border">
       <div
         ref="cardTargetField"
         class="min-h-24 w-full max-w-lg flex justify-center items-center rounded border-4 border-gray-300 border-dashed"
       >
-        <p class="text-2xl font-medium font-sans text-center text-gray-800 p-2">
-          {{ taskName }}
+        <p class="text-2xl font-medium font-sans text-center text-gray-800 p-10">
+          Place your vote!
         </p>
       </div>
-      <button
-        class="mx-2 px-6 py-2 bg-gray-300 text-gray-700 p-2 border-2 hover:border-gray-400 border-gray-300 rounded"
-        type="submit"
-        @click="handleSubmitResult"
-      >
-        Show result
-      </button>
     </div>
 
-    <div v-if="!isSpectator" class="grid grid-cols-4 gap-x-2 gap-y-2 mb-4">
+    <div v-if="!isSpectator" class="grid grid-cols-5 gap-x-2 gap-y-2 mb-4">
       <card
         v-for="(value, index) in currentCardDeck"
         :ref="
           el => {
-            cardRefList[index] = el;
+            cardRefList[index] = el as VueElement;;
           }
         "
         :key="value"
@@ -50,7 +40,6 @@ import { Store, useStore } from 'vuex';
 import { State } from '../store/types';
 import Card from './Card.vue';
 import useCardAnimation, { translates } from './CardAnimation';
-import ConfirmShowResultsDialog from './ConfirmShowResultsDialog.vue';
 
 defineProps({
   taskName: {
@@ -66,30 +55,12 @@ const emits = defineEmits(['send-estimation', 'request-result']);
 const store: Store<State> = useStore();
 const votingIsComplete: Ref<boolean> = toRef(store.getters, 'votingIsComplete');
 const isSpectator = ref(store.state.room?.isSpectator);
-const showConfirmDialog = ref(false);
 const cardTargetField: Ref<Element | undefined> = ref(undefined);
 const selectedEstimation: Ref<number | undefined> = ref(undefined);
 const cardRefList: Ref<VueElement[]> = ref([]);
 onBeforeUpdate(() => {
   cardRefList.value = [];
 });
-
-const closeConfirmDialog = () => {
-  showConfirmDialog.value = false;
-};
-
-const handleSubmitResult = () => {
-  if (votingIsComplete.value) {
-    return requestResult();
-  }
-
-  showConfirmDialog.value = true;
-};
-
-const requestResult = () => {
-  showConfirmDialog.value = false;
-  emits('request-result');
-};
 
 let lastSelectedCard: VueElement | undefined;
 let lastCardMovement: translates;
@@ -112,7 +83,6 @@ const sendEstimation = (value: string, index: number) => {
 
 defineExpose({
   votingIsComplete,
-  requestResult,
   isSpectator,
   selectedEstimation,
   sendEstimation,

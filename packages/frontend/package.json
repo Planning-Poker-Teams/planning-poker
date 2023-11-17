@@ -8,7 +8,8 @@
     "test": "vitest",
     "lint": "eslint --ext .ts,.tsx,.vue src",
     "build": "vite build",
-    "serve": "vite preview"
+    "serve": "vite preview",
+    "visualise": "vuensight"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^6.2.1",
@@ -28,6 +29,7 @@
     "@vue/eslint-config-prettier": "^7.0.0",
     "@vue/eslint-config-typescript": "^11.0.2",
     "@vue/test-utils": "2.2.3",
+    "@vuensight/cli": "^0.1.5",
     "autoprefixer": "^10.4.13",
     "eslint": "^8.27.0",
     "eslint-import-resolver-typescript": "^3.5.2",
@@ -36,7 +38,6 @@
     "eslint-plugin-vue": "^9.7.0",
     "postcss": "^8.4.19",
     "prettier": "^2.7.1",
-    "prettier-airbnb-config": "^1.0.0",
     "typescript": "4.9.3",
     "vite": "^3.2.4",
     "vite-plugin-html": "^3.2.0",
