@@ -3,6 +3,7 @@ import {
   faDoorOpen,
   faCheck,
   faPlus,
+  faHourglass,
   faPlay,
   faRedo,
   faUndo,
@@ -22,6 +23,7 @@ import './assets/tailwind.css';
 
 library.add(faDoorOpen);
 library.add(faCheck);
+library.add(faHourglass);
 library.add(faPlay);
 library.add(faPlus);
 library.add(faRedo);
