@@ -9,7 +9,6 @@
 
         <input
           v-model="newTaskName"
-          maxlength="20"
           class="p-2 mb-4 w-full text-left text-lg font-semi bg-white appearance-none border-4 rounded text-grey-darker focus:outline-none focus:border-codecentric-100"
           placeholder="Please enter a task name..."
         />
