@@ -3,7 +3,7 @@
     <table class="table-fixed bg-gray-300 rounded-t text-center w-full lg:w-3/4">
       <thead>
         <tr>
-          <th class="p-2">
+          <th class="p-2 w-1/6">
             <font-awesome-icon icon="coins" class="pr-4" />
             <sortable-table-header
               column="size"
@@ -13,7 +13,7 @@
               >Option</sortable-table-header
             >
           </th>
-          <th class="p-2">
+          <th class="p-2 w-1/6">
             <font-awesome-icon icon="users" class="pr-4" />
             <sortable-table-header
               column="votes"
