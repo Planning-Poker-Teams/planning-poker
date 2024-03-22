@@ -20,7 +20,7 @@
               :active-dir="sortDir"
               :active-col="sortCol"
               @on-click="sortColumn('votes')"
-              >Votes</sortable-table-header
+              >#Votes</sortable-table-header
             >
           </th>
           <th class="p-2">
