@@ -1,9 +1,14 @@
 <template>
   <div class="w-full overflow-x-auto overflow-y-hidden">
     <div class="flex justify-center p-2">
-      <participant-item v-for="participant in refParticipants" :key="participant.name"
-        class="first:ml-auto last:mr-auto" :name="participant.name"
-        :has-voted="participant.hasEstimated || participant.isSpectator" :show-checkmark="true" />
+      <participant-item
+        v-for="participant in refParticipants"
+        :key="participant.name"
+        class="first:ml-auto last:mr-auto"
+        :name="participant.name"
+        :has-voted="participant.hasEstimated || participant.isSpectator"
+        :show-checkmark="true"
+      />
     </div>
   </div>
 </template>
