@@ -3,7 +3,8 @@
     <table class="table-fixed bg-gray-300 rounded-t text-center w-full lg:w-3/4">
       <thead>
         <tr>
-          <th class="p-2">
+          <th class="p-2 w-1/6">
+            <font-awesome-icon icon="coins" class="pr-4" />
             <sortable-table-header
               column="size"
               :active-dir="sortDir"
@@ -12,7 +13,8 @@
               >Option</sortable-table-header
             >
           </th>
-          <th class="p-2">
+          <th class="p-2 w-1/6">
+            <font-awesome-icon icon="users" class="pr-4" />
             <sortable-table-header
               column="votes"
               :active-dir="sortDir"
@@ -22,12 +24,13 @@
             >
           </th>
           <th class="p-2">
+            <font-awesome-icon icon="chart-pie" class="pr-4" />
             <sortable-table-header
               column="agreement"
               :active-dir="sortDir"
               :active-col="sortCol"
               @on-click="sortColumn('agreement')"
-              >%Votes</sortable-table-header
+              >Votes</sortable-table-header
             >
           </th>
           <th class="p-2">Voters</th>

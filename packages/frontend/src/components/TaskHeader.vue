@@ -33,21 +33,21 @@
 
         <button-p-p
           v-if="estimationResultAvailable"
-          data-testid="new-task-button"
-          text="New Task"
-          color="codecentric-100"
-          icon-name="fa-plus"
-          @click="handleNewTaskButton"
-        >
-        </button-p-p>
-
-        <button-p-p
-          v-if="estimationResultAvailable"
           data-testid="restart-task-button"
           text="Restart"
           color="codecentric-100"
           icon-name="fa-undo"
           @click="handleRestartTaskButton(taskName)"
+        >
+        </button-p-p>
+
+        <button-p-p
+          v-if="estimationResultAvailable"
+          data-testid="new-task-button"
+          text="New Task"
+          color="codecentric-100"
+          icon-name="fa-plus"
+          @click="handleNewTaskButton"
         >
         </button-p-p>
       </div>

@@ -1,5 +1,5 @@
 <template>
-  <div class="w-full overflow-x-auto">
+  <div class="w-full overflow-x-auto overflow-y-hidden">
     <div class="flex justify-center p-2">
       <participant-item
         v-for="participant in refParticipants"
