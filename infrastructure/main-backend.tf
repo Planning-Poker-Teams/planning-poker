@@ -157,12 +157,12 @@ module "prevent_client_timeout" {
 }
 
 resource "aws_cloudwatch_event_rule" "prevent_client_timeout" {
-  name                = "${replace(var.environment, "/", "-")}-prevent-timeout-event"
+  name                = "${var.environment}-prevent-timeout-event"
   schedule_expression = "rate(5 minutes)"
 }
 
 resource "aws_cloudwatch_event_target" "prevent_client_timeout" {
-  target_id = "${replace(var.environment, "/", "-")}-prevent-timeout-event-target"
+  target_id = "${var.environment}-prevent-timeout-event-target"
   rule      = aws_cloudwatch_event_rule.prevent_client_timeout.name
   arn       = module.prevent_client_timeout.lambda_function_arn
 }
