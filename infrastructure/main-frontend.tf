@@ -1,5 +1,12 @@
 resource "aws_s3_bucket" "frontend" {
-  bucket = "planning-poker-${var.environment}-frontend"
+  bucket = "estim8-${var.environment}-frontend"
+}
+
+resource "aws_s3_bucket_ownership_controls" "frontend" {
+  bucket = aws_s3_bucket.frontend.id
+  rule {
+    object_ownership = "BucketOwnerPreferred"
+  }
 }
 
 resource "aws_s3_bucket_public_access_block" "frontend" {
@@ -11,16 +18,21 @@ resource "aws_s3_bucket_public_access_block" "frontend" {
   restrict_public_buckets = false
 }
 
+resource "aws_s3_bucket_acl" "frontend" {
+  depends_on = [
+    aws_s3_bucket_ownership_controls.frontend,
+    aws_s3_bucket_public_access_block.frontend,
+  ]
+
+  bucket = aws_s3_bucket.frontend.id
+  acl    = "public-read"
+}
+
 resource "aws_s3_bucket_website_configuration" "registration-frontend" {
   bucket = aws_s3_bucket.frontend.bucket
   index_document {
     suffix = "index.html"
   }
-}
-
-resource "aws_s3_bucket_acl" "frontend" {
-  bucket = aws_s3_bucket.frontend.id
-  acl    = "public-read"
 }
 
 module "dist" {
@@ -30,6 +42,10 @@ module "dist" {
 }
 
 resource "aws_s3_object" "static_files" {
+  depends_on = [
+    aws_s3_bucket_public_access_block.frontend,
+  ]
+
   for_each = module.dist.files
 
   bucket       = aws_s3_bucket.frontend.id
@@ -42,6 +58,10 @@ resource "aws_s3_object" "static_files" {
 }
 
 resource "aws_s3_object" "environment_js" {
+  depends_on = [
+    aws_s3_bucket_public_access_block.frontend,
+  ]
+
   bucket       = aws_s3_bucket.frontend.id
   key          = "environment.js"
   content_type = "application/javascript"

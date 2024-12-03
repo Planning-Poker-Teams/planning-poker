@@ -1,5 +1,5 @@
 resource "aws_dynamodb_table" "participants" {
-  name         = "planning-poker-${var.environment}-participants"
+  name         = "estim8-${var.environment}-participants"
   billing_mode = "PAY_PER_REQUEST"
 
   hash_key = "connectionId"
@@ -11,7 +11,7 @@ resource "aws_dynamodb_table" "participants" {
 }
 
 resource "aws_dynamodb_table" "rooms" {
-  name         = "planning-poker-${var.environment}-rooms"
+  name         = "estim8-${var.environment}-rooms"
   billing_mode = "PAY_PER_REQUEST"
 
   hash_key = "name"
@@ -23,7 +23,7 @@ resource "aws_dynamodb_table" "rooms" {
 }
 
 resource "aws_apigatewayv2_api" "websocket" {
-  name                       = "planning-poker-${var.environment}-websocket-api"
+  name                       = "estim8-${var.environment}-websocket-api"
   protocol_type              = "WEBSOCKET"
   route_selection_expression = "$request.body.action"
 }
@@ -32,7 +32,7 @@ module "websocket_handler" {
   source = "terraform-aws-modules/lambda/aws"
 
   runtime       = "nodejs18.x"
-  function_name = "planning-poker-${var.environment}-websocket-handler"
+  function_name = "estim8-${var.environment}-websocket-handler"
   handler       = "handleWebsocketEvents.handler"
   source_path = [
     "../packages/backend/dist/handleWebsocketEvents.js",
@@ -96,7 +96,7 @@ module "prevent_client_timeout" {
   source = "terraform-aws-modules/lambda/aws"
 
   runtime       = "nodejs18.x"
-  function_name = "planning-poker-${var.environment}-prevent-client-timeout"
+  function_name = "estim8-${var.environment}-prevent-client-timeout"
   handler       = "preventClientTimeout.handler"
   source_path = [
     "../packages/backend/dist/preventClientTimeout.js",

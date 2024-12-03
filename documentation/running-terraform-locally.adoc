@@ -6,9 +6,9 @@
 AWS_PROFILE=planning-poker \
   tfenv exec init \
   -backend-config=region=eu-central-1 \
-  -backend-config=bucket=planning-poker-terraform-state \
-  -backend-config=key=terraform-based-infrastructure.tfstate \
-  -backend-config=dynamodb_table=planning-poker-terraform-state-locks
+  -backend-config=bucket=estim8-deploy-state \
+  -backend-config=dynamodb_table=estim8-deploy-state-locks \
+  -backend-config=key=${USER}-local.tfstate
 ----
 
 == Apply
