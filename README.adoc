@@ -12,9 +12,6 @@ Planning Poker is an application for conducting estimation sessions in agile tea
 a|image::https://github.com/Planning-Poker-Teams/planning-poker/actions/workflows/build-and-deploy.yml/badge.svg?branch=production[Production Build Status, link="https://github.com/Planning-Poker-Teams/planning-poker/actions/workflows/build-and-deploy.yml?query=branch%3Aproduction"]
 |https://estim8.cards/
 
-|`develop`
-a|image::https://github.com/Planning-Poker-Teams/planning-poker/actions/workflows/build-and-deploy.yml/badge.svg?branch=develop[Develop Build Status, link="https://github.com/Planning-Poker-Teams/planning-poker/actions/workflows/build-and-deploy.yml?query=branch%3Adevelop"]
-|https://develop.estim8.cards/
 |===
 
 == Getting started

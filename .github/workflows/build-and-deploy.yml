@@ -4,10 +4,9 @@ on:
   push:
     branches:
       - production
-      - develop
   pull_request:
     branches:
-      - develop
+      - production
     types:
       - opened
       - synchronize
