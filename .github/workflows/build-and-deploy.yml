@@ -61,7 +61,7 @@ jobs:
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: arn:aws:iam::054552196453:role/github-oidc-role
+          role-to-assume: arn:aws:iam::571600868182:role/github-oidc-role
           aws-region: eu-central-1
 
       - name: Setup Terraform
@@ -86,8 +86,8 @@ jobs:
         run: |
           terraform init \
             -backend-config="region=eu-central-1" \
-            -backend-config="bucket=planning-poker-terraform-state" \
-            -backend-config="dynamodb_table=planning-poker-terraform-state-locks" \
+            -backend-config="bucket=estim8-deploy-state" \
+            -backend-config="dynamodb_table=estim8-deploy-state-locks" \
             -backend-config="key=${ENVIRONMENT_NAME}.tfstate"
 
       - name: Terraform Lint
@@ -117,7 +117,7 @@ jobs:
         uses: marocchino/sticky-pull-request-comment@v2
         with:
           message: |
-            Pull Request is deployed at <https://${{ env.ENVIRONMENT_NAME }}.planningpoker.cc/>
+            Pull Request is deployed at <https://${{ env.ENVIRONMENT_NAME }}.estim8.cards/>
 
       - name: Terraform Destroy
         if: github.event_name == 'pull_request' && github.event.action == 'closed'
