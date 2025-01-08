@@ -9,6 +9,13 @@ AWS_PROFILE=planning-poker \
   -backend-config=bucket=estim8-deploy-state \
   -backend-config=dynamodb_table=estim8-deploy-state-locks \
   -backend-config=key=${USER}-local.tfstate
+
+
+
+test
+
+
+
 ----
 
 == Apply
