@@ -2,6 +2,8 @@
 
 Planning Poker is an application for conducting estimation sessions in agile teams that collaborate remotely. Users can join planning rooms where they meet with the other participants. Users can start estimates for tasks, submit their estimates, and mutually reveal the results.
 
+Each new task can optionally enable vote correction after reveal. When that option is turned on, only participants who had already voted before the reveal may adjust their own vote directly on the result screen. Restarting a task reuses the previous task's correction setting, while creating a new task lets you choose it again. The option is disabled by default.
+
 == Environments / Branches
 
 

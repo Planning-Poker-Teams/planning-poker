@@ -73,9 +73,13 @@ const props = defineProps({
   },
 });
 const refParticipants = toRef(props, 'participants');
-const canChangeCardDeck = computed<boolean>(
-  () => !store.getters.somebodyHasVoted || !store.state.ongoingEstimation
-);
+const canChangeCardDeck = computed<boolean>(() => {
+  if (store.state.estimationResult?.isEditable) {
+    return false;
+  }
+
+  return !store.getters.somebodyHasVoted || !store.state.ongoingEstimation;
+});
 
 const emits = defineEmits(['show_change_deck_modal']);
 

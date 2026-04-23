@@ -13,6 +13,8 @@ const estimationResult: IEstimationResult = {
   taskName: 'test-task',
   startDate: new Date(),
   endDate: new Date(),
+  isEditable: false,
+  allowVoteCorrectionAfterReveal: false,
   estimates: [
     { userName: 'Hank', estimate: '2' },
     { userName: 'Jessie', estimate: '18' },
@@ -24,6 +26,7 @@ const estimationResult: IEstimationResult = {
 const ongoingEstimation: IOngoingEstimation = {
   taskName: 'test-task',
   startDate: new Date(),
+  allowVoteCorrectionAfterReveal: false,
 };
 
 describe('taskheader', () => {

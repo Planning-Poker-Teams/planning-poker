@@ -50,6 +50,7 @@ interface StartEstimation {
   userName?: string;
   taskName: string;
   startDate: string;
+  allowVoteCorrectionAfterReveal: boolean;
 }
 
 interface UserEstimate {
@@ -75,5 +76,7 @@ interface EstimationResult {
   taskName: string;
   startDate: string;
   endDate: string;
+  isEditable: boolean;
+  allowVoteCorrectionAfterReveal: boolean;
   estimates: { userName: string; estimate: string }[];
 }

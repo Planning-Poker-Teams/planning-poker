@@ -6,7 +6,11 @@ export interface Room {
   participants: string[];
   currentEstimationTaskName?: string;
   currentEstimationStartDate?: string;
+  currentEstimationEndDate?: string;
   currentEstimationInitiator?: string;
+  currentEstimationStatus?: 'hidden' | 'revealed';
+  currentEstimationAllowVoteCorrectionAfterReveal?: boolean;
+  participantsAllowedToCorrectVote?: string[];
   currentEstimates: Estimate[];
   cardDeck: string[];
 }
@@ -82,7 +86,8 @@ export default class DynamoDbRoomRepository implements RoomRepository {
     roomName: string,
     taskName: string,
     initiator: string,
-    startDate: string
+    startDate: string,
+    allowVoteCorrectionAfterReveal: boolean
   ): Promise<void> {
     await this.client.update({
       tableName: this.roomsTableName,
@@ -91,12 +96,37 @@ export default class DynamoDbRoomRepository implements RoomRepository {
         SET 
           currentEstimationTaskName = :taskName, 
           currentEstimationInitiator = :initiator, 
-          currentEstimationStartDate = :startDate 
-        REMOVE currentEstimates`,
+          currentEstimationStartDate = :startDate,
+          currentEstimationStatus = :status,
+          currentEstimationAllowVoteCorrectionAfterReveal = :allowVoteCorrectionAfterReveal
+        REMOVE currentEstimationEndDate, participantsAllowedToCorrectVote, currentEstimates`,
       expressionAttributeValues: {
         ':taskName': taskName,
         ':initiator': initiator,
         ':startDate': startDate,
+        ':status': 'hidden',
+        ':allowVoteCorrectionAfterReveal': allowVoteCorrectionAfterReveal,
+      },
+    });
+  }
+
+  async revealEstimation(
+    roomName: string,
+    participantIdsAllowedToCorrectVote: string[],
+    endDate: string
+  ): Promise<void> {
+    await this.client.update({
+      tableName: this.roomsTableName,
+      partitionKey: { name: roomName },
+      updateExpression: `
+        SET
+          currentEstimationStatus = :status,
+          participantsAllowedToCorrectVote = :participantIdsAllowedToCorrectVote,
+          currentEstimationEndDate = :endDate`,
+      expressionAttributeValues: {
+        ':status': 'revealed',
+        ':participantIdsAllowedToCorrectVote': participantIdsAllowedToCorrectVote,
+        ':endDate': endDate,
       },
     });
   }
@@ -131,7 +161,11 @@ export default class DynamoDbRoomRepository implements RoomRepository {
       REMOVE 
         currentEstimationTaskName,
         currentEstimationStartDate,
+        currentEstimationEndDate,
         currentEstimationInitiator,
+        currentEstimationStatus,
+        currentEstimationAllowVoteCorrectionAfterReveal,
+        participantsAllowedToCorrectVote,
         currentEstimates`,
     });
   }
@@ -142,7 +176,12 @@ export default class DynamoDbRoomRepository implements RoomRepository {
       participants: roomItem.participants?.values ?? [],
       currentEstimationTaskName: roomItem.currentEstimationTaskName,
       currentEstimationStartDate: roomItem.currentEstimationStartDate,
+      currentEstimationEndDate: roomItem.currentEstimationEndDate,
       currentEstimationInitiator: roomItem.currentEstimationInitiator,
+      currentEstimationStatus: roomItem.currentEstimationStatus,
+      currentEstimationAllowVoteCorrectionAfterReveal:
+        roomItem.currentEstimationAllowVoteCorrectionAfterReveal,
+      participantsAllowedToCorrectVote: roomItem.participantsAllowedToCorrectVote ?? [],
       currentEstimates: roomItem.currentEstimates
         ? roomItem.currentEstimates.values.map(JSON.parse)
         : [],

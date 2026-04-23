@@ -14,6 +14,14 @@
           placeholder="Please enter a task name..."
         />
 
+        <div class="mb-4 flex justify-start">
+          <Toggle
+            id="allowVoteCorrectionAfterReveal"
+            v-model="allowVoteCorrectionAfterReveal"
+            label="Allow vote correction after reveal"
+          />
+        </div>
+
         <div class="mx-auto flex justify-between py-3">
           <button
             class="mr-5 px-4 py-2 bg-gray-400 text-black text-base font-medium rounded-md w-5/12 shadow-sm hover:bg-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-500"
@@ -42,10 +50,12 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
 import { Store, useStore } from 'vuex';
+import Toggle from '../components/Toggle.vue';
 import { ActionType } from '../store/actions';
 import { State } from '../store/types';
 
 const newTaskName = ref('');
+const allowVoteCorrectionAfterReveal = ref(false);
 
 const emits = defineEmits(['on_confirm', 'on_cancel']);
 const store: Store<State> = useStore();
@@ -62,12 +72,15 @@ onMounted(() => {
 
 const confirm = () => {
   if (newTaskName.value.length > 0) {
-    startEstimation(newTaskName.value);
+    startEstimation(newTaskName.value, allowVoteCorrectionAfterReveal.value);
     emits('on_confirm');
   }
 };
-const startEstimation = async (taskName: string) => {
-  store.dispatch(ActionType.REQUEST_START_ESTIMATION, taskName);
+const startEstimation = async (taskName: string, allowVoteCorrectionAfterReveal: boolean) => {
+  store.dispatch(ActionType.REQUEST_START_ESTIMATION, {
+    taskName,
+    allowVoteCorrectionAfterReveal,
+  });
 };
 const cancel = () => emits('on_cancel');
 </script>

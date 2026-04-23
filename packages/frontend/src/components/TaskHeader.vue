@@ -17,7 +17,7 @@
       <div class="w:3/5 flex-1 text-xl font-sans m-2">
         Task:
         <span ref="task-name-display" class="font-bold">{{ taskName }} - </span>
-        <span class="">{{ isEstimationOngoing ? 'Estimation' : 'Result' }}</span>
+        <span class="">{{ taskStateLabel }}</span>
       </div>
 
       <div id="controlArea" class="flex justify-end">
@@ -74,6 +74,17 @@ const isEstimationOngoing = computed(
   () => store.getters.estimationState == EstimationState.ONGOING
 );
 const estimationResultAvailable = computed(() => store.state.estimationResult !== undefined);
+const taskStateLabel = computed(() => {
+  if (isEstimationOngoing.value) {
+    return 'Estimation';
+  }
+
+  if (store.state.estimationResult?.isEditable) {
+    return 'Live Result';
+  }
+
+  return 'Result';
+});
 const taskName = computed(() => {
   if (store.state.ongoingEstimation) {
     return store.state.ongoingEstimation.taskName;
@@ -117,7 +128,11 @@ const closeNewTaskDialog = () => {
   showNewTaskDialog.value = false;
 };
 const handleRestartTaskButton = async (taskName: string) => {
-  await store.dispatch(ActionType.REQUEST_START_ESTIMATION, taskName);
+  await store.dispatch(ActionType.REQUEST_START_ESTIMATION, {
+    taskName,
+    allowVoteCorrectionAfterReveal:
+      store.state.estimationResult?.allowVoteCorrectionAfterReveal ?? false,
+  });
 };
 
 defineExpose({});

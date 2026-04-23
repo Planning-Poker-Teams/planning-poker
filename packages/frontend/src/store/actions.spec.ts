@@ -20,6 +20,7 @@ describe('actions', () => {
     ongoingEstimation: {
       taskName: 'The task',
       startDate: new Date(),
+      allowVoteCorrectionAfterReveal: false,
     },
   };
 
@@ -39,13 +40,17 @@ describe('actions', () => {
   it('requests start of a new estimation', () => {
     const requestStartEstimation = actions[ActionType.REQUEST_START_ESTIMATION].bind(store);
 
-    requestStartEstimation(actionContext, 'New task');
+    requestStartEstimation(actionContext, {
+      taskName: 'New task',
+      allowVoteCorrectionAfterReveal: true,
+    });
 
     expect(actionContext.dispatch).toBeCalledWith(ActionType.SEND_MESSAGE, {
       eventType: 'startEstimation',
       taskName: 'New task',
       userName: 'Foo',
       startDate: expect.anything(),
+      allowVoteCorrectionAfterReveal: true,
     });
   });
 
@@ -83,6 +88,31 @@ describe('actions', () => {
     expect(actionContext.dispatch).toBeCalledWith(ActionType.SEND_MESSAGE, {
       eventType: 'changeCardDeck',
       cardDeck: newCardDeck,
+    });
+  });
+
+  it('sends an estimation from editable results', () => {
+    const sendEstimation = actions[ActionType.SEND_ESTIMATION].bind(store);
+    actionContext.state = {
+      ...state,
+      ongoingEstimation: undefined,
+      estimationResult: {
+        taskName: 'The task',
+        startDate: new Date(),
+        endDate: new Date(),
+        isEditable: true,
+        allowVoteCorrectionAfterReveal: true,
+        estimates: [{ userName: 'Foo', estimate: '3' }],
+      },
+    };
+
+    sendEstimation(actionContext, '5');
+
+    expect(actionContext.dispatch).toBeCalledWith(ActionType.SEND_MESSAGE, {
+      eventType: 'estimate',
+      taskName: 'The task',
+      userName: 'Foo',
+      estimate: '5',
     });
   });
 });

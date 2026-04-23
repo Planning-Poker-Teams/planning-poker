@@ -106,6 +106,7 @@ export const mutations: MutationTree<State> & Mutations = {
     state.ongoingEstimation = {
       taskName: event.taskName,
       startDate: new Date(event.startDate),
+      allowVoteCorrectionAfterReveal: event.allowVoteCorrectionAfterReveal,
     };
   },
   [MutationsType.USER_HAS_ESTIMATED](state: State, event: UserHasEstimated) {
@@ -128,6 +129,8 @@ export const mutations: MutationTree<State> & Mutations = {
       taskName: event.taskName,
       startDate: new Date(event.startDate),
       endDate: new Date(event.endDate),
+      isEditable: event.isEditable,
+      allowVoteCorrectionAfterReveal: event.allowVoteCorrectionAfterReveal,
       estimates: event.estimates,
     };
   },

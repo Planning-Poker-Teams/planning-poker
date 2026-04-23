@@ -15,6 +15,7 @@ export enum GetterType {
   SOMEBODY_HAS_VOTED = 'somebodyHasVoted',
   RESULT_BY_SIZE = 'resultBySize',
   PENDING_PARTICIPANTS = 'pendingParticipants',
+  CURRENT_USER_CAN_EDIT_REVEALED_VOTE = 'currentUserCanEditRevealedVote',
 }
 
 export type Getters = {
@@ -22,6 +23,7 @@ export type Getters = {
   [GetterType.VOTING_IS_COMPLETE](state: State): boolean;
   [GetterType.SOMEBODY_HAS_VOTED](state: State): boolean;
   [GetterType.RESULT_BY_SIZE](state: State): EstimationResult | undefined;
+  [GetterType.CURRENT_USER_CAN_EDIT_REVEALED_VOTE](state: State): boolean;
 };
 
 export const getters: GetterTree<State, State> = {
@@ -71,5 +73,14 @@ export const getters: GetterTree<State, State> = {
 
       return aNumberOfVotes < bNumberOfVotes ? 1 : aNumberOfVotes > bNumberOfVotes ? -1 : 0;
     });
+  },
+  [GetterType.CURRENT_USER_CAN_EDIT_REVEALED_VOTE]: (state: State): boolean => {
+    if (!state.room || !state.estimationResult?.isEditable || state.room.isSpectator) {
+      return false;
+    }
+
+    return state.estimationResult.estimates.some(
+      estimate => estimate.userName === state.room!.userName && estimate.estimate !== undefined
+    );
   },
 };
