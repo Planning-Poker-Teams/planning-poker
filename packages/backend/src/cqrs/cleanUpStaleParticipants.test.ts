@@ -1,22 +1,23 @@
+import { vi } from 'vitest';
 import { MessageSender, ParticipantRepository, RoomRepository } from '../repositories/types';
 import { cleanUpStaleParticipants } from './cleanUpStaleParticipants';
 
 describe('cleanUpStaleParticipants', () => {
   it('should remove participants with stale web socket connection', async () => {
     const participantRepositoryMock = {
-      removeParticipant: jest.fn().mockResolvedValue(null),
+      removeParticipant: vi.fn().mockResolvedValue(null),
     } as unknown as ParticipantRepository;
 
     const roomRepositoryMock = {
-      getOrCreateRoom: jest.fn().mockResolvedValue({
+      getOrCreateRoom: vi.fn().mockResolvedValue({
         name: 'Test room',
         participants: ['STALE_PARTICIPANT', 'ACTIVE_PARTICIPANT'],
       }),
-      removeFromParticipants: jest.fn().mockResolvedValue(null),
+      removeFromParticipants: vi.fn().mockResolvedValue(null),
     } as unknown as RoomRepository;
 
     const messageSenderMock = {
-      hasConnection: jest
+      hasConnection: vi
         .fn()
         .mockImplementation(connectionId =>
           connectionId === 'ACTIVE_PARTICIPANT' ? Promise.resolve(true) : Promise.resolve(false)

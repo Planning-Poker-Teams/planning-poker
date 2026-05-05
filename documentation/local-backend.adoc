@@ -34,7 +34,7 @@ Optional:
 
 [source]
 ----
-nvm exec yarn local:backend:start
+nvm exec corepack yarn local:backend:start
 ----
 
 === 2. Bootstrap the local backend
@@ -43,14 +43,14 @@ This step builds the backend bundle, creates the local DynamoDB tables, register
 
 [source]
 ----
-nvm exec yarn local:backend:bootstrap
+nvm exec corepack yarn local:backend:bootstrap
 ----
 
 === 3. Run the frontend against the local backend
 
 [source]
 ----
-nvm exec yarn local:frontend:dev
+nvm exec corepack yarn local:frontend:dev
 ----
 
 The frontend dev server will pick up `packages/frontend/.env.local` automatically and connect to the MiniStack websocket endpoint instead of `api.estim8.cards`.
@@ -59,7 +59,7 @@ The frontend dev server will pick up `packages/frontend/.env.local` automaticall
 
 [source]
 ----
-nvm exec yarn local:backend:smoke-test
+nvm exec corepack yarn local:backend:smoke-test
 ----
 
 Recommended manual verification after the smoke test:
@@ -76,7 +76,7 @@ This deletes the local websocket API, Lambda functions, DynamoDB tables, and the
 
 [source]
 ----
-nvm exec yarn local:backend:reset
+nvm exec corepack yarn local:backend:reset
 ----
 
 == What gets emulated locally

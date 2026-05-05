@@ -170,10 +170,23 @@ export default class DynamoDbRoomRepository implements RoomRepository {
     });
   }
 
+  private dynamoSetToArray<T>(value: Set<T> | { values: T[] } | T[] | undefined): T[] {
+    if (!value) {
+      return [];
+    }
+    if (value instanceof Set) {
+      return [...value];
+    }
+    if (Array.isArray(value)) {
+      return value;
+    }
+    return value.values;
+  }
+
   private mapDocumentToRoom(roomItem: any): Room {
     return {
       name: roomItem.name,
-      participants: roomItem.participants?.values ?? [],
+      participants: this.dynamoSetToArray(roomItem.participants),
       currentEstimationTaskName: roomItem.currentEstimationTaskName,
       currentEstimationStartDate: roomItem.currentEstimationStartDate,
       currentEstimationEndDate: roomItem.currentEstimationEndDate,
@@ -183,7 +196,7 @@ export default class DynamoDbRoomRepository implements RoomRepository {
         roomItem.currentEstimationAllowVoteCorrectionAfterReveal,
       participantsAllowedToCorrectVote: roomItem.participantsAllowedToCorrectVote ?? [],
       currentEstimates: roomItem.currentEstimates
-        ? roomItem.currentEstimates.values.map(JSON.parse)
+        ? this.dynamoSetToArray<string>(roomItem.currentEstimates).map(JSON.parse)
         : [],
       cardDeck: roomItem.cardDeck,
     };

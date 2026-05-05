@@ -58,7 +58,7 @@ wait_for_ministack() {
     sleep 2
   done
 
-  echo "MiniStack is not reachable. Start it with: yarn local:backend:start" >&2
+  echo "MiniStack is not reachable. Start it with: corepack yarn local:backend:start" >&2
   exit 1
 }
 
@@ -121,7 +121,7 @@ upsert_lambda() {
   else
     aws_local lambda create-function \
       --function-name "${function_name}" \
-      --runtime nodejs18.x \
+      --runtime nodejs24.x \
       --handler "${handler_name}" \
       --memory-size 1024 \
       --timeout 30 \

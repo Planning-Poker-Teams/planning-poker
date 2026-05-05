@@ -1,7 +1,7 @@
 import uniqueName from '../helpers/uniqueName';
 import log from '../log';
-import { CommandType, Command } from './commandTypes';
 import { buildEstimationResult } from './buildEstimationResult';
+import { CommandType, Command } from './commandTypes';
 import { PokerRoom, Participant } from './types';
 
 const {

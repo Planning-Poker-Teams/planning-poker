@@ -1,18 +1,21 @@
-import ApiGatewayManagementApi from 'aws-sdk/clients/apigatewaymanagementapi';
-import AWSXRay from 'aws-xray-sdk-core';
+import {
+  ApiGatewayManagementApiClient,
+  GetConnectionCommand,
+  PostToConnectionCommand,
+} from '@aws-sdk/client-apigatewaymanagementapi';
+import * as AWSXRay from 'aws-xray-sdk-core';
 import log from '../../log';
 import { MessageSender } from '../types';
 
 export class ApiGatewayMessageSender implements MessageSender {
-  private managementApi: ApiGatewayManagementApi;
+  private managementApi: ApiGatewayManagementApiClient;
 
   constructor(endpoint: string) {
-    this.managementApi = AWSXRay.captureAWSClient(
-      new ApiGatewayManagementApi({
-        apiVersion: '2018-11-29',
+    this.managementApi = AWSXRay.captureAWSv3Client(
+      new ApiGatewayManagementApiClient({
         endpoint,
       })
-    ) as ApiGatewayManagementApi;
+    );
   }
 
   async broadcast(recipientIds: string[], data: string): Promise<void> {
@@ -21,12 +24,12 @@ export class ApiGatewayMessageSender implements MessageSender {
 
   async post(recipientId: string, data: string): Promise<void> {
     try {
-      await this.managementApi
-        .postToConnection({
+      await this.managementApi.send(
+        new PostToConnectionCommand({
           ConnectionId: recipientId,
           Data: data,
         })
-        .promise();
+      );
     } catch (error) {
       log.error(error as any);
       return Promise.resolve();
@@ -35,11 +38,11 @@ export class ApiGatewayMessageSender implements MessageSender {
 
   async hasConnection(connectionId: string): Promise<boolean> {
     try {
-      await this.managementApi
-        .getConnection({
+      await this.managementApi.send(
+        new GetConnectionCommand({
           ConnectionId: connectionId,
         })
-        .promise();
+      );
       return true;
     } catch (error) {
       return false;

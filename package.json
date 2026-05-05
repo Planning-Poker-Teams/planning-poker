@@ -30,26 +30,17 @@
     "local:backend:bootstrap": "./scripts/bootstrap-local-backend.sh",
     "local:backend:reset": "./scripts/reset-local-backend.sh",
     "local:backend:smoke-test": "./scripts/smoke-test-local-backend.sh",
-    "local:frontend:dev": "yarn workspace frontend dev"
+    "local:frontend:dev": "corepack yarn workspace frontend dev"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "@types/node": "^24.12.2",
+    "ts-node": "^10.9.2",
+    "typescript": "6.0.3"
+  },
   "engines": {
     "yarn": ">=1.22.19",
-    "node": ">=18.7.0"
+    "node": ">=24 <25"
   },
   "dependencies": {},
-  "resolutions": {
-    "@vue/compiler-core": "3.5.33",
-    "@vue/compiler-dom": "3.5.33",
-    "@vue/compiler-sfc": "3.5.33",
-    "@vue/compiler-ssr": "3.5.33",
-    "@vue/reactivity": "3.5.33",
-    "@vue/runtime-core": "3.5.33",
-    "@vue/runtime-dom": "3.5.33",
-    "@vue/server-renderer": "3.5.33",
-    "@vue/shared": "3.5.33",
-    "vue": "3.5.33",
-    "vite": "6.4.2"
-  },
   "packageManager": "yarn@1.22.19"
 }

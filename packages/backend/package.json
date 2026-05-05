@@ -7,37 +7,39 @@
     }
   ],
   "scripts": {
-    "build": "esbuild src/handlers/handleWebsocketEvents.ts src/handlers/preventClientTimeout.ts --outdir=dist --platform=node --loader:.ts=ts --bundle",
-    "test": "DEBUG=testcontainers jest",
-    "lint": "eslint './src/**/*.ts'",
+    "build": "esbuild src/handlers/handleWebsocketEvents.ts src/handlers/preventClientTimeout.ts --outdir=dist --platform=node --target=node24 --loader:.ts=ts --bundle",
+    "test": "DEBUG=testcontainers vitest run",
+    "lint": "eslint \"src/**/*.ts\"",
     "feature": "cucumber-js --require-module ts-node/register/transpile-only --require src/__features__/support/setup.ts --require 'src/__features__/support/*Steps.ts'",
-    "features": "npm run feature src/__features__/"
+    "features": "yarn feature src/__features__/"
   },
   "devDependencies": {
-    "@types/aws-lambda": "^8.10.47",
-    "@types/cucumber": "^6.0.1",
-    "@types/jest": "^27.0.3",
-    "@types/lambda-log": "^2.2.0",
-    "@types/node": "^22.10.1",
-    "@typescript-eslint/eslint-plugin": "^5.7.0",
-    "@typescript-eslint/parser": "^5.7.0",
-    "cucumber": "^6.0.5",
-    "esbuild": "^0.15.13",
-    "eslint": "^8.5.0",
-    "eslint-config-prettier": "^9.1.0",
-    "eslint-import-resolver-typescript": "^2.5.0",
-    "eslint-plugin-import": "^2.25.3",
-    "eslint-plugin-prettier": "^4.0.0",
-    "jest": "^27.4.5",
-    "prettier": "^2.5.1",
-    "testcontainers": "^2.8.1",
-    "ts-jest": "^27.1.2",
+    "@cucumber/cucumber": "^12.8.2",
+    "@eslint/js": "^10.0.1",
+    "@types/aws-lambda": "^8.10.161",
+    "@types/node": "^24.12.2",
+    "@typescript-eslint/eslint-plugin": "^8.59.2",
+    "@typescript-eslint/parser": "^8.59.2",
+    "esbuild": "^0.28.0",
+    "eslint": "^10.3.0",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-import-resolver-typescript": "^4.4.4",
+    "eslint-plugin-import-x": "^4.16.2",
+    "eslint-plugin-prettier": "^5.5.5",
+    "expect": "^30.3.0",
+    "globals": "^16.5.0",
+    "prettier": "^3.8.3",
+    "testcontainers": "^11.14.0",
     "ts-node": "^10.9.2",
-    "typescript": "4.9.5"
+    "typescript": "6.0.3",
+    "vite": "^8.0.10",
+    "vitest": "^4.1.5"
   },
   "dependencies": {
-    "aws-sdk": "^2.1692.0",
-    "aws-xray-sdk-core": "^3.10.2",
-    "lambda-log": "^2.3.1"
+    "@aws-sdk/client-apigatewaymanagementapi": "^3.1042.0",
+    "@aws-sdk/client-dynamodb": "^3.1042.0",
+    "@aws-sdk/lib-dynamodb": "^3.1042.0",
+    "aws-xray-sdk-core": "^3.12.0",
+    "lambda-log": "^3.1.0"
   }
 }

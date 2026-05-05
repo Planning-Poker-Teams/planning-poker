@@ -1,5 +1,5 @@
-import { Command, CommandType } from '../domain/commandTypes';
 import { buildEstimationResult } from '../domain/buildEstimationResult';
+import { Command, CommandType } from '../domain/commandTypes';
 import { PokerRoom } from '../domain/types';
 import log from '../log';
 import { RoomRepository, ParticipantRepository, MessageSender } from '../repositories/types';

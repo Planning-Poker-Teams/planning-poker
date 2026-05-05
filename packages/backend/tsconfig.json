@@ -2,7 +2,9 @@
   "compilerOptions": {
     "target": "ES2019",
     "module": "commonjs",
+    "rootDir": ".",
     "strict": true,
+    "ignoreDeprecations": "6.0",
     "importHelpers": true,
     "moduleResolution": "node",
     "experimentalDecorators": true,
@@ -11,10 +13,7 @@
     "allowSyntheticDefaultImports": true,
     "sourceMap": true,
     "baseUrl": ".",
-    "types": [
-      "node",
-      "@types/jest"
-    ],
+    "types": ["node", "vitest/globals"],
     "paths": {
       "@/*": ["src/*"]
     },

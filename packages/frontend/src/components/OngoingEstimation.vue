@@ -18,7 +18,7 @@
         v-for="(value, index) in currentCardDeck"
         :ref="
           el => {
-            cardRefList[index] = el as VueElement;;
+            cardRefList[index] = el as VueElement;
           }
         "
         :key="value"

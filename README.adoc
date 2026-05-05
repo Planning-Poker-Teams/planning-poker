@@ -20,10 +20,10 @@ a|image::https://github.com/Planning-Poker-Teams/planning-poker/actions/workflow
 
 - Install node: `nvm install`
 - Activate yarn: `nvm exec corepack enable`
-- Install the dependencies: `nvm exec yarn install`
-- Build the backend: `nvm exec yarn workspace backend build`
-- Build the frontend: `nvm exec yarn workspace frontend build`
-- Start the frontend with hot reload enabled: `nvm exec yarn workspace frontend dev`
+- Install the dependencies: `nvm exec corepack yarn install`
+- Build the backend: `nvm exec corepack yarn workspace backend build`
+- Build the frontend: `nvm exec corepack yarn workspace frontend build`
+- Start the frontend with hot reload enabled: `nvm exec corepack yarn workspace frontend dev`
 
 == Local backend
 

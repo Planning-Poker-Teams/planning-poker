@@ -1,14 +1,15 @@
+import { vi } from 'vitest';
 import PokerEventInteractor from './PokerEventInteractor';
 
-xdescribe('PokerEventInteractor', () => {
+describe.skip('PokerEventInteractor', () => {
   const participantRepositoryMock = {
-    fetchParticipantInfo: jest.fn().mockReturnValue(undefined),
-    fetchParticipants: jest.fn(),
+    fetchParticipantInfo: vi.fn().mockReturnValue(undefined),
+    fetchParticipants: vi.fn(),
   };
   const roomRepositoryMock = {
-    getOrCreateRoom: jest.fn(),
+    getOrCreateRoom: vi.fn(),
   };
-  const messageSenderMock = jest.fn();
+  const messageSenderMock = vi.fn();
 
   const interactor = new PokerEventInteractor(
     participantRepositoryMock as any,
