@@ -1,7 +1,7 @@
 <template>
   <button
-    class="bg-codecentric-100 text-gray-700 m-2 p-2 border-2 hover:border-gray-400 rounded flex justify-center items-center flex-nowrap whitespace-nowrap"
-    :class="`bg-${color} border-${color}`"
+    class="text-gray-700 m-2 px-3 py-2 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-1 transition-colors duration-150 flex justify-center items-center flex-nowrap whitespace-nowrap"
+    :class="buttonColorClass"
     type="button"
   >
     <span class="hidden lg:inline mr-2">{{ text }}</span>
@@ -10,7 +10,9 @@
 </template>
 
 <script setup lang="ts">
-defineProps({
+import { computed } from 'vue';
+
+const props = defineProps({
   text: {
     type: String,
     required: true,
@@ -23,5 +25,16 @@ defineProps({
     type: String,
     required: true,
   },
+});
+
+const buttonColorClass = computed(() => {
+  switch (props.color) {
+    case 'gray-300':
+      return 'bg-gray-300 hover:bg-gray-400';
+    case 'codecentric-100':
+      return 'bg-codecentric-100 hover:bg-codecentric-200';
+    default:
+      return 'bg-codecentric-100 hover:bg-codecentric-200';
+  }
 });
 </script>

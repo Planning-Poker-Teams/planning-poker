@@ -145,7 +145,7 @@ describe('estimation result with custom job-sizes', () => {
 });
 
 describe('editable estimation result', () => {
-  it('shows vote correction cards for the current user', () => {
+  it('does not show inline vote correction controls', () => {
     const estimationResult: IEstimationResult = {
       taskName: 'test-task',
       startDate: new Date(),
@@ -174,7 +174,7 @@ describe('editable estimation result', () => {
       }
     );
 
-    expect(wrapper.text()).toContain('Adjust your vote');
-    expect(wrapper.findAllComponents({ name: 'Card' }).length).toBeGreaterThan(0);
+    expect(wrapper.text()).not.toContain('Adjust your vote');
+    expect(wrapper.findAllComponents({ name: 'Card' })).toHaveLength(0);
   });
 });

@@ -83,33 +83,13 @@
     />
   </template>
 
-  <section
-    v-if="currentUserCanEditRevealedVote"
-    class="w-full flex justify-center mt-8 pb-4 px-4 box-border"
-  >
-    <div class="flex flex-col items-center gap-4">
-      <p class="text-lg font-medium text-gray-700">Adjust your vote</p>
-      <div class="grid grid-cols-5 gap-x-2 gap-y-2 mb-4">
-        <card
-          v-for="value in cardDeck"
-          :key="value"
-          :value="value"
-          :selected="value === selectedEstimate"
-          @click="sendEstimation(value)"
-        />
-      </div>
-    </div>
-  </section>
 </template>
 
 <script setup lang="ts">
 import { computed, ref, toRef } from 'vue';
 import { Store, useStore } from 'vuex';
 import { useStorage } from '../hooks/useStorage';
-import { ActionType } from '../store/actions';
-import { GetterType } from '../store/getters';
 import { State } from '../store/types';
-import Card from './Card.vue';
 import ParticipantItem from './ParticipantItem.vue';
 import Progressbar from './Progressbar.vue';
 import SortableTableHeader from './SortableTableHeader.vue';
@@ -123,10 +103,6 @@ const store: Store<State> = useStore();
 const taskName = ref(store.state.estimationResult?.taskName);
 const cardDeck = toRef(store.state, 'cardDeck');
 const estimationResultBySize = toRef(store.getters, 'resultBySize');
-const currentUserCanEditRevealedVote = toRef(
-  store.getters,
-  GetterType.CURRENT_USER_CAN_EDIT_REVEALED_VOTE
-);
 
 const storedSortDir = useStorage('sortDir');
 const storedSortCol = useStorage('sortCol');
@@ -159,21 +135,7 @@ const consensusReached = computed(
   () => estimationResultBySize.value.length == 1 && !store.state.estimationResult?.isEditable
 );
 
-const selectedEstimate = computed(() => {
-  if (!store.state.room) {
-    return undefined;
-  }
-
-  return store.state.estimationResult?.estimates.find(
-    estimate => estimate.userName === store.state.room?.userName
-  )?.estimate;
-});
-
 const hasVoted = (vote?: string): boolean => typeof vote !== 'undefined';
-
-const sendEstimation = (value: string) => {
-  store.dispatch(ActionType.SEND_ESTIMATION, value);
-};
 
 const sortColumn = (column: SortCol) => {
   if (sortCol.value === column) {
@@ -193,8 +155,5 @@ defineExpose({
   showConsensusCats,
   catUrl,
   estimationResultBySize,
-  currentUserCanEditRevealedVote,
-  selectedEstimate,
-  sendEstimation,
 });
 </script>
