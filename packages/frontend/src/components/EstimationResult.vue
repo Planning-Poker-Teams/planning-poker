@@ -82,7 +82,6 @@
       :src="catUrl"
     />
   </template>
-
 </template>
 
 <script setup lang="ts">

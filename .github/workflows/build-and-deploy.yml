@@ -35,9 +35,13 @@ jobs:
         with:
           node-version-file: '.nvmrc'
 
+      - name: Enable Corepack
+        if: github.event.action != 'closed'
+        run: corepack enable
+
       - name: Yarn Install
         if: github.event.action != 'closed'
-        run: yarn install --immutable
+        run: yarn install --frozen-lockfile
 
       - name: Yarn Lint
         if: github.event.action != 'closed'
