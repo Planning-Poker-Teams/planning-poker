@@ -1,2 +1,15 @@
 @import 'tailwindcss';
 @config '../../tailwind.config.js';
+
+@layer base {
+  button:not(:disabled),
+  a[href],
+  [role='button']:not([aria-disabled='true']) {
+    cursor: pointer;
+  }
+
+  button:disabled,
+  [aria-disabled='true'] {
+    cursor: not-allowed;
+  }
+}
