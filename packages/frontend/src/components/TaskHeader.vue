@@ -27,7 +27,7 @@
         <span class="">{{ taskStateLabel }}</span>
       </div>
 
-      <div id="controlArea" class="flex justify-end">
+      <div id="controlArea" class="flex justify-end items-center">
         <button-p-p
           v-if="isEstimationOngoing"
           data-testid="show-result-button"
@@ -77,7 +77,7 @@
         </button-p-p>
       </div>
     </div>
-    <hr class="m-2 h-0.5 bg-gray-400 box-border" />
+    <hr class="mx-2 my-0 h-0.5 bg-gray-400 box-border" />
   </div>
 </template>
 
