@@ -1,6 +1,6 @@
 {
   "name": "planning-poker",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "description": "planning poker to estimate your bets",
   "contributors": [
@@ -16,6 +16,9 @@
     {
       "name": "José Stiller",
       "email": "info@josestiller.de"
+    },
+    {
+      "name": "Yannic Lades"
     }
   ],
   "workspaces": [
