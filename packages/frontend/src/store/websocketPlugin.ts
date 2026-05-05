@@ -4,6 +4,28 @@ import { PokerEvent } from '../store/pokerEvents';
 import { State } from '../store/types';
 import { ConnectionState } from '.';
 
+const getWebSocketUrl = (): string => {
+  const configuredUrl = import.meta.env.VITE_API_URL || window.planningPoker.apiUrl;
+  if (configuredUrl.includes('://')) {
+    return configuredUrl;
+  }
+
+  const protocol = window.location.protocol === 'https:' ? 'wss' : 'ws';
+  return `${protocol}://${configuredUrl}`;
+};
+
+const readWebSocketMessage = async (data: string | Blob | ArrayBuffer): Promise<string> => {
+  if (typeof data === 'string') {
+    return data;
+  }
+
+  if (data instanceof Blob) {
+    return data.text();
+  }
+
+  return new TextDecoder().decode(data);
+};
+
 const webSocketPlugin = (store: Store<State>) => {
   let socket: WebSocket | undefined = undefined;
 
@@ -48,7 +70,7 @@ const webSocketPlugin = (store: Store<State>) => {
     userName: string,
     isSpectator: boolean
   ): WebSocket => {
-    const socket = new WebSocket(`wss://${window.planningPoker.apiUrl}`);
+    const socket = new WebSocket(getWebSocketUrl());
 
     socket.onopen = () => {
       //TODO: enterRoom should be called after user actually got confirmation of room joining and received taskname etc. to prevent flickering of task creaton modal
@@ -63,8 +85,9 @@ const webSocketPlugin = (store: Store<State>) => {
       );
     };
 
-    socket.onmessage = event => {
-      const json = JSON.parse(event.data);
+    socket.onmessage = async event => {
+      const message = await readWebSocketMessage(event.data);
+      const json = JSON.parse(message);
       handleIncomingMessage(json);
     };
 

@@ -55,7 +55,20 @@ export class DynamoDbClient {
   private client: DocumentClient;
 
   constructor(config: AWS.DynamoDB.ClientConfiguration | undefined = undefined) {
-    this.client = new AWS.DynamoDB.DocumentClient(config);
+    const localEndpoint = process.env.DYNAMODB_ENDPOINT;
+    const defaultConfig = localEndpoint
+      ? {
+          endpoint: localEndpoint,
+          region: process.env.AWS_DEFAULT_REGION || 'eu-central-1',
+          accessKeyId: process.env.AWS_ACCESS_KEY_ID || 'test',
+          secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY || 'test',
+        }
+      : {};
+
+    this.client = new AWS.DynamoDB.DocumentClient({
+      ...defaultConfig,
+      ...config,
+    });
   }
 
   private filterExpression(filter: TFilterObject): TFilterExpression {

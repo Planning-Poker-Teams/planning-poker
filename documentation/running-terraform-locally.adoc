@@ -1,5 +1,9 @@
 = Running Terraform Locally
 
+This guide creates a personal cloud environment in AWS. It is not the true offline or localhost development flow.
+
+For a local websocket backend using MiniStack, see link:local-backend.adoc[Local backend].
+
 == Init
 [source]
 ----

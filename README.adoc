@@ -24,3 +24,9 @@ a|image::https://github.com/Planning-Poker-Teams/planning-poker/actions/workflow
 - Build the backend: `nvm exec yarn workspace backend build`
 - Build the frontend: `nvm exec yarn workspace frontend build`
 - Start the frontend with hot reload enabled: `nvm exec yarn workspace frontend dev`
+
+== Local backend
+
+For local websocket development with Lambda plus DynamoDB emulation, use the MiniStack-based workflow described in link:documentation/local-backend.adoc[documentation/local-backend.adoc].
+
+The existing link:documentation/running-terraform-locally.adoc[Terraform locally] guide remains the path for creating a personal cloud environment in AWS.

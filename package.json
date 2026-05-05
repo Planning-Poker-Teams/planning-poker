@@ -21,7 +21,14 @@
   "workspaces": [
     "packages/*"
   ],
-  "scripts": {},
+  "scripts": {
+    "local:backend:start": "docker compose -f docker-compose.local.yml up -d --remove-orphans",
+    "local:backend:stop": "docker compose -f docker-compose.local.yml down",
+    "local:backend:bootstrap": "./scripts/bootstrap-local-backend.sh",
+    "local:backend:reset": "./scripts/reset-local-backend.sh",
+    "local:backend:smoke-test": "./scripts/smoke-test-local-backend.sh",
+    "local:frontend:dev": "yarn workspace frontend dev"
+  },
   "devDependencies": {},
   "engines": {
     "yarn": ">=1.22.19",
