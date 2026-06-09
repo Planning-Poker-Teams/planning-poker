@@ -42,7 +42,7 @@ module "websocket_handler" {
     AWS_NODEJS_CONNECTION_REUSE_ENABLED = 1,
     PARTICIPANTS_TABLENAME              = aws_dynamodb_table.participants.name,
     ROOMS_TABLENAME                     = aws_dynamodb_table.rooms.name,
-    API_GW_DOMAINNAME                   = "${aws_apigatewayv2_api.websocket.id}.execute-api.eu-central-1.amazonaws.com/${aws_apigatewayv2_stage.prod.name}",
+    API_GW_DOMAINNAME                   = "https://${aws_apigatewayv2_api.websocket.id}.execute-api.eu-central-1.amazonaws.com/${aws_apigatewayv2_stage.prod.name}",
   }
 
   publish                           = true
@@ -106,7 +106,7 @@ module "prevent_client_timeout" {
     AWS_NODEJS_CONNECTION_REUSE_ENABLED = 1,
     PARTICIPANTS_TABLENAME              = aws_dynamodb_table.participants.name,
     ROOMS_TABLENAME                     = aws_dynamodb_table.rooms.name,
-    API_GW_DOMAINNAME                   = "${aws_apigatewayv2_api.websocket.id}.execute-api.eu-central-1.amazonaws.com/${aws_apigatewayv2_stage.prod.name}",
+    API_GW_DOMAINNAME                   = "https://${aws_apigatewayv2_api.websocket.id}.execute-api.eu-central-1.amazonaws.com/${aws_apigatewayv2_stage.prod.name}",
   }
 
   publish                           = true
