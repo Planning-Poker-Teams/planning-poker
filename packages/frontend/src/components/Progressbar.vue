@@ -8,11 +8,13 @@
         }"
         class="bar-itself-background"
       >
-        <div :style="{ width: percentage }" class="bar-itself-percentage-text">
-          <p v-if="withLabel" class="headline5" :style="{ color: fontColor }">
-            {{ percentage }}
-          </p>
-        </div>
+        <p
+          v-if="withLabel"
+          class="headline5 bar-itself-percentage-text"
+          :style="{ color: fontColor }"
+        >
+          {{ percentage }}
+        </p>
       </div>
     </div>
     <div v-if="showFooter" class="progress-bar-footer">
@@ -79,13 +81,11 @@ r
   position: relative;
   height: 30px;
   border-radius: 10px;
-  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 .bar-itself-percentage-text {
-  height: 30px;
-  text-align: center;
-  filter: blur(0);
-  display: table-cell;
-  vertical-align: middle;
+  margin: 0;
 }
 </style>
