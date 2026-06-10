@@ -3,7 +3,7 @@
     class="fixed z-10 inset-0 backdrop-blur-[2px] overflow-y-auto h-full w-full flex h-screen justify-center items-center"
     data-testid="vote-adjustment-dialog"
   >
-    <div class="mx-auto p-5 border w-5/6 lg:w-2/4 lg:max-w-xl shadow-lg rounded-md bg-white">
+    <div class="mx-auto p-5 w-5/6 lg:w-2/4 lg:max-w-xl shadow-lg rounded-md bg-white">
       <div class="mt-3 text-center">
         <p class="mb-5 text-lg leading-6 font-bold text-gray-900">Adjust your vote</p>
 
