@@ -3,7 +3,7 @@
     class="fixed z-10 inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full flex h-screen justify-center items-center"
     data-testid="confirm-show-results-dialog"
   >
-    <div class="mx-auto p-5 border w-5/6 lg:w-2/4 lg:max-w-xl shadow-lg rounded-md bg-white">
+    <div class="mx-auto p-5 w-5/6 lg:w-2/4 lg:max-w-xl shadow-lg rounded-md bg-white">
       <div class="mt-3 text-center">
         <template v-if="pendingParticipants.length">
           <p class="text-lg leading-6 font-medium text-gray-900">

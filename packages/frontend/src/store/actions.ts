@@ -6,7 +6,7 @@ import {
   StartEstimation,
   UserEstimate,
 } from '../store/pokerEvents';
-import { State } from '../store/types';
+import { StartEstimationRequest, State } from '../store/types';
 
 export enum ActionType {
   ENTER_ROOM = 'enterRoom',
@@ -26,7 +26,7 @@ export type Actions = {
   [ActionType.CHANGE_CARD_DECK]({ dispatch }: { dispatch: Dispatch }, newCardDeck: string[]): void;
   [ActionType.REQUEST_START_ESTIMATION](
     { dispatch, state }: { dispatch: Dispatch; state: State },
-    taskName: string
+    request: StartEstimationRequest
   ): void;
   [ActionType.SEND_ESTIMATION](
     { dispatch, state }: { dispatch: Dispatch; state: State },
@@ -64,7 +64,7 @@ export const actions: ActionTree<State, State> & Actions = {
     };
     dispatch(ActionType.SEND_MESSAGE, changeCardDeckMessage);
   },
-  [ActionType.REQUEST_START_ESTIMATION]({ dispatch, state }, taskName: string) {
+  [ActionType.REQUEST_START_ESTIMATION]({ dispatch, state }, request: StartEstimationRequest) {
     if (!state.room) {
       console.error('There is no room', state);
       return;
@@ -72,20 +72,25 @@ export const actions: ActionTree<State, State> & Actions = {
     const startEstimationMessage: StartEstimation = {
       eventType: 'startEstimation',
       userName: state.room.userName,
-      taskName,
+      taskName: request.taskName,
       startDate: new Date().toISOString(),
+      allowVoteCorrectionAfterReveal: request.allowVoteCorrectionAfterReveal,
     };
     dispatch(ActionType.SEND_MESSAGE, startEstimationMessage);
   },
   [ActionType.SEND_ESTIMATION]({ dispatch, state }, estimate: string) {
-    if (!state.room || !state.ongoingEstimation) {
+    const estimationTaskName =
+      state.ongoingEstimation?.taskName ||
+      (state.estimationResult?.isEditable ? state.estimationResult.taskName : undefined);
+
+    if (!state.room || !estimationTaskName) {
       console.error('There is no room or no ongoing estimation', state);
       return;
     }
     const estimationMessage: UserEstimate = {
       eventType: 'estimate',
       userName: state.room.userName,
-      taskName: state.ongoingEstimation?.taskName,
+      taskName: estimationTaskName,
       estimate,
     };
     dispatch(ActionType.SEND_MESSAGE, estimationMessage);

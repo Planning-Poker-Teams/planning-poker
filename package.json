@@ -1,6 +1,6 @@
 {
   "name": "planning-poker",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "description": "planning poker to estimate your bets",
   "contributors": [
@@ -16,16 +16,30 @@
     {
       "name": "José Stiller",
       "email": "info@josestiller.de"
+    },
+    {
+      "name": "Yannic Lades"
     }
   ],
   "workspaces": [
     "packages/*"
   ],
-  "scripts": {},
-  "devDependencies": {},
+  "scripts": {
+    "local:backend:start": "docker compose -f docker-compose.local.yml up -d --remove-orphans",
+    "local:backend:stop": "docker compose -f docker-compose.local.yml down",
+    "local:backend:bootstrap": "./scripts/bootstrap-local-backend.sh",
+    "local:backend:reset": "./scripts/reset-local-backend.sh",
+    "local:backend:smoke-test": "./scripts/smoke-test-local-backend.sh",
+    "local:frontend:dev": "corepack yarn workspace frontend dev"
+  },
+  "devDependencies": {
+    "@types/node": "^24.12.2",
+    "ts-node": "^10.9.2",
+    "typescript": "6.0.3"
+  },
   "engines": {
     "yarn": ">=1.22.19",
-    "node": ">=18.7.0"
+    "node": ">=24 <25"
   },
   "dependencies": {},
   "packageManager": "yarn@1.22.19"

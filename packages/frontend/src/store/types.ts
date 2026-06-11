@@ -23,16 +23,24 @@ export interface Participant {
 export interface Estimation {
   taskName: string;
   startDate: Date;
+  allowVoteCorrectionAfterReveal: boolean;
 }
 
 export interface EstimationResult {
   taskName: string;
   startDate: Date;
   endDate: Date;
+  isEditable: boolean;
+  allowVoteCorrectionAfterReveal: boolean;
   estimates: Estimate[];
 }
 
 export interface Estimate {
   userName: string;
   estimate?: string;
+}
+
+export interface StartEstimationRequest {
+  taskName: string;
+  allowVoteCorrectionAfterReveal: boolean;
 }

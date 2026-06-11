@@ -67,13 +67,16 @@ describe('RoomRepository', () => {
       ROOM_ID,
       'A new task',
       CONNECTION_ID,
-      '2020-03-27T14:31:52.638Z'
+      '2020-03-27T14:31:52.638Z',
+      true
     );
 
     const room = await repository.getOrCreateRoom(ROOM_ID);
     expect(room.currentEstimationTaskName).toEqual('A new task');
     expect(room.currentEstimationInitiator).toEqual(CONNECTION_ID);
     expect(room.currentEstimationStartDate).toEqual('2020-03-27T14:31:52.638Z');
+    expect(room.currentEstimationStatus).toEqual('hidden');
+    expect(room.currentEstimationAllowVoteCorrectionAfterReveal).toEqual(true);
     expect(room.currentEstimates).toEqual([]);
   });
 
@@ -86,7 +89,8 @@ describe('RoomRepository', () => {
       ROOM_ID,
       TASK_NAME,
       CONNECTION_ID,
-      '2020-03-27T14:31:52.638Z'
+      '2020-03-27T14:31:52.638Z',
+      false
     );
 
     await repository.addToEstimations(ROOM_ID, CONNECTION_ID, '10');
@@ -115,7 +119,8 @@ describe('RoomRepository', () => {
       ROOM_ID,
       TASK_NAME,
       CONNECTION_ID,
-      '2020-03-27T14:31:52.638Z'
+      '2020-03-27T14:31:52.638Z',
+      false
     );
 
     const firstTimestamp = new Date();
@@ -149,7 +154,8 @@ describe('RoomRepository', () => {
       ROOM_ID,
       TASK_NAME,
       CONNECTION_ID,
-      '2020-03-27T14:31:52.638Z'
+      '2020-03-27T14:31:52.638Z',
+      false
     );
     await repository.addToEstimations(ROOM_ID, CONNECTION_ID, '10');
 
@@ -160,6 +166,25 @@ describe('RoomRepository', () => {
     expect(room.currentEstimationInitiator).toEqual(undefined);
     expect(room.currentEstimationStartDate).toEqual(undefined);
     expect(room.currentEstimates).toEqual([]);
+  });
+
+  it('reveals an estimation and stores who may correct votes', async () => {
+    await repository.getOrCreateRoom(ROOM_ID);
+    await repository.addToParticipants(ROOM_ID, CONNECTION_ID);
+    await repository.startNewEstimation(
+      ROOM_ID,
+      'A new task',
+      CONNECTION_ID,
+      '2020-03-27T14:31:52.638Z',
+      true
+    );
+
+    await repository.revealEstimation(ROOM_ID, [CONNECTION_ID], '2020-03-27T15:31:52.638Z');
+
+    const room = await repository.getOrCreateRoom(ROOM_ID);
+    expect(room.currentEstimationStatus).toEqual('revealed');
+    expect(room.participantsAllowedToCorrectVote).toEqual([CONNECTION_ID]);
+    expect(room.currentEstimationEndDate).toEqual('2020-03-27T15:31:52.638Z');
   });
 
   it('changes card deck for the current room', async () => {

@@ -15,9 +15,17 @@
         </h2>
       </div>
 
-      <h1 class="w:3/5 text-2xl ml-16 lg:m-0 font-sans font-bold">
-        {{ roomName }}
-      </h1>
+      <div class="w-3/5 ml-16 lg:m-0 flex flex-col items-start lg:items-center">
+        <h1 class="text-2xl font-sans font-bold">
+          {{ roomName }}
+        </h1>
+        <span
+          v-if="isLocalBackend"
+          class="mt-1 px-2 py-0.5 rounded bg-yellow-100 text-yellow-800 border border-yellow-300 text-xs font-semibold uppercase tracking-wide"
+        >
+          Local backend
+        </span>
+      </div>
 
       <div id="controlArea" class="absolute top-0 right-0 w-5/12 flex justify-end">
         <button-p-p
@@ -73,9 +81,19 @@ const props = defineProps({
   },
 });
 const refParticipants = toRef(props, 'participants');
-const canChangeCardDeck = computed<boolean>(
-  () => !store.getters.somebodyHasVoted || !store.state.ongoingEstimation
+const configuredApiUrl = import.meta.env.VITE_API_URL || window.planningPoker.apiUrl;
+const isLocalBackend = computed<boolean>(
+  () =>
+    configuredApiUrl.includes('localhost:4566/_aws/execute-api') ||
+    configuredApiUrl.includes('127.0.0.1:4566/_aws/execute-api')
 );
+const canChangeCardDeck = computed<boolean>(() => {
+  if (store.state.estimationResult?.isEditable) {
+    return false;
+  }
+
+  return !store.getters.somebodyHasVoted || !store.state.ongoingEstimation;
+});
 
 const emits = defineEmits(['show_change_deck_modal']);
 
@@ -96,6 +114,7 @@ const copyUrl = async () => {
 
 defineExpose({
   refParticipants,
+  isLocalBackend,
   canChangeCardDeck,
   showChangeDeckModal,
   leaveRoom,

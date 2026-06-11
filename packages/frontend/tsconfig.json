@@ -3,6 +3,7 @@
     "target": "esnext",
     "module": "esnext",
     "strict": true,
+    "ignoreDeprecations": "6.0",
     "jsx": "preserve",
     "importHelpers": true,
     "moduleResolution": "node",
@@ -12,7 +13,7 @@
     "allowSyntheticDefaultImports": true,
     "sourceMap": true,
     "baseUrl": ".",
-    "types": ["vite/client", "@types/jest"],
+    "types": ["vite/client", "vitest/globals"],
     "paths": {
       "@/*": ["src/*"]
     },

@@ -1,9 +1,8 @@
-import AWS from 'aws-sdk';
-import { ServiceConfigurationOptions } from 'aws-sdk/lib/service';
+import { CreateTableCommand, DynamoDBClient, DynamoDBClientConfig } from '@aws-sdk/client-dynamodb';
 import { GenericContainer } from 'testcontainers';
 
 const createTable = async (
-  dynamoDbClient: AWS.DynamoDB,
+  dynamoDbClient: DynamoDBClient,
   name: string,
   pkName: string
 ): Promise<void> => {
@@ -17,13 +16,13 @@ const createTable = async (
     },
   };
 
-  await dynamoDbClient.createTable(params).promise();
+  await dynamoDbClient.send(new CreateTableCommand(params));
 };
 
-module.exports = async (): Promise<void> => {
+export default async function setup(): Promise<() => Promise<void>> {
   // See https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/DynamoDBLocal.UsageNotes.html
   const container = await new GenericContainer('amazon/dynamodb-local')
-    .withCmd([
+    .withCommand([
       '-Djava.library.path=./DynamoDBLocal_lib',
       '-jar',
       'DynamoDBLocal.jar',
@@ -33,21 +32,26 @@ module.exports = async (): Promise<void> => {
     .withExposedPorts(8000)
     .start();
 
-  (global as any).__DYNAMODB_CONTAINER__ = container;
-
-  process.env.DYNAMODB_ENDPOINT = `http://${container.getContainerIpAddress()}:${container.getMappedPort(
+  process.env.DYNAMODB_ENDPOINT = `http://${container.getHost()}:${container.getMappedPort(
     8000
   )}`;
-  const dynamoClientOptions: ServiceConfigurationOptions = {
+  const dynamoClientOptions: DynamoDBClientConfig = {
     endpoint: process.env.DYNAMODB_ENDPOINT,
     region: 'localhost',
-    accessKeyId: 'foo',
-    secretAccessKey: 'bar',
+    credentials: {
+      accessKeyId: 'foo',
+      secretAccessKey: 'bar',
+    },
   };
 
-  const dynamoDbClient = new AWS.DynamoDB(dynamoClientOptions);
+  const dynamoDbClient = new DynamoDBClient(dynamoClientOptions);
   await createTable(dynamoDbClient, 'participants', 'connectionId');
   await createTable(dynamoDbClient, 'rooms', 'name');
 
   console.log('Started DynamoDB local.');
-};
+
+  return async () => {
+    await container.stop();
+    console.log('Stopped DynamoDB local.');
+  };
+}

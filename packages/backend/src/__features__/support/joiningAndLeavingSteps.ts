@@ -1,4 +1,4 @@
-import { Given, When, Then } from 'cucumber';
+import { Given, When, Then } from '@cucumber/cucumber';
 import { CommandType } from '../../domain/commandTypes';
 import { handlePokerEvent } from '../../domain/handlePokerEvent';
 import { buildParticipant, ROOM_NAME } from './world';

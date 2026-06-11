@@ -8,9 +8,9 @@ import {
   faDoorOpen,
   faLink,
   faMagnifyingGlass,
+  faPenToSquare,
   faPlay,
   faPlus,
-  faRedo,
   faSlidersH,
   faUndo,
   faUsers,
@@ -31,9 +31,9 @@ library.add(faCoins);
 library.add(faDoorOpen);
 library.add(faLink);
 library.add(faMagnifyingGlass);
+library.add(faPenToSquare);
 library.add(faPlay);
 library.add(faPlus);
-library.add(faRedo);
 library.add(faSlidersH);
 library.add(faUndo);
 library.add(faUsers);

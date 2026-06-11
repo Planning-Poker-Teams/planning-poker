@@ -1,5 +1,5 @@
 import { VueWrapper, DOMWrapper } from '@vue/test-utils';
-import { describe, expect, it, beforeEach, afterEach } from 'vitest';
+import { describe, expect, it, beforeEach, afterEach, vi } from 'vitest';
 import EstimationResult from '../../src/components/EstimationResult.vue';
 import {
   EstimationResult as IEstimationResult,
@@ -16,12 +16,24 @@ const participants: IParticipant[] = [
 
 let wrapper: VueWrapper;
 let tableHeaders: DOMWrapper<Element>[];
+const localStorageMock = {
+  getItem: vi.fn(() => null),
+  setItem: vi.fn(),
+  clear: vi.fn(),
+};
+
+Object.defineProperty(globalThis, 'localStorage', {
+  value: localStorageMock,
+  configurable: true,
+});
 
 describe('estimation result with numerical job-sizes', () => {
   const estimationResult: IEstimationResult = {
     taskName: 'test-task',
     startDate: new Date(),
     endDate: new Date(),
+    isEditable: false,
+    allowVoteCorrectionAfterReveal: false,
     estimates: [
       { userName: 'Hank', estimate: '2' },
       { userName: 'Jessie', estimate: '18' },
@@ -31,10 +43,17 @@ describe('estimation result with numerical job-sizes', () => {
   };
 
   beforeEach(() => {
+    localStorageMock.getItem.mockReturnValue(null);
     wrapper = createWrapper(
       EstimationResult,
       {},
       {
+        room: {
+          name: 'test-room',
+          userName: 'Hank',
+          isSpectator: false,
+          showCats: false,
+        },
         estimationResult,
         cardDeck: ['0', '1', '2', '3', '5', '8', '10', '13', '18'],
         participants,
@@ -45,7 +64,7 @@ describe('estimation result with numerical job-sizes', () => {
   });
 
   afterEach(() => {
-    localStorage.clear();
+    localStorageMock.clear();
   });
 
   it('should sort estimations according to their job-size', async () => {
@@ -84,6 +103,8 @@ describe('estimation result with custom job-sizes', () => {
     taskName: 'test-task',
     startDate: new Date(),
     endDate: new Date(),
+    isEditable: false,
+    allowVoteCorrectionAfterReveal: false,
     estimates: [
       { userName: 'Hank', estimate: 'L' },
       { userName: 'Jessie', estimate: 'XS' },
@@ -93,10 +114,17 @@ describe('estimation result with custom job-sizes', () => {
   };
 
   beforeEach(() => {
+    localStorageMock.getItem.mockReturnValue(null);
     wrapper = createWrapper(
       EstimationResult,
       {},
       {
+        room: {
+          name: 'test-room',
+          userName: 'Hank',
+          isSpectator: false,
+          showCats: false,
+        },
         estimationResult,
         cardDeck: ['XS', 'S', 'M', 'L', 'XL'],
         participants,
@@ -113,5 +141,40 @@ describe('estimation result with custom job-sizes', () => {
     expect(estimationRows[1]).toContain('Hank');
     expect(estimationRows[2]).toContain('Walter');
     expect(estimationRows[2]).toContain('Saul');
+  });
+});
+
+describe('editable estimation result', () => {
+  it('does not show inline vote correction controls', () => {
+    const estimationResult: IEstimationResult = {
+      taskName: 'test-task',
+      startDate: new Date(),
+      endDate: new Date(),
+      isEditable: true,
+      allowVoteCorrectionAfterReveal: true,
+      estimates: [
+        { userName: 'Hank', estimate: '2' },
+        { userName: 'Jessie', estimate: '18' },
+      ],
+    };
+
+    const { wrapper } = createWrapper(
+      EstimationResult,
+      {},
+      {
+        room: {
+          name: 'test-room',
+          userName: 'Hank',
+          isSpectator: false,
+          showCats: false,
+        },
+        estimationResult,
+        cardDeck: ['1', '2', '3', '5', '8'],
+        participants,
+      }
+    );
+
+    expect(wrapper.text()).not.toContain('Adjust your vote');
+    expect(wrapper.findAllComponents({ name: 'Card' })).toHaveLength(0);
   });
 });

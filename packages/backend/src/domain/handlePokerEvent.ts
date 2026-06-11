@@ -1,5 +1,6 @@
 import uniqueName from '../helpers/uniqueName';
 import log from '../log';
+import { buildEstimationResult } from './buildEstimationResult';
 import { CommandType, Command } from './commandTypes';
 import { PokerRoom, Participant } from './types';
 
@@ -12,6 +13,8 @@ const {
   CHANGE_CARD_DECK,
   SET_TASK,
   RECORD_ESTIMATION,
+  REVEAL_ROUND,
+  BROADCAST_ESTIMATION_RESULT,
   FINISH_ROUND,
 } = CommandType;
 
@@ -91,7 +94,20 @@ export const handlePokerEvent = (
           userName: room.currentEstimation.initiator?.name,
           startDate: room.currentEstimation.startDate,
           taskName: room.currentEstimation.taskName,
+          allowVoteCorrectionAfterReveal:
+            room.currentEstimation.allowVoteCorrectionAfterReveal,
         };
+
+        if (room.currentEstimation.status === 'revealed') {
+          return [
+            ...messagesToSend,
+            {
+              type: SEND_MESSAGE,
+              recipient: newParticipant,
+              payload: [buildEstimationResult(room)],
+            },
+          ];
+        }
 
         const userHasEstimatedEvents: UserHasEstimated[] = room.participants
           .filter(p => p.currentEstimation !== undefined)
@@ -172,6 +188,7 @@ export const handlePokerEvent = (
 
     case 'startEstimation': {
       const isEstimationOngoing =
+        room.currentEstimation?.status !== 'revealed' &&
         room.currentEstimation?.taskName !== undefined &&
         !room.participants.every(p => p.currentEstimation);
 
@@ -186,6 +203,7 @@ export const handlePokerEvent = (
           startDate: inputEvent.startDate || new Date().toISOString(),
           taskName: inputEvent.taskName,
           userName: inputEvent.userName,
+          allowVoteCorrectionAfterReveal: inputEvent.allowVoteCorrectionAfterReveal,
         };
 
         return [
@@ -195,6 +213,7 @@ export const handlePokerEvent = (
             startDate: startEstimation.startDate,
             taskName: startEstimation.taskName,
             participantId: participantId,
+            allowVoteCorrectionAfterReveal: startEstimation.allowVoteCorrectionAfterReveal,
           },
         ];
       }
@@ -208,6 +227,33 @@ export const handlePokerEvent = (
       if (!room.cardDeck.includes(inputEvent.estimate)) {
         log.info('Ignoring input event (estimate not included in card-deck)', { inputEvent });
         return [];
+      }
+
+      if (room.currentEstimation?.status === 'revealed') {
+        if (!room.currentEstimation.allowVoteCorrectionAfterReveal) {
+          log.info('Ignoring input event (post-reveal correction disabled)', { inputEvent });
+          return [];
+        }
+        if (!room.currentEstimation.participantsAllowedToCorrectVote.includes(participantId)) {
+          log.info('Ignoring input event (participant may not correct revealed vote)', {
+            inputEvent,
+            participantId,
+          });
+          return [];
+        }
+
+        return [
+          {
+            type: RECORD_ESTIMATION,
+            roomName: room.name,
+            taskName: inputEvent.taskName,
+            estimate: inputEvent.estimate,
+            participantId,
+          },
+          {
+            type: BROADCAST_ESTIMATION_RESULT,
+          },
+        ];
       }
 
       const recordEstimationCommand: Command = {
@@ -239,18 +285,37 @@ export const handlePokerEvent = (
     }
 
     case 'showResult': {
-      const estimatingParticipants = room.participants.filter(p => !p.isSpectator);
+      const endDate = new Date().toISOString();
 
-      const payload: EstimationResult = {
-        eventType: 'estimationResult',
-        taskName: room.currentEstimation!.taskName,
-        startDate: room.currentEstimation!.startDate,
-        endDate: new Date().toISOString(),
-        estimates: estimatingParticipants.map(participant => ({
-          userName: participant.name,
-          estimate: participant.currentEstimation!,
-        })),
-      };
+      if (room.currentEstimation!.allowVoteCorrectionAfterReveal) {
+        const participantIdsAllowedToCorrectVote = room.participants
+          .filter(p => !p.isSpectator && p.currentEstimation !== undefined)
+          .map(p => p.id);
+
+        return [
+          {
+            type: REVEAL_ROUND,
+            roomName: room.name,
+            participantIdsAllowedToCorrectVote,
+            endDate,
+          },
+          {
+            type: BROADCAST_ESTIMATION_RESULT,
+          },
+        ];
+      }
+
+      const payload = buildEstimationResult(
+        {
+          ...room,
+          currentEstimation: {
+            ...room.currentEstimation!,
+            endDate,
+            status: 'revealed',
+          },
+        },
+        false
+      );
       return [
         {
           type: BROADCAST_MESSAGE,

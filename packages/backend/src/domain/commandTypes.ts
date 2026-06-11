@@ -9,6 +9,8 @@ export type Command =
   | ChangeCardDeck
   | SetTask
   | RecordEstimation
+  | RevealRound
+  | BroadcastEstimationResult
   | FinishRound;
 
 export enum CommandType {
@@ -20,6 +22,8 @@ export enum CommandType {
   CHANGE_CARD_DECK = 'CHANGE_CARD_DECK',
   SET_TASK = 'SET_TASK',
   RECORD_ESTIMATION = 'RECORD_ESTIMATION',
+  REVEAL_ROUND = 'REVEAL_ROUND',
+  BROADCAST_ESTIMATION_RESULT = 'BROADCAST_ESTIMATION_RESULT',
   FINISH_ROUND = 'FINISH_ROUND',
 }
 
@@ -62,6 +66,7 @@ export interface SetTask {
   taskName: string;
   startDate: string;
   participantId: string;
+  allowVoteCorrectionAfterReveal: boolean;
 }
 
 export interface RecordEstimation {
@@ -70,6 +75,17 @@ export interface RecordEstimation {
   taskName: string;
   estimate: string;
   participantId: string;
+}
+
+export interface RevealRound {
+  type: CommandType.REVEAL_ROUND;
+  roomName: string;
+  participantIdsAllowedToCorrectVote: string[];
+  endDate: string;
+}
+
+export interface BroadcastEstimationResult {
+  type: CommandType.BROADCAST_ESTIMATION_RESULT;
 }
 
 export interface FinishRound {

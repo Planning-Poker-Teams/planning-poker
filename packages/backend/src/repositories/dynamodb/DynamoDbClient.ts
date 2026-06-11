@@ -1,61 +1,93 @@
-import { DocumentClient, ScanInput } from 'aws-sdk/clients/dynamodb';
-import BatchGetItemInput = DocumentClient.BatchGetItemInput;
-import GetItemInput = DocumentClient.GetItemInput;
-import DeleteItemInput = DocumentClient.DeleteItemInput;
-import ExpressionAttributeValueMap = DocumentClient.ExpressionAttributeValueMap;
-import ExpressionAttributeNameMap = DocumentClient.ExpressionAttributeNameMap;
-import UpdateItemInput = DocumentClient.UpdateItemInput;
-import UpdateItemOutput = DocumentClient.UpdateItemOutput;
-import DeleteItemOutput = DocumentClient.DeleteItemOutput;
-import BatchGetItemOutput = DocumentClient.BatchGetItemOutput;
-import GetItemOutput = DocumentClient.GetItemOutput;
-import PutItemOutput = DocumentClient.PutItemOutput;
-import QueryOutput = DocumentClient.QueryOutput;
-import AttributeMap = DocumentClient.AttributeMap;
+import { DynamoDBClient, DynamoDBClientConfig } from '@aws-sdk/client-dynamodb';
+import {
+  BatchGetCommand,
+  BatchGetCommandInput,
+  BatchGetCommandOutput,
+  DeleteCommand,
+  DeleteCommandInput,
+  DeleteCommandOutput,
+  DynamoDBDocumentClient,
+  GetCommand,
+  GetCommandInput,
+  GetCommandOutput,
+  NativeAttributeValue,
+  PutCommand,
+  PutCommandOutput,
+  QueryCommand,
+  QueryCommandOutput,
+  ScanCommand,
+  ScanCommandInput,
+  UpdateCommand,
+  UpdateCommandInput,
+  UpdateCommandOutput,
+} from '@aws-sdk/lib-dynamodb';
+import * as AWSXRay from 'aws-xray-sdk-core';
 
 interface QueryIndexParameters {
   tableName: string;
   indexName: string;
   keyConditionExpression: string;
-  keyValues: object;
+  keyValues: Record<string, NativeAttributeValue>;
   limit: number;
   scanIndexForward?: boolean;
-  startKeyObject?: object;
+  startKeyObject?: Record<string, NativeAttributeValue>;
 }
 
 interface BaseParameters {
   tableName: string;
-  partitionKey: object; // { id: '123' }
+  partitionKey: Record<string, NativeAttributeValue>;
   conditionExpression?: string;
-  expressionAttributeValues?: ExpressionAttributeValueMap;
-  expressionAtributeNames?: ExpressionAttributeNameMap;
+  expressionAttributeValues?: Record<string, NativeAttributeValue>;
+  expressionAtributeNames?: Record<string, string>;
 }
 
 type DeleteParameters = BaseParameters;
 
 interface UpdateParameters extends BaseParameters {
   updateExpression: string;
-  returnValues?: string;
+  returnValues?: UpdateCommandInput['ReturnValues'];
 }
 
-const AWSNoXRay = require('aws-sdk');
-const AWSXRay = require('aws-xray-sdk-core');
-const inTestEnvironment = process.env.NODE_ENV === 'test';
-const AWS = inTestEnvironment ? AWSNoXRay : AWSXRay.captureAWS(require('aws-sdk'));
-
-type KeyInfo = { [key: string]: any };
+type KeyInfo = Record<string, NativeAttributeValue>;
+type AttributeMap = Record<string, NativeAttributeValue>;
 type TFilterExpression = {
   FilterExpression: string;
-  ExpressionAttributeNames: { [key: string]: string };
-  ExpressionAttributeValues: { [key: string]: any };
+  ExpressionAttributeNames: Record<string, string>;
+  ExpressionAttributeValues: Record<string, NativeAttributeValue>;
 };
-type TFilterObject = { [key: string]: any };
+type TFilterObject = Record<string, NativeAttributeValue>;
+
+const inTestEnvironment = process.env.NODE_ENV === 'test' || process.env.VITEST === 'true';
 
 export class DynamoDbClient {
-  private client: DocumentClient;
+  private client: DynamoDBDocumentClient;
 
-  constructor(config: AWS.DynamoDB.ClientConfiguration | undefined = undefined) {
-    this.client = new AWS.DynamoDB.DocumentClient(config);
+  constructor(config: DynamoDBClientConfig | undefined = undefined) {
+    const localEndpoint = process.env.DYNAMODB_ENDPOINT;
+    const defaultConfig: DynamoDBClientConfig = localEndpoint
+      ? {
+          endpoint: localEndpoint,
+          region: process.env.AWS_DEFAULT_REGION || 'eu-central-1',
+          credentials: {
+            accessKeyId: process.env.AWS_ACCESS_KEY_ID || 'test',
+            secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY || 'test',
+          },
+        }
+      : {};
+
+    const dynamoDbClient = new DynamoDBClient({
+      ...defaultConfig,
+      ...config,
+    });
+    const tracedClient = inTestEnvironment
+      ? dynamoDbClient
+      : AWSXRay.captureAWSv3Client(dynamoDbClient);
+
+    this.client = DynamoDBDocumentClient.from(tracedClient, {
+      marshallOptions: {
+        removeUndefinedValues: true,
+      },
+    });
   }
 
   private filterExpression(filter: TFilterObject): TFilterExpression {
@@ -77,17 +109,17 @@ export class DynamoDbClient {
     return expression;
   }
 
-  put(tableName: string, item: object): Promise<PutItemOutput> {
-    const args = {
-      TableName: tableName,
-      Item: item,
-    };
-
-    return this.client.put(args).promise();
+  async put(tableName: string, item: Record<string, NativeAttributeValue>): Promise<PutCommandOutput> {
+    return this.client.send(
+      new PutCommand({
+        TableName: tableName,
+        Item: item,
+      })
+    );
   }
 
   async scan(tableName: string, filter?: TFilterObject): Promise<AttributeMap[]> {
-    const args: ScanInput = {
+    const args: ScanCommandInput = {
       TableName: tableName,
     };
 
@@ -99,7 +131,7 @@ export class DynamoDbClient {
     let pagedItems;
 
     do {
-      pagedItems = await this.client.scan(args).promise();
+      pagedItems = await this.client.send(new ScanCommand(args));
       pagedItems.Items?.forEach(item => items.push(item));
       args.ExclusiveStartKey = pagedItems.LastEvaluatedKey;
     } while (pagedItems.LastEvaluatedKey);
@@ -107,18 +139,18 @@ export class DynamoDbClient {
     return items;
   }
 
-  get(tableName: string, keyInfo: KeyInfo, consistentRead = false): Promise<GetItemOutput> {
-    const args: GetItemInput = {
+  get(tableName: string, keyInfo: KeyInfo, consistentRead = false): Promise<GetCommandOutput> {
+    const args: GetCommandInput = {
       TableName: tableName,
       Key: keyInfo,
       ConsistentRead: consistentRead,
     };
 
-    return this.client.get(args).promise();
+    return this.client.send(new GetCommand(args));
   }
 
-  batchGet(tableName: string, fieldName: string, ids: string[]): Promise<BatchGetItemOutput> {
-    const args: BatchGetItemInput = {
+  batchGet(tableName: string, fieldName: string, ids: string[]): Promise<BatchGetCommandOutput> {
+    const args: BatchGetCommandInput = {
       RequestItems: {
         [tableName]: {
           Keys: ids.map(id => ({ [fieldName]: id })),
@@ -126,50 +158,50 @@ export class DynamoDbClient {
       },
     };
 
-    return this.client.batchGet(args).promise();
+    return this.client.send(new BatchGetCommand(args));
   }
 
-  update(parameters: UpdateParameters): Promise<UpdateItemOutput> {
-    const args: UpdateItemInput = {
+  update(parameters: UpdateParameters): Promise<UpdateCommandOutput> {
+    const args: UpdateCommandInput = {
       TableName: parameters.tableName,
       Key: parameters.partitionKey,
       ConditionExpression: parameters.conditionExpression,
+      ExpressionAttributeNames: parameters.expressionAtributeNames,
       ExpressionAttributeValues: parameters.expressionAttributeValues,
       UpdateExpression: parameters.updateExpression,
       ReturnValues: parameters.returnValues,
     };
 
-    return this.client.update(args).promise();
+    return this.client.send(new UpdateCommand(args));
   }
 
-  delete(parameters: DeleteParameters): Promise<DeleteItemOutput> {
-    const args: DeleteItemInput = {
+  delete(parameters: DeleteParameters): Promise<DeleteCommandOutput> {
+    const args: DeleteCommandInput = {
       TableName: parameters.tableName,
       Key: parameters.partitionKey,
       ConditionExpression: parameters.conditionExpression,
       ExpressionAttributeValues: parameters.expressionAttributeValues,
     };
 
-    return this.client.delete(args).promise();
+    return this.client.send(new DeleteCommand(args));
   }
 
-  queryIndex(parameters: QueryIndexParameters): Promise<QueryOutput> {
-    const args = {
-      TableName: parameters.tableName,
-      IndexName: parameters.indexName,
-      KeyConditionExpression: parameters.keyConditionExpression,
-      ExpressionAttributeValues: parameters.keyValues,
-      ScanIndexForward:
-        parameters.scanIndexForward !== undefined ? parameters.scanIndexForward : true,
-      Limit: parameters.limit,
-      ExclusiveStartKey: parameters.startKeyObject,
-    };
-
-    return this.client.query(args).promise();
+  queryIndex(parameters: QueryIndexParameters): Promise<QueryCommandOutput> {
+    return this.client.send(
+      new QueryCommand({
+        TableName: parameters.tableName,
+        IndexName: parameters.indexName,
+        KeyConditionExpression: parameters.keyConditionExpression,
+        ExpressionAttributeValues: parameters.keyValues,
+        ScanIndexForward:
+          parameters.scanIndexForward !== undefined ? parameters.scanIndexForward : true,
+        Limit: parameters.limit,
+        ExclusiveStartKey: parameters.startKeyObject,
+      })
+    );
   }
 
-  createSetExpression(values: any): DocumentClient.DynamoDbSet {
-    // see https://stackoverflow.com/questions/37194794/how-to-update-an-item-in-dynamodb-of-type-string-set-ss
-    return this.client.createSet(values);
+  createSetExpression(values: NativeAttributeValue[]): Set<NativeAttributeValue> {
+    return new Set(values);
   }
 }

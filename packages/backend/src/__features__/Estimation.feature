@@ -61,3 +61,10 @@ Feature: Performing estimations
     When showing the result is requested
     Then all participants get informed about the estimation result
     And the estimation round is ended
+
+  Scenario: Showing editable estimation results when vote correction is enabled
+    Given there is a room with an ongoing estimation for "Buy milk" and vote correction enabled
+    And "Fred" estimated "20"
+    And "John" estimated "1"
+    When showing the result is requested
+    Then the estimation round is revealed for vote correction

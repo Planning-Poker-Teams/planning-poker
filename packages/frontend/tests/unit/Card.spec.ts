@@ -26,7 +26,9 @@ describe('Card', () => {
 
     expect(selectedCard.classes('cursor-default')).toBeTruthy();
     expect(selectedCard.classes('cursor-pointer')).toBeFalsy();
-    expect(selectedCard.classes('opacity-90')).toBeTruthy();
+    expect(selectedCard.classes('bg-codecentric-100')).toBeTruthy();
+    expect(selectedCard.classes('border-gray-800')).toBeTruthy();
+    expect(selectedCard.attributes('title')).toBe('Your current selection');
 
     const unselectedCard = mount(Card, {
       props: {

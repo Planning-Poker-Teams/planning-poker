@@ -27,7 +27,13 @@ export interface RoomRepository {
     roomName: string,
     taskName: string,
     initiator: string,
-    startDate: string
+    startDate: string,
+    allowVoteCorrectionAfterReveal: boolean
+  ): Promise<void>;
+  revealEstimation(
+    roomName: string,
+    participantIdsAllowedToCorrectVote: string[],
+    endDate: string
   ): Promise<void>;
   addToEstimations(roomName: string, connectionId: string, value: string): Promise<void>;
   finishEstimation(roomName: string): Promise<void>;

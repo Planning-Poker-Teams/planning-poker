@@ -7,7 +7,6 @@ import { createHtmlPlugin } from 'vite-plugin-html';
 
 export default defineConfig({
   test: {
-    test: 'vitest',
     environment: 'jsdom',
   },
   plugins: [

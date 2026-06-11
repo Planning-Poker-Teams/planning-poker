@@ -1,0 +1,115 @@
+= Local Backend
+
+This guide describes the true local development workflow for the websocket backend. It uses MiniStack to emulate the AWS services that the application uses in production: Lambda, API Gateway V2 WebSocket, API Gateway Management API, and DynamoDB.
+
+The existing link:running-terraform-locally.adoc[Running Terraform locally] guide remains useful for a personal cloud environment in AWS. Use that path for final validation when you want AWS-managed behavior.
+
+== Prerequisites
+
+- Docker with access to `/var/run/docker.sock`
+- AWS CLI v2
+- `curl`
+- `zip`
+- Node.js and Yarn or Corepack-enabled Yarn
+
+Optional:
+
+- AWS SAM CLI for direct Lambda invocation and debugging
+- `awslocal` if you prefer it over `aws --endpoint-url http://localhost:4566`
+
+== MiniStack-based workflow
+
+=== Pinned emulator version
+
+- Current pinned image: `ministackorg/ministack:1.3.17`
+- Why it is pinned:
+  - it includes API Gateway V2 WebSocket support with the API Gateway Management API
+  - it includes Lambda routing fixes needed by AWS-compatible integration URIs
+  - it keeps every developer on the same local emulator behavior
+- When changing it:
+  - pin a concrete MiniStack tag rather than using `latest`
+  - re-run the local websocket verification flow after every emulator upgrade
+
+=== 1. Start MiniStack
+
+[source]
+----
+nvm exec corepack yarn local:backend:start
+----
+
+=== 2. Bootstrap the local backend
+
+This step builds the backend bundle, creates the local DynamoDB tables, registers the Lambda functions, creates the websocket API, and writes a frontend override file at `packages/frontend/.env.local`.
+
+[source]
+----
+nvm exec corepack yarn local:backend:bootstrap
+----
+
+=== 3. Run the frontend against the local backend
+
+[source]
+----
+nvm exec corepack yarn local:frontend:dev
+----
+
+The frontend dev server will pick up `packages/frontend/.env.local` automatically and connect to the MiniStack websocket endpoint instead of `api.estim8.cards`.
+
+=== 4. Verify the local backend resources
+
+[source]
+----
+nvm exec corepack yarn local:backend:smoke-test
+----
+
+Recommended manual verification after the smoke test:
+
+- join a room with two browser sessions
+- start a task and submit votes
+- reveal results and confirm result broadcasts work
+- if the task allows vote correction, update a revealed vote and confirm the result changes live
+- disconnect and reconnect a participant to confirm room state rebuild still works
+
+=== 5. Reset the local backend
+
+This deletes the local websocket API, Lambda functions, DynamoDB tables, and the generated frontend override file.
+
+[source]
+----
+nvm exec corepack yarn local:backend:reset
+----
+
+== What gets emulated locally
+
+- Websocket connect, message, and disconnect handling
+- Lambda execution for the websocket handler
+- DynamoDB-backed room and participant persistence
+- API Gateway Management API callbacks used to broadcast updates
+
+== What still requires cloud validation
+
+- IAM and cross-service permissions
+- API Gateway edge behavior outside the emulator
+- Deployment concerns such as custom domains, ACM certificates, and Route53
+
+== Local backend files
+
+- `docker-compose.local.yml`
+- `scripts/bootstrap-local-backend.sh`
+- `scripts/reset-local-backend.sh`
+- `scripts/smoke-test-local-backend.sh`
+
+== Optional SAM CLI usage
+
+AWS SAM CLI is useful for focused Lambda debugging, but it is not the primary local backend for this websocket app.
+
+Examples:
+
+[source]
+----
+cd infrastructure
+sam local invoke --hook-name terraform
+sam local start-lambda --hook-name terraform
+----
+
+Use MiniStack for end-to-end websocket behavior. Use SAM CLI when you want to debug a Lambda handler in isolation.

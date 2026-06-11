@@ -29,6 +29,11 @@ export const queryRoomState =
         ? {
             taskName: room.currentEstimationTaskName!,
             startDate: room.currentEstimationStartDate!,
+            endDate: room.currentEstimationEndDate,
+            status: room.currentEstimationStatus ?? 'hidden',
+            allowVoteCorrectionAfterReveal:
+              room.currentEstimationAllowVoteCorrectionAfterReveal ?? false,
+            participantsAllowedToCorrectVote: room.participantsAllowedToCorrectVote ?? [],
             initiator: participantsWithEstimations.find(
               p => p.id === room.currentEstimationInitiator
             ),

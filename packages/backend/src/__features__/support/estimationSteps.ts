@@ -1,4 +1,4 @@
-import { Given, When, Then } from 'cucumber';
+import { Given, When, Then } from '@cucumber/cucumber';
 import { CommandType, BroadcastMessage } from '../../domain/commandTypes';
 import { handlePokerEvent } from '../../domain/handlePokerEvent';
 import { buildParticipant, ROOM_NAME } from './world';
@@ -34,11 +34,34 @@ Given('there is a room with an ongoing estimation for {string}', function (taskN
     currentEstimation: {
       taskName,
       startDate: new Date().toISOString(),
+      status: 'hidden',
+      allowVoteCorrectionAfterReveal: false,
+      participantsAllowedToCorrectVote: [],
       initiator: participants[0],
     },
     cardDeck: ['0', '1', '2', '3', '5', '8', '13', '20', '40', '100', '???'],
   };
 });
+
+Given(
+  'there is a room with an ongoing estimation for {string} and vote correction enabled',
+  function (taskName: string) {
+    estimations.clear();
+    this.room = {
+      name: ROOM_NAME,
+      participants,
+      currentEstimation: {
+        taskName,
+        startDate: new Date().toISOString(),
+        status: 'hidden',
+        allowVoteCorrectionAfterReveal: true,
+        participantsAllowedToCorrectVote: [],
+        initiator: participants[0],
+      },
+      cardDeck: ['0', '1', '2', '3', '5', '8', '13', '20', '40', '100', '???'],
+    };
+  }
+);
 
 Given('a participant named {string} has joined the room as spectator', function (userName: string) {
   this.room!.participants = [...this.room!.participants, buildParticipant(userName, true)];
@@ -68,6 +91,7 @@ When('a participant initiates a new estimation for {string}', function (taskName
     userName: this.initiatingParticipant.name,
     taskName,
     startDate: this.estimationStartDate,
+    allowVoteCorrectionAfterReveal: false,
   };
 
   this.outgoingCommands = handlePokerEvent(
@@ -122,6 +146,7 @@ Then('the current task name should be set to {string}', function (taskName: stri
     taskName,
     startDate: this.estimationStartDate,
     participantId: this.initiatingParticipant!.id,
+    allowVoteCorrectionAfterReveal: false,
   });
 });
 
@@ -184,6 +209,8 @@ Then('he should receive information about the task', function () {
         userName: this.room?.currentEstimation?.initiator?.name,
         startDate: this.room?.currentEstimation?.startDate,
         taskName: this.room?.currentEstimation?.taskName,
+        allowVoteCorrectionAfterReveal:
+          this.room?.currentEstimation?.allowVoteCorrectionAfterReveal,
       },
     ],
   });
@@ -242,5 +269,17 @@ Then('the estimation round is ended', function () {
   expect(this.outgoingCommands).toContainEqual({
     type: CommandType.FINISH_ROUND,
     roomName: this.room!.name,
+  });
+});
+
+Then('the estimation round is revealed for vote correction', function () {
+  expect(this.outgoingCommands).toContainEqual({
+    type: CommandType.REVEAL_ROUND,
+    roomName: this.room!.name,
+    participantIdsAllowedToCorrectVote: ['John', 'Fred'],
+    endDate: expect.any(String),
+  });
+  expect(this.outgoingCommands).toContainEqual({
+    type: CommandType.BROADCAST_ESTIMATION_RESULT,
   });
 });

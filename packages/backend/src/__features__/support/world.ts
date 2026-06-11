@@ -1,7 +1,7 @@
 import { Command } from '../../domain/commandTypes';
 import { PokerRoom, Participant } from '../../domain/types';
 
-declare module 'cucumber' {
+declare module '@cucumber/cucumber' {
   interface World {
     room?: PokerRoom;
     inputEvent?: PokerEvent;

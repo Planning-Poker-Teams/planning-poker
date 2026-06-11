@@ -121,6 +121,8 @@ describe('mutations', () => {
           taskName: 'Some old task',
           startDate: new Date(),
           endDate: new Date(),
+          isEditable: false,
+          allowVoteCorrectionAfterReveal: false,
           estimates: [
             { userName: 'Bar', estimate: undefined },
             { userName: 'Foo', estimate: 'O' },
@@ -145,6 +147,8 @@ describe('mutations', () => {
           taskName: 'Some old task',
           startDate: new Date(),
           endDate: new Date(),
+          isEditable: false,
+          allowVoteCorrectionAfterReveal: false,
           estimates,
         },
       };
@@ -171,6 +175,8 @@ describe('mutations', () => {
         taskName: 'Some old task',
         startDate: new Date(),
         endDate: new Date(),
+        isEditable: false,
+        allowVoteCorrectionAfterReveal: false,
         estimates: [],
       },
     };
@@ -179,6 +185,7 @@ describe('mutations', () => {
       userName: 'Foo',
       taskName: 'Estimate this',
       startDate: new Date().toISOString(),
+      allowVoteCorrectionAfterReveal: true,
     };
 
     mutations.startEstimation(state, startEstimation);
@@ -188,6 +195,7 @@ describe('mutations', () => {
     expect(state.ongoingEstimation).toEqual({
       taskName: startEstimation.taskName,
       startDate: new Date(startEstimation.startDate),
+      allowVoteCorrectionAfterReveal: true,
     });
   });
 
@@ -207,6 +215,7 @@ describe('mutations', () => {
       ongoingEstimation: {
         taskName: 'Task',
         startDate: new Date(),
+        allowVoteCorrectionAfterReveal: false,
       },
     };
 
@@ -244,6 +253,7 @@ describe('mutations', () => {
       ongoingEstimation: {
         taskName: 'Task',
         startDate: new Date(),
+        allowVoteCorrectionAfterReveal: false,
       },
     };
 
@@ -252,6 +262,8 @@ describe('mutations', () => {
       taskName: 'Task',
       startDate: state.ongoingEstimation?.startDate.toISOString() ?? new Date().toISOString(),
       endDate: new Date().toISOString(),
+      isEditable: true,
+      allowVoteCorrectionAfterReveal: true,
       estimates: [],
     };
 
@@ -262,6 +274,8 @@ describe('mutations', () => {
       taskName: result.taskName,
       startDate: new Date(result.startDate),
       endDate: new Date(result.endDate),
+      isEditable: true,
+      allowVoteCorrectionAfterReveal: true,
       estimates: result.estimates,
     });
   });

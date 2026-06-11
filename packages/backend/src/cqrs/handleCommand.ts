@@ -1,3 +1,4 @@
+import { buildEstimationResult } from '../domain/buildEstimationResult';
 import { Command, CommandType } from '../domain/commandTypes';
 import { PokerRoom } from '../domain/types';
 import log from '../log';
@@ -80,13 +81,35 @@ export const handleCommand =
           room.name,
           command.taskName,
           command.participantId,
-          command.startDate
+          command.startDate,
+          command.allowVoteCorrectionAfterReveal
         );
         break;
       }
 
       case CommandType.RECORD_ESTIMATION: {
         await roomRepository.addToEstimations(room.name, command.participantId, command.estimate);
+        break;
+      }
+
+      case CommandType.REVEAL_ROUND: {
+        await roomRepository.revealEstimation(
+          command.roomName,
+          command.participantIdsAllowedToCorrectVote,
+          command.endDate
+        );
+        break;
+      }
+
+      case CommandType.BROADCAST_ESTIMATION_RESULT: {
+        const allConnectionIds = room.participants.map(p => p.id);
+        const payload = buildEstimationResult(room);
+        log.info('Outgoing message (broadcast)', {
+          message: payload,
+          direction: 'outgoing',
+          broadcast: true,
+        });
+        await messageSender.broadcast(allConnectionIds, JSON.stringify(payload));
         break;
       }
 

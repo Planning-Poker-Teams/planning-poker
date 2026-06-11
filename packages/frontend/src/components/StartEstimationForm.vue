@@ -35,7 +35,7 @@ const store: Store<State> = useStore();
 const newTaskName = ref('');
 
 const taskNameIsSet = computed(() => newTaskName.value.length > 0);
-const showEstimateAgainButton = computed(() => store.getters.resultBySize?.length > 1 ?? false);
+const showEstimateAgainButton = computed(() => (store.getters.resultBySize?.length ?? 0) > 1);
 const previousTaskName = computed(() => {
   if (typeof store.state.estimationResult === 'undefined') {
     return '';

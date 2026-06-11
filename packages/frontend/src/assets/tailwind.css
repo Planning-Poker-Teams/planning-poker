@@ -1,6 +1,15 @@
-/* purgecss start ignore */
-@tailwind base;
-@tailwind components;
-/* purgecss end ignore */
+@import 'tailwindcss';
+@config '../../tailwind.config.js';
 
-@tailwind utilities;
+@layer base {
+  button:not(:disabled),
+  a[href],
+  [role='button']:not([aria-disabled='true']) {
+    cursor: pointer;
+  }
+
+  button:disabled,
+  [aria-disabled='true'] {
+    cursor: not-allowed;
+  }
+}
