@@ -125,14 +125,9 @@ const sortedEntries = computed((): Entries => {
 });
 
 const showConsensusCats = computed(
-  () =>
-    store.state.room?.showCats &&
-    estimationResultBySize.value.length == 1 &&
-    !store.state.estimationResult?.isEditable
+  () => store.state.room?.showCats && estimationResultBySize.value.length == 1
 );
-const consensusReached = computed(
-  () => estimationResultBySize.value.length == 1 && !store.state.estimationResult?.isEditable
-);
+const consensusReached = computed(() => estimationResultBySize.value.length == 1);
 
 const hasVoted = (vote?: string): boolean => typeof vote !== 'undefined';
 
